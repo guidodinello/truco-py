@@ -1,0 +1,98 @@
+2026-04-12 19:09:19,187 INFO     train — Truco RL Training
+2026-04-12 19:09:19,187 INFO     train —   Opponent mode : threshold
+2026-04-12 19:09:19,187 INFO     train —   Total steps   : 5,000,000
+2026-04-12 19:09:19,187 INFO     train —   Parallel envs : 32  (CPU cores: 20)
+2026-04-12 19:09:19,187 INFO     train —   Shaped reward : False
+2026-04-12 19:09:19,187 INFO     train —   Aux heads     : True  (lambda_max=0.100, anneal=10,000,000 steps)
+2026-04-12 19:09:19,187 INFO     train —   MC rollouts   : 10  (V_MC in obs[169])
+2026-04-12 19:09:19,187 INFO     train —   MC pot. reward: True
+2026-04-12 19:09:19,187 INFO     train —   Load checkpoint: checkpoints/truco_threshold_final.zip
+2026-04-12 19:09:19,194 INFO     train —   Device        : cuda
+2026-04-12 19:09:19,194 INFO     train —   Est. FPS      : ~3000  (20 envs × 150 FPS/env, capped at 20 cores)
+2026-04-12 19:09:19,194 INFO     train —   Est. duration : ~0h 27m (rough — selfplay is slower)
+2026-04-12 19:09:23,855 INFO     train — Loading checkpoint: checkpoints/truco_threshold_final.zip
+2026-04-12 19:09:24,420 INFO     train — Upgraded loaded policy to TrucoActorCriticPolicy (aux heads grafted)
+2026-04-12 19:13:24,873 INFO     train —   [aux] lambda=0.0950  envido_loss=0.6853  flor_loss=0.6934
+2026-04-12 19:13:24,916 INFO     train — checkpoint saved: truco_threshold_500000.zip
+2026-04-12 19:13:24,916 INFO     train — Progress: 500,000 / 5,000,000 steps  (10.0%)  fps=2079  ETA=0h 36m
+2026-04-12 19:17:59,253 INFO     train —   [aux] lambda=0.0900  envido_loss=0.6768  flor_loss=0.6867
+2026-04-12 19:17:59,289 INFO     train — checkpoint saved: truco_threshold_1000000.zip
+2026-04-12 19:17:59,290 INFO     train — Progress: 1,000,000 / 5,000,000 steps  (20.0%)  fps=1942  ETA=0h 34m
+2026-04-12 19:22:20,100 INFO     train —   [aux] lambda=0.0850  envido_loss=0.6685  flor_loss=0.6784
+2026-04-12 19:22:20,129 INFO     train — checkpoint saved: truco_threshold_1500000.zip
+2026-04-12 19:22:20,129 INFO     train — Progress: 1,500,000 / 5,000,000 steps  (30.0%)  fps=1934  ETA=0h 30m
+2026-04-12 19:26:38,907 INFO     train —   [aux] lambda=0.0800  envido_loss=0.6626  flor_loss=0.6713
+2026-04-12 19:26:38,935 INFO     train — checkpoint saved: truco_threshold_2000000.zip
+2026-04-12 19:26:38,936 INFO     train — Progress: 2,000,000 / 5,000,000 steps  (40.0%)  fps=1933  ETA=0h 25m
+2026-04-12 19:30:10,668 INFO     train —   [aux] lambda=0.0750  envido_loss=0.6573  flor_loss=0.6656
+2026-04-12 19:30:10,701 INFO     train — checkpoint saved: truco_threshold_2500000.zip
+2026-04-12 19:30:10,701 INFO     train — Progress: 2,500,000 / 5,000,000 steps  (50.0%)  fps=2006  ETA=0h 20m
+2026-04-12 19:34:29,693 INFO     train —   [aux] lambda=0.0700  envido_loss=0.6478  flor_loss=0.6664
+2026-04-12 19:34:29,717 INFO     train — checkpoint saved: truco_threshold_3000000.zip
+2026-04-12 19:34:29,717 INFO     train — Progress: 3,000,000 / 5,000,000 steps  (60.0%)  fps=1993  ETA=0h 16m
+2026-04-12 19:38:52,022 INFO     train —   [aux] lambda=0.0650  envido_loss=0.6445  flor_loss=0.6598
+2026-04-12 19:38:52,041 INFO     train — checkpoint saved: truco_threshold_3500000.zip
+2026-04-12 19:38:52,041 INFO     train — Progress: 3,500,000 / 5,000,000 steps  (70.0%)  fps=1980  ETA=0h 12m
+2026-04-12 19:43:07,486 INFO     train —   [aux] lambda=0.0600  envido_loss=0.6356  flor_loss=0.6546
+2026-04-12 19:43:07,505 INFO     train — checkpoint saved: truco_threshold_4000000.zip
+2026-04-12 19:43:07,505 INFO     train — Progress: 4,000,000 / 5,000,000 steps  (80.0%)  fps=1977  ETA=0h 08m
+2026-04-12 19:47:23,705 INFO     train —   [aux] lambda=0.0550  envido_loss=0.6303  flor_loss=0.6592
+2026-04-12 19:47:23,733 INFO     train — checkpoint saved: truco_threshold_4500000.zip
+2026-04-12 19:47:23,733 INFO     train — Progress: 4,500,000 / 5,000,000 steps  (90.0%)  fps=1974  ETA=0h 04m
+2026-04-12 19:51:44,107 INFO     train —   [aux] lambda=0.0500  envido_loss=0.6301  flor_loss=0.6528
+2026-04-12 19:51:44,126 INFO     train — checkpoint saved: truco_threshold_5000000.zip
+2026-04-12 19:51:44,126 INFO     train — Progress: 5,000,000 / 5,000,000 steps  (100.0%)  fps=1969  ETA=0h 00m
+2026-04-12 19:51:44,136 INFO     train — Training complete in 42.3min. Final model: /home/guido/Desktop/fac/2026/mmo/truco-py/checkpoints/truco_threshold_final.zip
+2026-04-12 19:54:06,818 INFO     train — Truco RL Training
+2026-04-12 19:54:06,818 INFO     train —   Opponent mode : selfplay
+2026-04-12 19:54:06,818 INFO     train —   Total steps   : 50,000,000
+2026-04-12 19:54:06,818 INFO     train —   Parallel envs : 32  (CPU cores: 20)
+2026-04-12 19:54:06,818 INFO     train —   Shaped reward : False
+2026-04-12 19:54:06,819 INFO     train —   Aux heads     : True  (lambda_max=0.100, anneal=10,000,000 steps)
+2026-04-12 19:54:06,819 INFO     train —   MC rollouts   : 10  (V_MC in obs[169])
+2026-04-12 19:54:06,819 INFO     train —   MC pot. reward: True
+2026-04-12 19:54:06,819 INFO     train —   Load checkpoint: checkpoints/truco_threshold_final.zip
+2026-04-12 19:54:06,828 INFO     train —   Device        : cuda
+2026-04-12 19:54:06,828 INFO     train —   Est. FPS      : ~3000  (20 envs × 150 FPS/env, capped at 20 cores)
+2026-04-12 19:54:06,828 INFO     train —   Est. duration : ~4h 37m (rough — selfplay is slower)
+2026-04-12 19:54:11,686 INFO     train — Loading checkpoint: checkpoints/truco_threshold_final.zip
+2026-04-12 19:57:31,990 WARNING  train — Checkpoint has aux heads but --aux-heads not set. Loading with TrucoActorCriticPolicy anyway.
+2026-04-12 19:57:32,045 INFO     train — Upgraded loaded policy to TrucoActorCriticPolicy (aux heads grafted)
+2026-04-12 19:58:30,225 INFO     train — Truco RL Training
+2026-04-12 19:58:30,225 INFO     train —   Opponent mode : selfplay
+2026-04-12 19:58:30,225 INFO     train —   Total steps   : 50,000,000
+2026-04-12 19:58:30,225 INFO     train —   Parallel envs : 32  (CPU cores: 20)
+2026-04-12 19:58:30,225 INFO     train —   Shaped reward : False
+2026-04-12 19:58:30,225 INFO     train —   Aux heads     : True  (lambda_max=0.100, anneal=10,000,000 steps)
+2026-04-12 19:58:30,225 INFO     train —   MC rollouts   : 10  (V_MC in obs[169])
+2026-04-12 19:58:30,225 INFO     train —   MC pot. reward: True
+2026-04-12 19:58:30,225 INFO     train —   Load checkpoint: checkpoints/truco_threshold_final.zip
+2026-04-12 19:58:30,229 INFO     train —   Device        : cuda
+2026-04-12 19:58:30,230 INFO     train —   Est. FPS      : ~3000  (20 envs × 150 FPS/env, capped at 20 cores)
+2026-04-12 19:58:30,230 INFO     train —   Est. duration : ~4h 37m (rough — selfplay is slower)
+2026-04-12 19:58:34,865 INFO     train — Loading checkpoint: checkpoints/truco_threshold_final.zip
+2026-04-12 21:39:59,110 INFO     train — Truco RL Training
+2026-04-12 21:39:59,110 INFO     train —   Opponent mode : selfplay
+2026-04-12 21:39:59,110 INFO     train —   Total steps   : 50,000,000
+2026-04-12 21:39:59,110 INFO     train —   Parallel envs : 8  (CPU cores: 20)
+2026-04-12 21:39:59,110 INFO     train —   Shaped reward : False
+2026-04-12 21:39:59,110 INFO     train —   Aux heads     : True  (lambda_max=0.100, anneal=10,000,000 steps)
+2026-04-12 21:39:59,110 INFO     train —   MC rollouts   : 0  (V_MC in obs[169])
+2026-04-12 21:39:59,110 INFO     train —   MC pot. reward: False
+2026-04-12 21:39:59,110 INFO     train —   Load checkpoint: checkpoints/truco_threshold_final.zip
+2026-04-12 21:39:59,123 INFO     train —   Device        : cuda
+2026-04-12 21:39:59,123 INFO     train —   Est. FPS      : ~1200  (8 envs × 150 FPS/env, capped at 20 cores)
+2026-04-12 21:39:59,123 INFO     train —   Est. duration : ~11h 34m (rough — selfplay is slower)
+2026-04-12 21:40:07,591 INFO     train — Truco RL Training
+2026-04-12 21:40:07,591 INFO     train —   Opponent mode : selfplay
+2026-04-12 21:40:07,591 INFO     train —   Total steps   : 50,000,000
+2026-04-12 21:40:07,591 INFO     train —   Parallel envs : 16  (CPU cores: 20)
+2026-04-12 21:40:07,591 INFO     train —   Shaped reward : False
+2026-04-12 21:40:07,591 INFO     train —   Aux heads     : True  (lambda_max=0.100, anneal=10,000,000 steps)
+2026-04-12 21:40:07,591 INFO     train —   MC rollouts   : 0  (V_MC in obs[169])
+2026-04-12 21:40:07,591 INFO     train —   MC pot. reward: False
+2026-04-12 21:40:07,591 INFO     train —   Load checkpoint: checkpoints/truco_threshold_final.zip
+2026-04-12 21:40:07,597 INFO     train —   Device        : cuda
+2026-04-12 21:40:07,597 INFO     train —   Est. FPS      : ~2400  (16 envs × 150 FPS/env, capped at 20 cores)
+2026-04-12 21:40:07,597 INFO     train —   Est. duration : ~5h 47m (rough — selfplay is slower)
+2026-04-12 21:40:10,153 INFO     train — Loading checkpoint: checkpoints/truco_threshold_final.zip

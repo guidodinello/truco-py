@@ -1,0 +1,12 @@
+
+  Pregunta: P(algún oponente > 30 puntos | yo tengo exactamente 30)
+
+=======================================================
+  Simulación genérica  |  n total = 1,000,000  |  semilla = 42
+=======================================================
+  Denominador (filtro) : 56,444
+  Éxitos               : 37,246
+  Probabilidad est.    : 65.9875%
+  IC 95%               : [65.5967% , 66.3784%]
+  Error estándar       : 0.1994%
+=======================================================
