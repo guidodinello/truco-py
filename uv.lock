@@ -508,8 +508,14 @@ wheels = [
 
 [[package]]
 name = "gamekit"
-version = "0.1.0"
-source = { git = "https://github.com/guidodinello/gamekit?branch=main#a1a3dbcff170b12a68d58223864ee3a9023a2a80" }
+version = "0.2.0"
+source = { git = "https://github.com/guidodinello/gamekit?branch=main#03226a49cc6acd4b5d34f12ca07ba272c8c4cd8f" }
+
+[package.optional-dependencies]
+rl = [
+    { name = "gymnasium" },
+    { name = "numpy" },
+]
 
 [[package]]
 name = "grpcio"
@@ -2355,7 +2361,7 @@ name = "truco-py"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
-    { name = "gamekit" },
+    { name = "gamekit", extra = ["rl"] },
     { name = "gymnasium" },
     { name = "jupyter" },
     { name = "matplotlib" },
@@ -2376,7 +2382,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "gamekit", git = "https://github.com/guidodinello/gamekit?branch=main" },
+    { name = "gamekit", extras = ["rl"], git = "https://github.com/guidodinello/gamekit?branch=main" },
     { name = "gymnasium", specifier = ">=1.2.3" },
     { name = "jupyter", specifier = ">=1.1.1" },
     { name = "matplotlib", specifier = ">=3.10.8" },
