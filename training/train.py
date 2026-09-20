@@ -21,7 +21,7 @@ import torch
 import torch.nn.functional as F
 from sb3_contrib import MaskablePPO
 from sb3_contrib.common.wrappers import ActionMasker
-from stable_baselines3.common.vec_env import SubprocVecEnv, VecMonitor
+from stable_baselines3.common.vec_env import SubprocVecEnv, VecEnv, VecMonitor
 
 from agents.random_agent import RandomAgent
 from agents.threshold_agent import ThresholdAgent
@@ -380,7 +380,7 @@ def train(
     # env closures via cloudpickle which doesn't transfer Connection objects.
     # Subprocesses never call CUDA here, so fork+CUDA-in-parent is safe.
     start_method = "fork" if inference_server is not None else None
-    vec_env = SubprocVecEnv(env_fns, start_method=start_method)
+    vec_env: VecEnv = SubprocVecEnv(env_fns, start_method=start_method)
     vec_env = VecMonitor(vec_env)
 
     policy_cls = TrucoActorCriticPolicy if aux_heads else "MlpPolicy"

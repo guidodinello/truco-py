@@ -202,7 +202,7 @@ def _build_agents(
 
 
 def _place_agents(
-    rotated_lineup: tuple[str, str], role_agents: dict[str, list[TrucoAgent]]
+    rotated_lineup: Sequence[str], role_agents: dict[str, list[TrucoAgent]]
 ) -> list[TrucoAgent]:
     """Map a rotated (slot -> role) lineup to the 6 players: slot 0 is Team
     A's 3 players, slot 1 is Team B's, each in mano order."""
