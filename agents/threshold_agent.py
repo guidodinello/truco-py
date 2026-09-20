@@ -34,6 +34,8 @@ MC_THRESHOLDS = {
 class ThresholdAgent:
     """MC-threshold policy. Falls back to random for unknown situations."""
 
+    name = "threshold"
+
     def __init__(self, seed: int | None = None):
         self._rng = random.Random(seed)
 

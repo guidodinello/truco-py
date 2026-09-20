@@ -7,7 +7,7 @@ When the pool is empty (early training), falls back to ThresholdAgent.
 import random
 from collections import deque
 
-from agents.base import Agent
+from agents.base import TrucoAgent
 from agents.threshold_agent import ThresholdAgent
 
 # Process-local cache: {path -> MaskablePPO model}.
@@ -24,6 +24,8 @@ class _CheckpointAgent:
     CPU inference locally.  The CPU fallback is kept for tests and threshold-only
     training where no server is running.
     """
+
+    name = "checkpoint"
 
     def __init__(self, checkpoint_path: str, inference_handle=None):
         self._path = checkpoint_path
@@ -79,7 +81,7 @@ class SelfPlayManager:
     def add_checkpoint(self, path: str):
         self._pool.append(path)
 
-    def sample_opponent(self) -> Agent:
+    def sample_opponent(self) -> TrucoAgent:
         if not self._pool:
             return ThresholdAgent()
         path = self._rng.choice(list(self._pool))

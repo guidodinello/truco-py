@@ -16,6 +16,8 @@ import math
 import random
 from collections import Counter
 
+from gamekit.mc import wilson_interval
+
 # ---------------------------------------------------------------------------
 # Constantes
 # ---------------------------------------------------------------------------
@@ -205,15 +207,15 @@ def simular(n: int, seed: int | None = None) -> dict:
         breakdown_AB[(flores_A, flores_B)] += 1
 
     p = exitos / n
-    z = 1.96  # nivel 95%
     se = math.sqrt(p * (1 - p) / n)
+    ic_low, ic_high = wilson_interval(exitos, n)
 
     return {
         "n": n,
         "exitos": exitos,
         "p": p,
-        "ic_low": max(0.0, p - z * se),
-        "ic_high": min(1.0, p + z * se),
+        "ic_low": ic_low,
+        "ic_high": ic_high,
         "se": se,
         "breakdown": breakdown,
         "breakdown_AB": breakdown_AB,
@@ -252,16 +254,16 @@ def simular_generico(
 
     denom = n_filtradas if filter_fn is not None else n
     p = exitos / denom if denom > 0 else 0.0
-    z = 1.96
     se = math.sqrt(p * (1 - p) / denom) if denom > 0 else 0.0
+    ic_low, ic_high = wilson_interval(exitos, denom) if denom > 0 else (0.0, 0.0)
 
     return {
         "n": n,
         "n_filtradas": n_filtradas,
         "exitos": exitos,
         "p": p,
-        "ic_low": max(0.0, p - z * se),
-        "ic_high": min(1.0, p + z * se),
+        "ic_low": ic_low,
+        "ic_high": ic_high,
         "se": se,
         "seed": seed,
     }

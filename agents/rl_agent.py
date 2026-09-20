@@ -21,6 +21,8 @@ from training.state_encoder import obs_to_vector
 class RLAgent:
     """Trained PPO agent loaded from a checkpoint file."""
 
+    name = "rl"
+
     def __init__(
         self, checkpoint_path: str | Path, deterministic: bool = True, device: str = "cpu"
     ):

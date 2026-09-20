@@ -12,6 +12,8 @@ Análisis de EV (1v1):
 import math
 import random
 
+from gamekit.mc import wilson_interval
+
 from engine.truco import EQUIPO_A, EQUIPO_B, construir_mazo, simular_mano
 
 
@@ -52,7 +54,6 @@ def _report(r):
     n = r["n"]
     n_filtradas = r["n_filtradas"]
     buckets = r["buckets"]
-    z = 1.96
 
     print(f"\n{'=' * 70}")
     print("  P(ganar flor | mis pts de flor == X)  —  escenario 1v1")
@@ -67,7 +68,7 @@ def _report(r):
             continue
         p = wins / total
         se = math.sqrt(p * (1 - p) / total)
-        lo, hi = max(0.0, p - z * se), min(1.0, p + z * se)
+        lo, hi = wilson_interval(wins, total)
 
         marker = " ← ~1/2" if abs(p - 0.5) < 0.03 else ""
 
