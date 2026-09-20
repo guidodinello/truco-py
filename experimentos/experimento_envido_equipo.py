@@ -10,6 +10,8 @@ Supuesto: empate → pierde el pie (éxito solo si max_A > max_B estricto).
 import math
 import random
 
+from gamekit.mc import wilson_interval
+
 from engine.truco import EQUIPO_A, EQUIPO_B, construir_mazo, simular_mano
 
 
@@ -36,7 +38,6 @@ def _simulate(n, seed):
 def _report(r):
     n = r["n"]
     buckets = r["buckets"]
-    z = 1.96
 
     print(f"\n{'=' * 65}")
     print(f"  P(ganar envido | mejor envido del equipo == Y)  —  n = {n:,}")
@@ -51,7 +52,7 @@ def _report(r):
             continue
         p = wins / total
         se = math.sqrt(p * (1 - p) / total)
-        lo, hi = max(0.0, p - z * se), min(1.0, p + z * se)
+        lo, hi = wilson_interval(wins, total)
         marker = " ← 50%" if abs(p - 0.5) < 0.02 else ""
         print(
             f"  {y:>4}  {total:>8,}  {p * 100:>9.1f}%"

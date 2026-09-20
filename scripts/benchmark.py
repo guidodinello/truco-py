@@ -19,26 +19,68 @@ Usage:
 
     # Profile game speed
     uv run scripts/benchmark.py --mode random --n 10000 --profile
+
+Modes are 2-role team arms driven by ``gamekit.benchmark.run_arm``: a gamekit
+"seat" here is a *team slot* (0 = Team A's three players, 1 = Team B's), not
+an individual player -- ``--n`` must therefore be even, since ``run_arm``
+requires ``n_games`` be a multiple of the (2-role) lineup length. Seat
+rotation is mandatory (gamekit's contract): across an arm, each role plays
+Team A in half the games and Team B in the other half, removing the mano
+(first-player) advantage that always favoured Team A. See
+``~/projects/docs/shared-ml-package.md`` for the full design.
 """
 
 import argparse
 import sys
 import time
+from collections.abc import Callable, Sequence
+from dataclasses import dataclass
 from pathlib import Path
 
+from gamekit.benchmark import run_arm
+from gamekit.seats import rotate
+
+from agents.base import TrucoAgent
 from agents.random_agent import RandomAgent
 from agents.rl_agent import RLAgent
 from agents.threshold_agent import ThresholdAgent
 from agents.von_neumann_agent import VonNeumannAgent
 from engine.game import TrucoGame
-from engine.game_state import TEAM_A
+from engine.game_state import TEAM_A, TEAM_B
 from engine.phases import Phase
 from log import get_logger
 
 # Flush stdout after each line so progress appears immediately when piped or captured.
-sys.stdout.reconfigure(line_buffering=True)  # type: ignore[attr-defined]
+sys.stdout.reconfigure(line_buffering=True)  # type: ignore[union-attr]
 
 logger = get_logger("benchmark")
+
+# One role occupies each gamekit "seat" (team slot); slot 0 = Team A, slot 1 = Team B.
+_SLOT_PLAYERS = (TEAM_A, TEAM_B)
+
+
+@dataclass(frozen=True, slots=True)
+class Mode:
+    """A benchmark arm: a 2-role lineup (one role per team slot) plus whether
+    it plays single hands (``run_game``) or full matches (``run_match``)."""
+
+    lineup: tuple[str, str]
+    is_match: bool
+
+
+MODES: dict[str, Mode] = {
+    "random": Mode(("random_a", "random_b"), False),
+    "threshold_vs_random": Mode(("threshold", "random"), False),
+    "threshold_vs_threshold": Mode(("threshold_a", "threshold_b"), False),
+    "von_neumann_vs_random": Mode(("von_neumann", "random"), False),
+    "von_neumann_vs_threshold": Mode(("von_neumann", "threshold"), False),
+    "match_von_neumann_vs_random": Mode(("von_neumann", "random"), True),
+    "match_von_neumann_vs_threshold": Mode(("von_neumann", "threshold"), True),
+    "match_threshold_vs_random": Mode(("threshold", "random"), True),
+    "match_rl_vs_random": Mode(("rl", "random"), True),
+    "match_rl_vs_threshold": Mode(("rl", "threshold"), True),
+    "match_rl_vs_vonneumann": Mode(("rl", "von_neumann"), True),
+}
 
 
 def run_game(game: TrucoGame, agents: list, seed: int | None = None) -> int:
@@ -92,6 +134,85 @@ def run_match(game: TrucoGame, agents: list, seed: int | None = None) -> int:
     return 0 if scores[0] >= game.target else 1
 
 
+def _build_agent(
+    role: str,
+    seed: int,
+    *,
+    rollouts: int,
+    cache_path: Path | None,
+    rl_agent: RLAgent | None,
+) -> TrucoAgent:
+    if role in ("random", "random_a", "random_b"):
+        return RandomAgent(seed=seed)
+    if role in ("threshold", "threshold_a", "threshold_b"):
+        return ThresholdAgent(seed=seed)
+    if role == "von_neumann":
+        return VonNeumannAgent(n_rollouts=rollouts, seed=seed, cache_path=cache_path)
+    if role == "rl":
+        assert rl_agent is not None
+        return rl_agent
+    raise ValueError(f"unknown role {role!r}")
+
+
+def _build_role_agents(
+    role: str,
+    seed_offsets: tuple[int, int, int],
+    seed: int,
+    *,
+    rollouts: int,
+    cache_path: Path | None,
+    rl_agent: RLAgent | None,
+) -> list[TrucoAgent]:
+    """The 3 agent instances for one role, one per team-position -- built once
+    and reused for every game, keeping RNG streams and VonNeumann caches
+    stable across the whole arm, exactly as when they lived in a fixed team."""
+    return [
+        _build_agent(role, seed + off, rollouts=rollouts, cache_path=cache_path, rl_agent=rl_agent)
+        for off in seed_offsets
+    ]
+
+
+def _build_agents(
+    mode_def: Mode,
+    seed: int,
+    *,
+    rollouts: int,
+    cache_path: Path | None,
+    checkpoint: str | None,
+) -> dict[str, list[TrucoAgent]]:
+    """Build one agent triplet per role, keyed by role name. ``role_a`` keeps
+    the RNG seeds Team A always used (``seed+0,2,4``), ``role_b`` keeps Team
+    B's (``seed+1,3,5``) -- seat rotation only changes which team slot a role
+    plays in a given game, never its identity or seed."""
+    role_a, role_b = mode_def.lineup
+    rl_agent: RLAgent | None = None
+    if "rl" in mode_def.lineup:
+        if checkpoint is None:
+            logger.error("--checkpoint is required for RL modes")
+            sys.exit(1)
+        rl_agent = RLAgent(checkpoint)
+    return {
+        role_a: _build_role_agents(
+            role_a, (0, 2, 4), seed, rollouts=rollouts, cache_path=cache_path, rl_agent=rl_agent
+        ),
+        role_b: _build_role_agents(
+            role_b, (1, 3, 5), seed, rollouts=rollouts, cache_path=cache_path, rl_agent=rl_agent
+        ),
+    }
+
+
+def _place_agents(
+    rotated_lineup: tuple[str, str], role_agents: dict[str, list[TrucoAgent]]
+) -> list[TrucoAgent]:
+    """Map a rotated (slot -> role) lineup to the 6 players: slot 0 is Team
+    A's 3 players, slot 1 is Team B's, each in mano order."""
+    player_to_agent: dict[int, TrucoAgent] = {}
+    for slot, role in enumerate(rotated_lineup):
+        for pos_idx, player in enumerate(_SLOT_PLAYERS[slot]):
+            player_to_agent[player] = role_agents[role][pos_idx]
+    return [player_to_agent[p] for p in range(6)]
+
+
 def benchmark(
     mode: str,
     n: int,
@@ -100,117 +221,80 @@ def benchmark(
     rollouts: int = 20,
     cache_path: Path | None = None,
     checkpoint: str | None = None,
+    rotation_offset: Callable[[int], int] = lambda engine_seed: engine_seed,
 ):
-    game = TrucoGame()
-
-    if mode == "random":
-        agents = [RandomAgent(seed=seed + i) for i in range(6)]
-        label_A, label_B = "Random A", "Random B"
-    elif mode == "threshold_vs_random":
-        # Team A = threshold, Team B = random
-        agents = [
-            ThresholdAgent(seed=seed + i) if i in TEAM_A else RandomAgent(seed=seed + i)
-            for i in range(6)
-        ]
-        label_A, label_B = "Threshold", "Random"
-    elif mode == "threshold_vs_threshold":
-        agents = [ThresholdAgent(seed=seed + i) for i in range(6)]
-        label_A, label_B = "Threshold A", "Threshold B"
-    elif mode == "von_neumann_vs_random":
-        # Team A = Von Neumann, Team B = random
-        agents = [
-            VonNeumannAgent(n_rollouts=rollouts, seed=seed + i, cache_path=cache_path)
-            if i in TEAM_A
-            else RandomAgent(seed=seed + i)
-            for i in range(6)
-        ]
-        label_A, label_B = f"VonNeumann(r={rollouts})", "Random"
-    elif mode == "von_neumann_vs_threshold":
-        # Team A = Von Neumann, Team B = threshold
-        agents = [
-            VonNeumannAgent(n_rollouts=rollouts, seed=seed + i, cache_path=cache_path)
-            if i in TEAM_A
-            else ThresholdAgent(seed=seed + i)
-            for i in range(6)
-        ]
-        label_A, label_B = f"VonNeumann(r={rollouts})", "Threshold"
-    elif mode == "match_von_neumann_vs_random":
-        agents = [
-            VonNeumannAgent(n_rollouts=rollouts, seed=seed + i, cache_path=cache_path)
-            if i in TEAM_A
-            else RandomAgent(seed=seed + i)
-            for i in range(6)
-        ]
-        label_A, label_B = f"VonNeumann(r={rollouts})", "Random"
-    elif mode == "match_von_neumann_vs_threshold":
-        agents = [
-            VonNeumannAgent(n_rollouts=rollouts, seed=seed + i, cache_path=cache_path)
-            if i in TEAM_A
-            else ThresholdAgent(seed=seed + i)
-            for i in range(6)
-        ]
-        label_A, label_B = f"VonNeumann(r={rollouts})", "Threshold"
-    elif mode == "match_threshold_vs_random":
-        agents = [
-            ThresholdAgent(seed=seed + i) if i in TEAM_A else RandomAgent(seed=seed + i)
-            for i in range(6)
-        ]
-        label_A, label_B = "Threshold", "Random"
-    elif mode in ("match_rl_vs_random", "match_rl_vs_threshold", "match_rl_vs_vonneumann"):
-        if checkpoint is None:
-            logger.error("--checkpoint is required for RL modes")
-            sys.exit(1)
-        rl = RLAgent(checkpoint)
-        if mode == "match_rl_vs_random":
-            agents = [rl if i in TEAM_A else RandomAgent(seed=seed + i) for i in range(6)]
-            opp_label = "Random"
-        elif mode == "match_rl_vs_threshold":
-            agents = [rl if i in TEAM_A else ThresholdAgent(seed=seed + i) for i in range(6)]
-            opp_label = "Threshold"
-        else:  # match_rl_vs_vonneumann
-            agents = [
-                rl if i in TEAM_A
-                else VonNeumannAgent(n_rollouts=rollouts, seed=seed + i, cache_path=cache_path)
-                for i in range(6)
-            ]
-            opp_label = f"VonNeumann(r={rollouts})"
-        label_A, label_B = f"RL({Path(checkpoint).stem})", opp_label
-    else:
+    if mode not in MODES:
         logger.error("Unknown mode: %s", mode)
         sys.exit(1)
+    mode_def = MODES[mode]
+    role_a, role_b = mode_def.lineup
 
-    is_match = mode.startswith("match_")
-    run_fn = run_match if is_match else run_game
-    unit = "matches" if is_match else "hands"
+    if n % 2 != 0:
+        logger.error("--n must be even (2-role lineup, one role per team slot)")
+        sys.exit(1)
 
-    wins_A = wins_B = ties = 0
+    game = TrucoGame()
+    run_fn = run_match if mode_def.is_match else run_game
+    unit = "matches" if mode_def.is_match else "hands"
+    label_A, label_B = _labels(mode, rollouts, checkpoint)
+
+    role_agents = _build_agents(
+        mode_def, seed, rollouts=rollouts, cache_path=cache_path, checkpoint=checkpoint
+    )
+
     t0 = time.perf_counter()
 
-    for i in range(n):
-        result = run_fn(game, agents, seed=seed + i)
-        if result == 0:
-            wins_A += 1
-        elif result == 1:
-            wins_B += 1
-        else:
-            ties += 1
-        if (i + 1) % 10 == 0:
-            elapsed_so_far = time.perf_counter() - t0
-            rate = (i + 1) / elapsed_so_far
-            eta = (n - i - 1) / rate if rate > 0 else float("inf")
-            logger.info(
-                "%d/%d  A:%.0f%%  %.2f %s/s  ETA %.0fs",
-                i + 1, n,
-                100 * wins_A / (i + 1),
-                rate, unit, eta,
-            )
+    def play(pairs: Sequence[tuple[int, int]]) -> Sequence[int | None]:
+        winning_seats: list[int | None] = []
+        wins_role = {role_a: 0, role_b: 0}
+        for i, (engine_seed, _driver_seed) in enumerate(pairs):
+            rotated = rotate(mode_def.lineup, rotation_offset(engine_seed))
+            agents = _place_agents(rotated, role_agents)
+            result = run_fn(game, agents, seed=engine_seed)
+            if result == -1:
+                winning_seats.append(None)
+            else:
+                wins_role[rotated[result]] += 1
+                winning_seats.append(result)
+
+            if (i + 1) % 10 == 0:
+                elapsed_so_far = time.perf_counter() - t0
+                rate = (i + 1) / elapsed_so_far
+                eta = (len(pairs) - i - 1) / rate if rate > 0 else float("inf")
+                logger.info(
+                    "%d/%d  A:%.0f%%  %.2f %s/s  ETA %.0fs",
+                    i + 1,
+                    len(pairs),
+                    100 * wins_role[role_a] / (i + 1),
+                    rate,
+                    unit,
+                    eta,
+                )
+        return winning_seats
+
+    payload = run_arm(
+        lineup=mode_def.lineup,
+        num_seats=2,
+        n_games=n,
+        engine_seed_base=seed,
+        driver_seed_base=seed,
+        play=play,
+        winning_seat=lambda r: r,
+        rotation_offset=rotation_offset,
+    )
 
     elapsed = time.perf_counter() - t0
     games_per_sec = n / elapsed
 
-    for agent in agents:
-        if isinstance(agent, VonNeumannAgent):
-            agent.save_cache()
+    for agents in role_agents.values():
+        for agent in agents:
+            if isinstance(agent, VonNeumannAgent):
+                agent.save_cache()
+
+    by_role = payload["by_role"]
+    wins_A = by_role[role_a]["wins"]
+    wins_B = by_role[role_b]["wins"]
+    ties = n - wins_A - wins_B
 
     print(f"\n{'─' * 50}")
     print(f"Mode:        {mode}")
@@ -244,26 +328,32 @@ def benchmark(
             logger.info("OK: VonNeumannAgent is performing better than random.")
 
 
+def _labels(mode: str, rollouts: int, checkpoint: str | None) -> tuple[str, str]:
+    """The printed report's role labels -- kept as an explicit table (rather
+    than derived from role names) so display strings are exactly what they
+    were before the mode-registry rewrite, including the ones parameterised
+    by ``--rollouts``/``--checkpoint``."""
+    vn = f"VonNeumann(r={rollouts})"
+    rl_label = f"RL({Path(checkpoint).stem})" if checkpoint else "RL"
+    return {
+        "random": ("Random A", "Random B"),
+        "threshold_vs_random": ("Threshold", "Random"),
+        "threshold_vs_threshold": ("Threshold A", "Threshold B"),
+        "von_neumann_vs_random": (vn, "Random"),
+        "von_neumann_vs_threshold": (vn, "Threshold"),
+        "match_von_neumann_vs_random": (vn, "Random"),
+        "match_von_neumann_vs_threshold": (vn, "Threshold"),
+        "match_threshold_vs_random": ("Threshold", "Random"),
+        "match_rl_vs_random": (rl_label, "Random"),
+        "match_rl_vs_threshold": (rl_label, "Threshold"),
+        "match_rl_vs_vonneumann": (rl_label, vn),
+    }[mode]
+
+
 def main():
     parser = argparse.ArgumentParser(description="Benchmark Truco agents")
-    parser.add_argument(
-        "--mode",
-        choices=[
-            "random",
-            "threshold_vs_random",
-            "threshold_vs_threshold",
-            "von_neumann_vs_random",
-            "von_neumann_vs_threshold",
-            "match_von_neumann_vs_random",
-            "match_von_neumann_vs_threshold",
-            "match_threshold_vs_random",
-            "match_rl_vs_random",
-            "match_rl_vs_threshold",
-            "match_rl_vs_vonneumann",
-        ],
-        default="random",
-    )
-    parser.add_argument("--n", type=int, default=1000)
+    parser.add_argument("--mode", choices=sorted(MODES), default="random")
+    parser.add_argument("--n", type=int, default=1000, help="Number of games (must be even)")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--profile", action="store_true")
     parser.add_argument(

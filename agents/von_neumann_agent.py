@@ -33,6 +33,8 @@ class VonNeumannConfig:
 class VonNeumannAgent:
     """MC rollout agent: picks the action with the highest estimated EV."""
 
+    name = "von_neumann"
+
     def __init__(
         self,
         n_rollouts: int = 20,

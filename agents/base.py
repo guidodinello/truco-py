@@ -1,22 +1,17 @@
-from typing import Protocol, runtime_checkable
+"""The ``Agent`` protocol.
+
+Extracted to ``gamekit.agent.Agent[StateT, ActionT]`` -- see
+``~/projects/docs/shared-ml-package.md``. ``TrucoAgent`` is the parameterised alias
+this codebase's annotations use; ``isinstance`` checks stay against the bare ``Agent``
+re-exported below (a subscripted generic Protocol raises ``TypeError`` from
+``isinstance``), which is what ``tests/test_agents.py`` already does.
+"""
+
+from __future__ import annotations
+
+from gamekit import Agent as Agent
 
 from engine.actions import Action
 from engine.game_state import GameState
 
-
-@runtime_checkable
-class Agent(Protocol):
-    """Structural interface for all Truco agents."""
-
-    def choose_action(
-        self,
-        state: GameState,
-        legal_actions: list[Action],
-        player_idx: int,
-    ) -> Action:
-        """Return one action from legal_actions for player_idx."""
-        ...
-
-    def reset(self) -> None:
-        """Called at the start of each new game. Override for stateful agents."""
-        ...
+type TrucoAgent = Agent[GameState, Action]

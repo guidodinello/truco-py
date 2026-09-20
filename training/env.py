@@ -19,7 +19,7 @@ import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
 
-from agents.base import Agent
+from agents.base import TrucoAgent
 from agents.random_agent import RandomAgent
 from agents.threshold_agent import ThresholdAgent
 from engine.actions import N_ACTIONS, Action
@@ -88,7 +88,7 @@ class TrucoEnv(gym.Env):
         self._v_mc: float | None = None  # V_MC computed at each reset(), None if disabled
 
         if selfplay_dir is None:
-            self._opponents: list[Agent] = (
+            self._opponents: list[TrucoAgent] = (
                 opponent_agents
                 if opponent_agents is not None
                 else [RandomAgent() for _ in range(5)]
@@ -200,9 +200,7 @@ class TrucoEnv(gym.Env):
         for i in range(5):
             if checkpoints and self._rng.random() > self._threshold_mix:
                 path = self._rng.choice(checkpoints)
-                self._opponents[i] = _CheckpointAgent(
-                    path, inference_handle=self._inference_handle
-                )
+                self._opponents[i] = _CheckpointAgent(path, inference_handle=self._inference_handle)
             else:
                 self._opponents[i] = ThresholdAgent()
 

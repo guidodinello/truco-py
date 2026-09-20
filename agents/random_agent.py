@@ -7,6 +7,8 @@ from engine.game_state import GameState
 class RandomAgent:
     """Chooses uniformly at random from legal actions."""
 
+    name = "random"
+
     def __init__(self, seed: int | None = None):
         self._rng = random.Random(seed)
 
