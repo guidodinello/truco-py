@@ -19,15 +19,20 @@ Bandwidth estimate:
   ~1.2 MB/s on the pipe — well within OS pipe throughput.
 """
 
+from __future__ import annotations
+
 import threading
 from collections import defaultdict
 from dataclasses import dataclass
 from multiprocessing.connection import Connection, wait
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 import numpy as np
 
 from log import get_logger
+
+if TYPE_CHECKING:
+    from sb3_contrib import MaskablePPO
 
 logger = get_logger(__name__)
 
@@ -71,7 +76,7 @@ class InferenceServer:
     def __init__(self, n_envs: int, device: str = "cuda") -> None:
         self._n_envs = n_envs
         self._device = device
-        self._models: dict[str, object] = {}  # path → MaskablePPO
+        self._models: dict[str, MaskablePPO] = {}
         self._lock = threading.Lock()
         self._stop = threading.Event()
 
@@ -86,9 +91,7 @@ class InferenceServer:
             self._server_conns.append(sc)
             self._client_conns.append(cc)
 
-        self._thread = threading.Thread(
-            target=self._serve, daemon=True, name="inference-server"
-        )
+        self._thread = threading.Thread(target=self._serve, daemon=True, name="inference-server")
         self._thread.start()
         logger.info("InferenceServer started  device=%s  n_envs=%d", device, n_envs)
 
@@ -142,9 +145,7 @@ class InferenceServer:
             except Exception:
                 logger.exception("InferenceServer: unexpected error in serve loop")
 
-    def _process_batch(
-        self, batch: list[tuple[Connection, str, np.ndarray, np.ndarray]]
-    ) -> None:
+    def _process_batch(self, batch: list[tuple[Connection, str, np.ndarray, np.ndarray]]) -> None:
         if not batch:
             return
 
@@ -167,9 +168,7 @@ class InferenceServer:
 
                 obs_arr = np.stack([b[2] for b in items])
                 mask_arr = np.stack([b[3] for b in items])
-                actions, _ = model.predict(  # type: ignore[union-attr]
-                    obs_arr, action_masks=mask_arr, deterministic=False
-                )
+                actions, _ = model.predict(obs_arr, action_masks=mask_arr, deterministic=False)
                 for i, (conn, _, _, _) in enumerate(items):
                     conn.send(int(actions[i]))
 

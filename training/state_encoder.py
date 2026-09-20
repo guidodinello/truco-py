@@ -64,8 +64,8 @@ def obs_to_vector(
 
     # [40:80] played cards (all cards no longer in any player's hand)
     for i in range(6):
-        original = set(map(tuple, state.manos[i]))
-        remaining = set(map(tuple, state.cards_in_hand[i]))
+        original = set(state.manos[i])
+        remaining = set(state.cards_in_hand[i])
         for card in original - remaining:
             obs[40 + _card_idx(*card)] = 1.0
 
