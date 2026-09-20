@@ -42,7 +42,6 @@ class VonNeumannAgent:
         self._cfg = VonNeumannConfig(n_rollouts=n_rollouts, seed=seed, cache_path=cache_path)
         self._rng = random.Random(seed)
         self._game = TrucoGame()
-        # Six random opponents for rollout completions (one per seat)
         self._rollout_agents = [
             _SimpleRandom(seed=(seed + i) if seed is not None else None) for i in range(6)
         ]
@@ -76,6 +75,7 @@ class VonNeumannAgent:
         """Persist the EV cache to cache_path as JSON. No-op if cache_path is None."""
         if self._cfg.cache_path is None:
             return
+        self._cfg.cache_path.parent.mkdir(parents=True, exist_ok=True)
         with open(self._cfg.cache_path, "w") as f:
             json.dump(self._cache, f)
         self._new_entries = 0
@@ -124,6 +124,18 @@ class VonNeumannAgent:
         return self._game.get_rewards(state)[player_idx]
 
 
+class _SimpleRandom:
+    """Minimal random chooser used only inside rollouts — avoids overhead of RandomAgent."""
+
+    __slots__ = ("_rng",)
+
+    def __init__(self, seed: int | None = None):
+        self._rng = random.Random(seed)
+
+    def choose(self, legal: list[Action]) -> Action:
+        return self._rng.choice(legal)
+
+
 def _state_key(state: GameState, player_idx: int, action: Action) -> str:
     """JSON-serialized key built from observable state for player_idx.
 
@@ -151,15 +163,3 @@ def _state_key(state: GameState, player_idx: int, action: Action) -> str:
         ],
         separators=(",", ":"),
     )
-
-
-class _SimpleRandom:
-    """Minimal random chooser used only inside rollouts — avoids overhead of RandomAgent."""
-
-    __slots__ = ("_rng",)
-
-    def __init__(self, seed: int | None = None):
-        self._rng = random.Random(seed)
-
-    def choose(self, legal: list[Action]) -> Action:
-        return self._rng.choice(legal)

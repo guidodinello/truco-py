@@ -15,6 +15,25 @@ uv run pytest tests/ -v      # run test suite (must be green before committing)
 pre-commit install           # install git hooks (once per clone)
 ```
 
+### Virtual environment — external HDD setup
+
+The main disk is nearly full. The venv lives on an external HDD, symlinked into the project:
+
+- **venv path:** `/media/guido/0DF7128F0DF7128F/truco-py-venv/`
+- **symlink:** `.venv` → above path (already in place)
+- **uv cache:** also on the HDD — always prefix uv commands with `UV_CACHE_DIR`:
+
+```bash
+UV_CACHE_DIR=/media/guido/0DF7128F0DF7128F/.uv-cache uv pip install -e .
+UV_CACHE_DIR=/media/guido/0DF7128F0DF7128F/.uv-cache uv run scripts/benchmark.py ...
+```
+
+To avoid typing the prefix every time, add to `~/.zshrc`:
+
+```bash
+export UV_CACHE_DIR=/media/guido/0DF7128F0DF7128F/.uv-cache
+```
+
 **Never invoke `python3` directly.** Always use `uv run python` (or `uv run <script>`) so
 the uv-managed virtual environment and pinned dependencies are used.
 

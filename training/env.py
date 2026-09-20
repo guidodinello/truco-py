@@ -75,6 +75,7 @@ class TrucoEnv(gym.Env):
         randomize_seat: bool = True,
         threshold_mix: float = 0.2,
         mc_rollouts: int = 0,
+        inference_handle=None,
     ):
         self._game = TrucoGame(target=target_score)
         self._reward_shaper = reward_shaper or SparseReward()
@@ -83,6 +84,7 @@ class TrucoEnv(gym.Env):
         self._selfplay_dir = selfplay_dir
         self._threshold_mix = threshold_mix
         self._mc_rollouts = mc_rollouts
+        self._inference_handle = inference_handle
         self._v_mc: float | None = None  # V_MC computed at each reset(), None if disabled
 
         if selfplay_dir is None:
@@ -198,7 +200,9 @@ class TrucoEnv(gym.Env):
         for i in range(5):
             if checkpoints and self._rng.random() > self._threshold_mix:
                 path = self._rng.choice(checkpoints)
-                self._opponents[i] = _CheckpointAgent(path)
+                self._opponents[i] = _CheckpointAgent(
+                    path, inference_handle=self._inference_handle
+                )
             else:
                 self._opponents[i] = ThresholdAgent()
 

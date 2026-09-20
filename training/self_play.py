@@ -17,10 +17,17 @@ _MODEL_CACHE: dict = {}
 
 
 class _CheckpointAgent:
-    """Loads a MaskablePPO checkpoint lazily and wraps it as an Agent."""
+    """Loads a MaskablePPO checkpoint lazily and wraps it as an Agent.
 
-    def __init__(self, checkpoint_path: str):
+    When *inference_handle* is provided the action request is forwarded to the
+    centralized GPU inference server in the main process instead of running
+    CPU inference locally.  The CPU fallback is kept for tests and threshold-only
+    training where no server is running.
+    """
+
+    def __init__(self, checkpoint_path: str, inference_handle=None):
         self._path = checkpoint_path
+        self._handle = inference_handle  # InferenceHandle | None
 
     def _load(self):
         if self._path not in _MODEL_CACHE:
@@ -36,14 +43,21 @@ class _CheckpointAgent:
         from engine.actions import N_ACTIONS, Action
         from training.state_encoder import obs_to_vector
 
-        self._load()
-        obs = obs_to_vector(state, player_idx).reshape(1, -1)
-        model = _MODEL_CACHE[self._path]
+        obs = obs_to_vector(state, player_idx)
         mask = np.zeros(N_ACTIONS, dtype=bool)
         for a in legal_actions:
             mask[a.value] = True
 
-        action, _ = model.predict(obs, action_masks=mask.reshape(1, -1), deterministic=False)
+        if self._handle is not None:
+            action = self._handle.request(self._path, obs, mask)
+            return Action(action)
+
+        # CPU fallback — used when no inference server is available.
+        self._load()
+        model = _MODEL_CACHE[self._path]
+        action, _ = model.predict(
+            obs.reshape(1, -1), action_masks=mask.reshape(1, -1), deterministic=False
+        )
         return Action(int(action[0]))
 
     def reset(self):

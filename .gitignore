@@ -11,3 +11,6 @@ wheels/
 
 logs/MaskablePPO_*
 checkpoints
+
+# Derived EV cache — regenerable from the engine, rewritten wholesale on autosave
+cache/

@@ -73,6 +73,8 @@ def make_env(
     seed: int,
     mc_rollouts: int = 0,
     mc_potential_reward: bool = False,
+    threshold_mix: float = 0.2,
+    inference_handle=None,
 ):
     """Return a callable that creates one masked TrucoEnv."""
 
@@ -85,12 +87,16 @@ def make_env(
             reward_fn = SparseReward()
 
         if opponent_mode == "selfplay":
-            # Opponents are resampled from disk at each reset() — no shared state
+            # Opponents are resampled from disk at each reset() — no shared state.
+            # inference_handle (if set) routes checkpoint opponent inference to the
+            # GPU server in the main process instead of running CPU inference locally.
             env = TrucoEnv(
                 selfplay_dir=checkpoint_dir,
                 reward_shaper=reward_fn,
                 seed=seed,
                 mc_rollouts=mc_rollouts,
+                threshold_mix=threshold_mix,
+                inference_handle=inference_handle,
             )
         else:
             if opponent_mode == "threshold":
@@ -205,11 +211,18 @@ def aux_update_step(
 class CheckpointCallback:
     """Saves model every `save_freq` steps and registers it with SelfPlayManager."""
 
-    def __init__(self, save_freq: int, spm: "SelfPlayManager | None", label: str = "truco"):
+    def __init__(
+        self,
+        save_freq: int,
+        spm: "SelfPlayManager | None",
+        label: str = "truco",
+        inference_server=None,
+    ):
         self.save_freq = save_freq
         self.spm = spm
         self.label = label
         self._last_save = 0
+        self._inference_server = inference_server
 
     def __call__(self, model: MaskablePPO, n_steps: int):
         if n_steps - self._last_save >= self.save_freq:
@@ -217,6 +230,10 @@ class CheckpointCallback:
             model.save(str(path))
             if self.spm is not None:
                 self.spm.add_checkpoint(str(path))
+            if self._inference_server is not None:
+                # Load new checkpoint into GPU inference server.  The 13-second load
+                # runs here (between model.learn() chunks) so subprocesses don't stall.
+                self._inference_server.update_model(str(path))
             self._last_save = n_steps
             logger.info("checkpoint saved: %s", path.name)
 
@@ -295,6 +312,7 @@ def train(
     aux_anneal_steps: int = 10_000_000,
     mc_rollouts: int = 0,
     mc_potential_reward: bool = False,
+    threshold_mix: float = 0.2,
 ):
     CHECKPOINT_DIR.mkdir(exist_ok=True)
     LOG_DIR.mkdir(exist_ok=True)
@@ -302,7 +320,9 @@ def train(
     checkpoint_dir_str = str(CHECKPOINT_DIR)
 
     est_fps = _FPS_PER_ENV * min(n_envs, _CPU_COUNT)
-    est_total_s = total_steps / est_fps
+    steps_from_ckpt = _steps_from_checkpoint(load_checkpoint) if load_checkpoint else 0
+    steps_remaining = max(0, total_steps - steps_from_ckpt)
+    est_total_s = steps_remaining / est_fps
     logger.info("Truco RL Training")
     logger.info("  Opponent mode : %s", opponent_mode)
     logger.info("  Total steps   : %s", f"{total_steps:,}")
@@ -316,6 +336,8 @@ def train(
     )
     logger.info("  MC rollouts   : %d  (V_MC in obs[169])", mc_rollouts)
     logger.info("  MC pot. reward: %s", mc_potential_reward)
+    if opponent_mode == "selfplay":
+        logger.info("  Threshold mix : %.2f  (selfplay only)", threshold_mix)
     logger.info("  Load checkpoint: %s", load_checkpoint or "None (fresh)")
     logger.info("  Device        : %s", "cuda" if torch.cuda.is_available() else "cpu")
     logger.info(
@@ -327,6 +349,16 @@ def train(
     )
     logger.info("  Est. duration : ~%s (rough — selfplay is slower)", _fmt_eta(est_total_s))
 
+    # Centralized GPU inference server for checkpoint opponents (selfplay only).
+    # Created before SubprocVecEnv so handles can be passed into each subprocess.
+    inference_server = None
+    if opponent_mode == "selfplay":
+        from training.inference_server import InferenceServer
+
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        inference_server = InferenceServer(n_envs=n_envs, device=device)
+        logger.info("  Inference server: GPU (%s)", device)
+
     env_fns = [
         make_env(
             opponent_mode,
@@ -335,11 +367,20 @@ def train(
             seed=seed * 100 + i,
             mc_rollouts=mc_rollouts,
             mc_potential_reward=mc_potential_reward,
+            threshold_mix=threshold_mix,
+            inference_handle=(
+                inference_server.make_handle(i) if inference_server is not None else None
+            ),
         )
         for i in range(n_envs)
     ]
 
-    vec_env = SubprocVecEnv(env_fns)
+    # With inference server, use fork so the subprocess inherits the pipe FDs
+    # that connect it to the server thread.  forkserver (SB3 default) pickles
+    # env closures via cloudpickle which doesn't transfer Connection objects.
+    # Subprocesses never call CUDA here, so fork+CUDA-in-parent is safe.
+    start_method = "fork" if inference_server is not None else None
+    vec_env = SubprocVecEnv(env_fns, start_method=start_method)
     vec_env = VecMonitor(vec_env)
 
     policy_cls = TrucoActorCriticPolicy if aux_heads else "MlpPolicy"
@@ -372,7 +413,12 @@ def train(
     )
 
     label = f"truco_{opponent_mode}"
-    ckpt_cb = CheckpointCallback(save_freq=checkpoint_freq, spm=None, label=label)
+    ckpt_cb = CheckpointCallback(
+        save_freq=checkpoint_freq,
+        spm=None,
+        label=label,
+        inference_server=inference_server,
+    )
 
     # Auto-detect how many steps are already done from the checkpoint filename.
     # e.g. truco_selfplay_5000000.zip → steps_done = 5_000_000
@@ -432,6 +478,8 @@ def train(
     model.save(str(final_path))
     logger.info("Training complete in %.1fmin. Final model: %s", elapsed / 60, final_path)
     vec_env.close()
+    if inference_server is not None:
+        inference_server.stop()
 
 
 # ── CLI ──────────────────────────────────────────────────────────────────────
@@ -487,6 +535,12 @@ def main():
         action="store_true",
         help="Use MCPotentialReward (V_MC-adjusted terminal reward) instead of sparse",
     )
+    parser.add_argument(
+        "--threshold-mix",
+        type=float,
+        default=0.2,
+        help="In selfplay mode, probability of using ThresholdAgent instead of a checkpoint",
+    )
     args = parser.parse_args()
 
     train(
@@ -502,6 +556,7 @@ def main():
         aux_anneal_steps=args.aux_anneal_steps,
         mc_rollouts=args.mc_rollouts,
         mc_potential_reward=args.mc_potential_reward,
+        threshold_mix=args.threshold_mix,
     )
 
 
