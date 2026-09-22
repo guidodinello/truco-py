@@ -208,6 +208,13 @@ Progress: 5,000,000 / 50,000,000 steps  (10.0%)  fps=1842  ETA=6h 47m
 
 No hay script interactivo aún. `scripts/benchmark.py` enfrenta agentes entre sí de forma headless. Para jugar una partida real contra el modelo entrenado habría que construir un CLI o UI que acepte input humano y lo conecte a `TrucoGame`.
 
+### Experimentos
+
+Los números históricos de entrenamiento (BC warm-start, plateau de threshold,
+los dos colapsos de self-play, el de-confound de rotación de asiento) están
+reconstruidos con citas a la fuente en [`docs/experiments/`](docs/experiments/README.md),
+enlazados a las hipótesis correspondientes en `gamekit/docs/research/`.
+
 ---
 
 ## Agregar un experimento nuevo
