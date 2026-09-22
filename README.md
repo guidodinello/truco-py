@@ -240,7 +240,8 @@ EXPERIMENTO = {
 
 | Experimento                     | Resultado                          | n          | Semilla |
 | ------------------------------- | ---------------------------------- | ---------- | ------- |
-| P(≥2 del mismo equipo con flor) | ~11.75% (IC 95%: [11.69%, 11.81%]) | 10 000 000 | 42      |
+| P(≥2 del mismo equipo con flor) | ~11.75% (IC 95%: [11.69%, 11.81%]) | 1 000 000  | 42      |
+| P(≥2 del mismo equipo con flor) | ~11.71% (IC 95%: [11.69%, 11.73%]) | 10 000 000 | 42      |
 
 ### Envido
 
@@ -282,7 +283,7 @@ Supuesto: el pie pierde en caso de empate. La decisión se basa en el **mejor en
 
 **Conclusión: el umbral mínimo para tocar envido como pie es 33 puntos de equipo**, y aun así es prácticamente un coin flip. Con 34+ la ventaja es clara.
 
-> Resultado completo: `results/envido_equipo_n5000000_seed42.txt`
+> Resultado completo: `results/envido_equipo_n1000000_seed42.txt`
 
 ### Decisión de flor (escenario 1v2)
 
