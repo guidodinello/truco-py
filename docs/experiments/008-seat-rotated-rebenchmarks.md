@@ -29,6 +29,16 @@
   stamped with `git_commit`, `checkpoint_sha256(_12)`, `seed`, `mode`, `elapsed_s`.
 - RL agents deterministic (`RLAgent` default).
 
+## Harness deviation (found at launch, before any measured result)
+
+The first launch hung: with seed 20261001, `truco_threshold_2000000` vs Threshold enters an endless Flor
+raise cycle (`FLOR_CONTRA_RESTO` <-> `FLOR_CON_ENVIDO`, 0 pts on the table) inside one hand; `run_match`'s
+200-hand valve cannot catch it. That batch was killed with no result written (logs kept on the HP in
+`logs/008_aborted/`). Fix in `scripts/benchmark.py`: a hand exceeding `MAX_ACTIONS_PER_HAND = 2000` actions is
+**voided** (scores unchanged, a fresh hand is dealt) and counted; `voided_hands` is stamped in each result JSON.
+Locally, thr2M at n=100 voids 4 hands. Voided-hand counts are a **reported covariate**: they are an engine/policy
+pathology (unbounded Flor re-raising) not fixed here, and any pairing with a high void rate is read with that caveat.
+
 ## Checkpoints (sha256_12 verified on both laptop and HP before launch)
 
 | job | checkpoint | sha256_12 | provenance |

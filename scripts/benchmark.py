@@ -36,6 +36,7 @@ import sys
 import time
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
+from functools import partial
 from pathlib import Path
 
 from gamekit.benchmark import run_arm
@@ -56,6 +57,11 @@ from log import get_logger
 sys.stdout.reconfigure(line_buffering=True)  # type: ignore[union-attr]
 
 logger = get_logger("benchmark")
+
+# A deterministic policy can lock into an endless raise/counter-raise cycle (observed: Flor
+# FLOR_CONTRA_RESTO <-> FLOR_CON_ENVIDO, 0 points on the table). Normal hands take well under
+# ~100 actions; a hand exceeding this cap is voided (no points, a fresh hand is dealt).
+MAX_ACTIONS_PER_HAND = 2000
 
 # One role occupies each gamekit "seat" (team slot); slot 0 = Team A, slot 1 = Team B.
 _SLOT_PLAYERS = (TEAM_A, TEAM_B)
@@ -109,9 +115,15 @@ def run_game(game: TrucoGame, agents: list, seed: int | None = None) -> int:
     return -1
 
 
-def run_match(game: TrucoGame, agents: list, seed: int | None = None) -> int:
+def run_match(
+    game: TrucoGame,
+    agents: list,
+    seed: int | None = None,
+    on_void: Callable[[], None] | None = None,
+) -> int:
     """
     Play a full match (multiple hands) until one team reaches game.target points.
+    A hand exceeding MAX_ACTIONS_PER_HAND is voided (``on_void`` is called, scores unchanged).
 
     Returns:
         0 if team A wins, 1 if team B wins.
@@ -122,6 +134,7 @@ def run_match(game: TrucoGame, agents: list, seed: int | None = None) -> int:
     while scores[0] < game.target and scores[1] < game.target:
         state = game.reset(seed=rng_seed, scores=scores)
         rng_seed = (rng_seed + 1) if rng_seed is not None else None
+        n_actions = 0
         while state.phase != Phase.DONE:
             cp = state.current_player
             legal = game.legal_actions(state)
@@ -129,6 +142,13 @@ def run_match(game: TrucoGame, agents: list, seed: int | None = None) -> int:
                 break
             action = agents[cp].choose_action(state, legal, cp)
             game.apply_action(state, action)
+            n_actions += 1
+            if n_actions > MAX_ACTIONS_PER_HAND:
+                logger.warning("voided hand: >%d actions (policy cycle)", MAX_ACTIONS_PER_HAND)
+                if on_void is not None:
+                    on_void()
+                state.scores = list(scores)
+                break
         scores = list(state.scores)
         hand += 1
         if hand > 200:  # safety valve against infinite loops
@@ -237,7 +257,12 @@ def benchmark(
         sys.exit(1)
 
     game = TrucoGame()
-    run_fn = run_match if mode_def.is_match else run_game
+    voided_hands = [0]
+
+    def count_void() -> None:
+        voided_hands[0] += 1
+
+    run_fn = partial(run_match, on_void=count_void) if mode_def.is_match else run_game
     unit = "matches" if mode_def.is_match else "hands"
     label_A, label_B = _labels(mode, rollouts, checkpoint)
 
@@ -304,6 +329,7 @@ def benchmark(
             checkpoint_sha256=sha,
             checkpoint_sha256_12=sha[:12] if sha else None,
             elapsed_s=elapsed,
+            voided_hands=voided_hands[0],
         )
         logger.info("wrote %s", write_result(out.parent, out.stem, payload))
 
