@@ -81,3 +81,4 @@ These are stated once here instead of being repeated in every log:
 | [005](005-june-threshold-mix-collapse.md) | 2026-06-06 | gamekit#001, gamekit#010, gamekit#011 | inconclusive (#001) / untested (#010) / supports (#011) |
 | [006](006-seat-rotation-deconfound.md) | 2026-09-20 | gamekit#005 | inconclusive; no note covers this hypothesis |
 | [007](007-gamekit-rl-adapter-parity.md) | 2026-09-20 | gamekit#005 | does not test the note (parity check, not a metrology test) |
+| [008](008-seat-rotated-rebenchmarks.md) | 2026-10-01 | gamekit#016, #009, #005 | pre-registered, results pending |
