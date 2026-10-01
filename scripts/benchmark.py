@@ -31,6 +31,7 @@ Team A in half the games and Team B in the other half, removing the mano
 """
 
 import argparse
+import hashlib
 import sys
 import time
 from collections.abc import Callable, Sequence
@@ -38,6 +39,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from gamekit.benchmark import run_arm
+from gamekit.results import write_result
 from gamekit.seats import rotate
 
 from agents.base import TrucoAgent
@@ -222,6 +224,7 @@ def benchmark(
     cache_path: Path | None = None,
     checkpoint: str | None = None,
     rotation_offset: Callable[[int], int] = lambda engine_seed: engine_seed,
+    out: Path | None = None,
 ):
     if mode not in MODES:
         logger.error("Unknown mode: %s", mode)
@@ -290,6 +293,19 @@ def benchmark(
         for agent in agents:
             if isinstance(agent, VonNeumannAgent):
                 agent.save_cache()
+
+    if out is not None:
+        sha = hashlib.sha256(Path(checkpoint).read_bytes()).hexdigest() if checkpoint else None
+        payload.update(
+            mode=mode,
+            seed=seed,
+            rollouts=rollouts,
+            checkpoint=checkpoint,
+            checkpoint_sha256=sha,
+            checkpoint_sha256_12=sha[:12] if sha else None,
+            elapsed_s=elapsed,
+        )
+        logger.info("wrote %s", write_result(out.parent, out.stem, payload))
 
     by_role = payload["by_role"]
     wins_A = by_role[role_a]["wins"]
@@ -365,6 +381,9 @@ def main():
     parser.add_argument(
         "--checkpoint", type=str, default=None, help="Path to trained RL checkpoint (.zip)"
     )
+    parser.add_argument(
+        "--out", type=Path, default=None, help="Write the stamped result JSON to this path"
+    )
     args = parser.parse_args()
 
     benchmark(
@@ -375,6 +394,7 @@ def main():
         rollouts=args.rollouts,
         cache_path=args.cache_path,
         checkpoint=args.checkpoint,
+        out=args.out,
     )
 
 
