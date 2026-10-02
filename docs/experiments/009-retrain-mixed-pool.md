@@ -27,17 +27,18 @@ rebuilt engine Threshold beats Random 87.5 % (see "Phase 0").
 | D7 | BC trains the full actor plus value head; PPO lr 1e-4 |
 | D8 | Aux heads off, MC rollouts off, constant `ent_coef` 0.01 |
 | D9 | Final evaluation deterministic, full `TrucoMatch` default rules |
-| (a) | **H3 is demoted to descriptive** under the pre-registered saturation rule (Threshold vs Random = 87.5 % [86.5, 88.5], n=4000). vs-Random numbers are reported, not tested, and not in the BH family. H2 stays primary |
+| (a) | **H3 is demoted to descriptive** under the pre-registered saturation rule (Threshold vs Random = 87.5 % [86.5, 88.5], n=4000). vs-Random numbers are reported, not tested, and not in any family. H2 stays primary |
 | (b) | **Arm layout:** M and C run **concurrently, 8 envs each** (rollout batch 4096), identical in both arms |
+| (c) | **H2 is the single primary and is tested alone** at alpha = 0.05 (two-proportion test, no BH). The "Control better" rung uses the same unadjusted p < 0.05 on the same comparison. The M-trend pairs vs Threshold form their own secondary BH family (q = 0.05). Non-inferiority is a 95 % CI lower-bound rule (> -5 pp), outside any family |
 
 ## Hypotheses
 
 - **H0 (BC, the only hard stop):** validation accuracy >= 70 % on held-out *games*. The clone vs Threshold
   at n=4000 is reported; a soft flag is raised outside [45 %, 55 %]. If H0 fails, stop and report.
 - **H1 (learns):** M-final vs Threshold has a Wilson lower bound > 50 %.
-- **H2 (generalises; primary):** M-final beats C-final vs **VonNeumann** (held out of training for both arms), p_BH < 0.05.
+- **H2 (generalises; primary):** M-final beats C-final vs **VonNeumann** (held out of training for both arms), p < 0.05 (two-proportion test, alone; no multiplicity correction).
 - **H3 (descriptive only, owner decision (a)):** M and C vs Random are reported with Wilson CIs next to the
-  re-measured Threshold-vs-Random baseline (87.5 %). No test, not in the BH family, and no verdict depends on it.
+  re-measured Threshold-vs-Random baseline (87.5 %). No test, not in any family, and no verdict depends on it.
 
 ## Config
 
@@ -61,8 +62,9 @@ Fixed now; any difference at run time is a deviation and is listed under "Deviat
 - In-loop eval (alarm only; never used to select a checkpoint, gamekit#009): n=200 matches vs Threshold and Random.
 - Freeze detector (gamekit#011) ends an arm and is reported as a result.
 - **Finals:** n=4000, seat-rotated (`run_arm` + `rotate`), single seed 20261002, deterministic RL, Wilson CIs.
-- Statistics: two-proportion tests, BH at q=0.05 over the tested family {H2, the M-vs-C difference vs Threshold
-  for non-inferiority, the M-trend pairs}; non-inferiority uses the 95 % CI lower bound of the difference.
+- Statistics: **H2** (primary) is one two-proportion test at alpha = 0.05, alone, no BH. **Non-inferiority** is a
+  rule on the 95 % CI lower bound of (M - C) vs Threshold (> -5 pp), outside any family. The **M-trend pairs**
+  vs Threshold (fixed points 5M/10M/20M, pairwise) are a separate secondary family under BH at q = 0.05.
 
 ## Jobs (`scripts/rebench_009.sh`, n=4000 each)
 
@@ -74,11 +76,11 @@ bc_init vs Threshold / VonNeumann / Random. M at 5M and 10M vs Threshold and Ran
 1. **Collapsed:** the detector fired in either arm (named; its last pre-fire fixed checkpoint is still reported).
 2. **Generalises:** H2 holds and the lower bound of (M - C) vs Threshold is > -5 pp.
 3. **Generalises with trade-off:** H2 holds, non-inferiority fails.
-4. **Control better:** C beats M vs VonNeumann (p_BH < 0.05).
+4. **Control better:** C beats M vs VonNeumann (unadjusted p < 0.05, same comparison as H2).
 5. **Inconclusive:** anything else.
 
-The former "Breadth only" rung depended on H3 and is removed. Trend within M: fixed points only, pairwise,
-BH-corrected.
+The former "Breadth only" rung depended on H3 and is removed. Trend within M: fixed points only, pairwise vs
+Threshold, as its own secondary BH family (q = 0.05).
 
 ## Phase 0 (smoke and throughput; not results)
 
