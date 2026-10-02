@@ -21,7 +21,7 @@ source texts.
 
 ## Status after the fixes
 
-All findings below were fixed by rebuilding the hand engine (`engine/game.py`) on pure rule
+All findings below were fixed (A-13, A-14 and A-15 with the remaining simplifications noted) by rebuilding the hand engine (`engine/game.py`) on pure rule
 functions (`engine/rules.py`) and adding a match runner (`engine/match.py`). Where sources disagree
 the engine follows S2; the variants that change benchmark numbers are `engine.rules.Rules` knobs,
 with defaults recorded in the `rules.md` [variants register](rules.md#10-variants-register).
@@ -42,7 +42,7 @@ Each finding has a regression test.
 | A-11 | [#12](https://github.com/guidodinello/truco-py/issues/12) | `PASO` (that player out) and `MAZO` (the side out; rival takes the hand's value) on any turn | `test_engine.py::test_mazo_concedes_the_hand`, `::test_paso_leaves_teammates_in_play` |
 | A-12 | [#20](https://github.com/guidodinello/truco-py/issues/20) | truco called in a player's turn in any trick; the accepting side raises later | `test_engine.py::test_truco_can_be_called_mid_hand_and_raised_later_by_accepting_side` |
 | A-13 | [#21](https://github.com/guidodinello/truco-py/issues/21) | any player calls in their turn; all flor holders count. Still simplified: one seat (first rival to the caller's right) answers a pending call | `test_engine.py::test_any_team_member_may_call_truco` |
-| A-14 | [#22](https://github.com/guidodinello/truco-py/issues/22) | `TrucoMatch`: chicos, malas/buenas, mano rotation, redondilla / pico-a-pico (S2 Art 83–87) | `test_match.py` |
+| A-14 | [#22](https://github.com/guidodinello/truco-py/issues/22) | `TrucoMatch`: chicos, malas/buenas, mano rotation, redondilla / pico-a-pico (S2 Art 83–87). Not implemented: Chumbo (V-06) | `test_match.py` |
 | A-15 | [#23](https://github.com/guidodinello/truco-py/issues/23) | a ley de juego (`Rules.ley_de_juego`, off by default), ×2/×3 real envido, hasta igualar; envido + truco together = two calls in one turn (S2 Art 69). Not offered: free «N tantos envido» | `test_engine.py::test_ley_*`, `::test_hasta_igualar_levels_the_scores`, `::test_envido_then_truco_in_one_turn` |
 | A-16 | [#24](https://github.com/guidodinello/truco-py/issues/24) | code rewritten; the module docstring lists what remains simplified | — |
 | R-01 | [#25](https://github.com/guidodinello/truco-py/issues/25) | every `reset` shuffles a fresh deck | `test_engine.py::test_same_seed_same_deal_on_a_reused_game` |
