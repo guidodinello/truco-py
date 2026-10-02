@@ -14,6 +14,7 @@ from .game_state import team_of
 
 N_SEATS = 6
 NO_TEAM = -1  # parda (tied trick) / no winner yet
+OVER_FALTA_CALL = 2  # a first call above the falta counts as «simple de dos tantos» (S2 Art 36)
 
 
 @dataclass(frozen=True, slots=True)
@@ -104,7 +105,7 @@ def capped_total(old_total: int, amount: int, prev_amount: int, limit: int, firs
       envite o reenvite que le precede o por la falta si fuera ésta menor».
     """
     if first:
-        return amount if amount <= limit else 2
+        return amount if amount <= limit else OVER_FALTA_CALL
     if old_total + amount <= limit:
         return old_total + amount
     return min(old_total + prev_amount, limit)

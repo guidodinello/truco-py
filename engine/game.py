@@ -61,6 +61,7 @@ from .truco import calcular_envido, calcular_flor, construir_mazo, simular_mano,
 
 FLOR_PTS = 3  # each flor is worth 3 (S2 Art 20; S3 L134)
 DECLINED_ENVIDO_PTS = 1  # a declined first envido pays 1 (S2 Art 24)
+DECLINED_TRUCO_PTS = 1  # a declined truco pays 1 (S2 Art 61)
 ENVITE_AMOUNTS = {
     Action.ENVIDO: 2,
     Action.REAL_ENVIDO: 3,
@@ -352,7 +353,7 @@ class TrucoGame:
 
         if truco_in:
             if not accept_truco:
-                self._award(state, challenger, 1)  # declined truco pays 1 (S2 Art 61)
+                self._award(state, challenger, DECLINED_TRUCO_PTS)
                 self._finish_hand(state)
                 return
             state.truco_level = 2
