@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import threading
 from collections import defaultdict
+from contextlib import suppress
 from dataclasses import dataclass
 from multiprocessing.connection import Connection, wait
 from typing import TYPE_CHECKING, cast
@@ -49,7 +50,10 @@ class InferenceHandle:
 
     def request(self, path: str, obs: np.ndarray, mask: np.ndarray) -> int:
         self.conn.send((path, obs, mask))
-        return self.conn.recv()
+        reply = self.conn.recv()
+        if isinstance(reply, BaseException):
+            raise reply
+        return reply
 
 
 class InferenceServer:
@@ -101,12 +105,17 @@ class InferenceServer:
         """Return the picklable client-side handle for subprocess env *env_id*."""
         return InferenceHandle(conn=self._client_conns[env_id])
 
-    def update_model(self, path: str) -> None:
+    def update_model(self, path: str, key: str | None = None) -> None:
         """Load a new checkpoint onto the server GPU.
 
         The 13-second load happens *outside* the lock so the inference thread
         keeps serving existing models while the new one loads.  The dict entry
         is swapped atomically under the lock.
+
+        ``key`` is the path env workers will request it under (defaults to
+        ``path``). Snapshots are loaded from a temp name and registered under
+        their final name *before* being renamed into the pool, so a worker can
+        never sample a snapshot the server doesn't hold.
         """
         from sb3_contrib import MaskablePPO
 
@@ -116,7 +125,7 @@ class InferenceServer:
         new_model = MaskablePPO.load(path, device=self._device)
         check_action_space(new_model, path)
         with self._lock:
-            self._models[path] = new_model
+            self._models[key or path] = new_model
         logger.info("InferenceServer: model ready  pool_size=%d", len(self._models))
 
     def stop(self) -> None:
@@ -163,10 +172,9 @@ class InferenceServer:
 
             try:
                 if model is None:
-                    # Model not loaded yet — return a random legal action.
-                    for conn, _, _, mask in items:
-                        legal = np.where(mask)[0]
-                        conn.send(int(legal[0]) if len(legal) else 0)
+                    # Never guess: a first-legal-action fallback silently corrupted training
+                    # opponents in exp 005. Fail the requesting workers loudly instead.
+                    self._reply_error(items, KeyError(f"InferenceServer holds no model for {path}"))
                     continue
 
                 obs_arr = np.stack([b[2] for b in items])
@@ -175,14 +183,12 @@ class InferenceServer:
                 for i, (conn, _, _, _) in enumerate(items):
                     conn.send(int(actions[i]))
 
-            except Exception:
-                logger.exception(
-                    "InferenceServer: error on batch for %s — sending fallback actions",
-                    path.split("/")[-1],
-                )
-                for conn, _, _, mask in items:
-                    try:
-                        legal = np.where(mask)[0]
-                        conn.send(int(legal[0]) if len(legal) else 0)
-                    except Exception:
-                        pass
+            except Exception as exc:
+                logger.exception("InferenceServer: error on batch for %s", path.split("/")[-1])
+                self._reply_error(items, exc)
+
+    @staticmethod
+    def _reply_error(items: list, exc: Exception) -> None:
+        for conn, _, _, _ in items:
+            with suppress(Exception):
+                conn.send(RuntimeError(f"{type(exc).__name__}: {exc}"))

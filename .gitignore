@@ -14,3 +14,6 @@ checkpoints
 
 # Derived EV cache — regenerable from the engine, rewritten wholesale on autosave
 cache/
+
+# exp 009 run outputs (a symlink to the HDD)
+runs

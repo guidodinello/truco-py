@@ -82,3 +82,4 @@ These are stated once here instead of being repeated in every log:
 | [006](006-seat-rotation-deconfound.md) | 2026-09-20 | gamekit#005 | inconclusive; no note covers this hypothesis |
 | [007](007-gamekit-rl-adapter-parity.md) | 2026-09-20 | gamekit#005 | does not test the note (parity check, not a metrology test) |
 | [008](008-seat-rotated-rebenchmarks.md) | 2026-10-01 | gamekit#016, #009, #005 | H1 inconclusive (rules overlap); 90% rejected; H2 not confirmed; H3 rejected; H4 inconclusive; pre-fix engine |
+| [009](009-retrain-mixed-pool.md) | 2026-10-02 | gamekit#001, #002, #009, #011, #013, #022 | draft; not yet run |

@@ -48,22 +48,15 @@ from agents.rl_agent import RLAgent
 from agents.threshold_agent import ThresholdAgent
 from agents.von_neumann_agent import VonNeumannAgent
 from engine.game import TrucoGame
-from engine.game_state import TEAM_A, TEAM_B
 from engine.match import TrucoMatch
 from engine.phases import Phase
 from log import get_logger
+from training.eval import MAX_ACTIONS_PER_HAND, place_agents, run_match  # noqa: F401
 
 # Flush stdout after each line so progress appears immediately when piped or captured.
 sys.stdout.reconfigure(line_buffering=True)  # type: ignore[union-attr]
 
 logger = get_logger("benchmark")
-
-# The pre-audit engine let a deterministic policy cycle forever in the flor ladder (#7); exp 008
-# voided such hands. Every call ladder is now bounded, so a hand over this cap is an engine bug.
-MAX_ACTIONS_PER_HAND = 2000
-
-# One role occupies each gamekit "seat" (team slot); slot 0 = Team A, slot 1 = Team B.
-_SLOT_PLAYERS = (TEAM_A, TEAM_B)
 
 
 @dataclass(frozen=True, slots=True)
@@ -112,28 +105,6 @@ def run_game(game: TrucoGame, agents: list, seed: int | None = None) -> int:
     if state.hand_pts[1] > state.hand_pts[0]:
         return 1
     return -1
-
-
-def run_match(match: TrucoMatch, agents: list, seed: int | None = None) -> int:
-    """
-    Play a full match (``engine.match``): chicos to ``match.rules.chico_points``,
-    mano rotating every round, redondilla / pico-a-pico alternation.
-
-    Returns:
-        0 if team A wins, 1 if team B wins.
-    """
-    ms = match.reset(seed=seed)
-    hand, n_actions = ms.hand, 0
-    while not match.is_terminal(ms):
-        cp = ms.hand.current_player
-        legal = match.legal_actions(ms)
-        action = agents[cp].choose_action(ms.hand, legal, cp)
-        match.apply_action(ms, action)
-        n_actions = n_actions + 1 if ms.hand is hand else 0
-        hand = ms.hand
-        if n_actions > MAX_ACTIONS_PER_HAND:
-            raise RuntimeError(f"hand exceeded {MAX_ACTIONS_PER_HAND} actions: engine liveness bug")
-    return ms.winner
 
 
 def _build_agent(
@@ -203,18 +174,6 @@ def _build_agents(
     }
 
 
-def _place_agents(
-    rotated_lineup: Sequence[str], role_agents: dict[str, list[TrucoAgent]]
-) -> list[TrucoAgent]:
-    """Map a rotated (slot -> role) lineup to the 6 players: slot 0 is Team
-    A's 3 players, slot 1 is Team B's, each in mano order."""
-    player_to_agent: dict[int, TrucoAgent] = {}
-    for slot, role in enumerate(rotated_lineup):
-        for pos_idx, player in enumerate(_SLOT_PLAYERS[slot]):
-            player_to_agent[player] = role_agents[role][pos_idx]
-    return [player_to_agent[p] for p in range(6)]
-
-
 def benchmark(
     mode: str,
     n: int,
@@ -261,7 +220,7 @@ def benchmark(
         wins_role = {role_a: 0, role_b: 0}
         for i, (engine_seed, _driver_seed) in enumerate(pairs):
             rotated = rotate(mode_def.lineup, rotation_offset(engine_seed))
-            agents = _place_agents(rotated, role_agents)
+            agents = place_agents(rotated, role_agents)
             result = run_fn(agents, engine_seed)
             if result == -1:
                 winning_seats.append(None)

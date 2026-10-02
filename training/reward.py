@@ -4,6 +4,10 @@ Reward functions for the Truco RL environment.
 SparseReward (default):
     +1.0 / -1.0 based on whether the training agent's team won the hand.
 
+PointDiffReward (exp 009, D5):
+    (my team's hand points - rival's) / scale, clipped to [-1, 1]. Unlike the sign, it
+    separates a 1-point win from a 4-point one, as the match score does.
+
 ShapedReward:
     Sparse reward + small bonuses for winning envido, flor, and tricks.
     Shaping weight is annealed to 0 after a specified number of steps.
@@ -45,6 +49,20 @@ class SparseReward(RewardShaper):
         if state.hand_pts[opp_team] > state.hand_pts[my_team]:
             return -1.0
         return 0.0
+
+
+class PointDiffReward(RewardShaper):
+    """Scaled, clipped hand-point differential on hand completion, 0 otherwise."""
+
+    def __init__(self, scale: float = 15.0):
+        self._scale = scale
+
+    def compute(self, state: GameState, player_idx: int, done: bool) -> float:
+        if not done:
+            return 0.0
+        my_team = team_of(player_idx)
+        diff = state.hand_pts[my_team] - state.hand_pts[1 - my_team]
+        return max(-1.0, min(1.0, diff / self._scale))
 
 
 class ShapedReward(RewardShaper):

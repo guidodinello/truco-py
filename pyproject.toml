@@ -17,8 +17,8 @@ dependencies = [
     "jupyter>=1.1.1",
     "matplotlib>=3.10.8",
     "numpy>=2.4.3",
-    "sb3-contrib>=2.8.0",
-    "stable-baselines3>=2.8.0",
+    "sb3-contrib>=2.9.0",
+    "stable-baselines3>=2.9.0",
     "tensorboard>=2.20.0",
     "torch>=2.3",
 ]
@@ -50,6 +50,7 @@ known-first-party = ["engine", "agents", "training", "experimentos"]
 python_version = "3.13"
 strict = false
 ignore_missing_imports = true
+explicit_package_bases = true
 warn_unused_ignores = true
 
 [tool.pytest.ini_options]
@@ -57,9 +58,9 @@ testpaths = ["tests"]
 
 [tool.uv.sources]
 gamekit = { git = "https://github.com/guidodinello/gamekit", branch = "main" }
-torch = { index = "pytorch-cu121" }
+torch = { index = "pytorch-cu128" }
 
 [[tool.uv.index]]
-name = "pytorch-cu121"
-url = "https://download.pytorch.org/whl/cu121"
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
 explicit = true
