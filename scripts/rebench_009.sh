@@ -14,23 +14,35 @@ PY=${PY:-.venv/bin/python}
 CK=${CK:-runs/009}
 mkdir -p results/009 logs/009
 
+# Chunk boundaries overshoot by < one rollout (4096 steps), so a "fixed point" is the first
+# checkpoint at or after N steps: fixed_at <arm> <N>  ->  path (empty if none yet).
+fixed_at() {
+  local f s
+  for f in $(ls "$CK/$1"/ckpt/ckpt_*.zip 2>/dev/null | sort); do
+    s=$((10#$(basename "$f" .zip | cut -d_ -f2)))
+    [ "$s" -ge "$2" ] && { echo "$f"; return; }
+  done
+}
+M5=$(fixed_at M 5000000);  M10=$(fixed_at M 10000000);  M20=$(fixed_at M 20000000)
+C20=$(fixed_at C 20000000)
+
 # name|mode|checkpoint  (priority order: baselines and the held-out probe first)
 JOBS=(
   "baseline_thr_vs_rnd|match_threshold_vs_random|"
   "baseline_thr_vs_vn|match_von_neumann_vs_threshold|"
-  "M20M_vs_thr|match_rl_vs_threshold|$CK/M/ckpt/ckpt_0020000000.zip"
-  "C20M_vs_thr|match_rl_vs_threshold|$CK/C/ckpt/ckpt_0020000000.zip"
-  "M20M_vs_vn|match_rl_vs_vonneumann|$CK/M/ckpt/ckpt_0020000000.zip"
-  "C20M_vs_vn|match_rl_vs_vonneumann|$CK/C/ckpt/ckpt_0020000000.zip"
-  "M20M_vs_rnd|match_rl_vs_random|$CK/M/ckpt/ckpt_0020000000.zip"
-  "C20M_vs_rnd|match_rl_vs_random|$CK/C/ckpt/ckpt_0020000000.zip"
+  "M20M_vs_thr|match_rl_vs_threshold|$M20"
+  "C20M_vs_thr|match_rl_vs_threshold|$C20"
+  "M20M_vs_vn|match_rl_vs_vonneumann|$M20"
+  "C20M_vs_vn|match_rl_vs_vonneumann|$C20"
+  "M20M_vs_rnd|match_rl_vs_random|$M20"
+  "C20M_vs_rnd|match_rl_vs_random|$C20"
   "bc_vs_thr|match_rl_vs_threshold|$CK/bc/bc_init.zip"
   "bc_vs_rnd|match_rl_vs_random|$CK/bc/bc_init.zip"
   "bc_vs_vn|match_rl_vs_vonneumann|$CK/bc/bc_init.zip"
-  "M10M_vs_thr|match_rl_vs_threshold|$CK/M/ckpt/ckpt_0010000000.zip"
-  "M5M_vs_thr|match_rl_vs_threshold|$CK/M/ckpt/ckpt_0005000000.zip"
-  "M10M_vs_rnd|match_rl_vs_random|$CK/M/ckpt/ckpt_0010000000.zip"
-  "M5M_vs_rnd|match_rl_vs_random|$CK/M/ckpt/ckpt_0005000000.zip"
+  "M10M_vs_thr|match_rl_vs_threshold|$M10"
+  "M5M_vs_thr|match_rl_vs_threshold|$M5"
+  "M10M_vs_rnd|match_rl_vs_random|$M10"
+  "M5M_vs_rnd|match_rl_vs_random|$M5"
 )
 
 run_job() {
@@ -38,7 +50,7 @@ run_job() {
   out="results/009/$name.json"
   log="logs/009/$name.log"
   [ -f "$out" ] && { echo "skip $name (done)"; return 0; }
-  if [ -n "$ckpt" ] && [ ! -f "$ckpt" ]; then echo "$(date -Is) MISSING $ckpt for $name"; return 1; fi
+  case "$name" in baseline_*) ;; *) [ -f "$ckpt" ] || { echo "$(date -Is) MISSING checkpoint for $name"; return 1; } ;; esac
   args=(--mode "$mode" --n "$N" --seed "$SEED" --out "$out")
   [ -n "$ckpt" ] && args+=(--checkpoint "$ckpt")
   echo "$(date -Is) start $name"
