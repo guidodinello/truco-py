@@ -17,6 +17,7 @@ Reward:       Configurable via reward_shaper (default: sparse ±1 on DONE).
 """
 
 import copy
+import random
 from typing import Any
 
 import numpy as np
@@ -30,6 +31,7 @@ from agents.threshold_agent import ThresholdAgent
 from engine.actions import N_ACTIONS, Action
 from engine.game import TrucoGame
 from engine.game_state import GameState, team_of
+from training.context_bank import ContextBank
 from training.reward import RewardShaper, SparseReward
 from training.self_play import _CheckpointAgent
 from training.state_encoder import OBS_DIM, obs_to_vector
@@ -42,11 +44,17 @@ class _GameAdapter:
     robber-discard queue or trade responses), so it's just
     ``state.current_player``. No change to ``engine/game.py`` itself."""
 
-    def __init__(self, target_score: int) -> None:
+    def __init__(self, target_score: int, context_bank: ContextBank | None = None) -> None:
         self._game = TrucoGame(target=target_score)
+        self._bank = context_bank
 
     def reset(self, seed: int | None = None) -> GameState:
-        return self._game.reset(seed=seed)
+        if self._bank is None:
+            return self._game.reset(seed=seed)
+        # exp 009 D4: start the hand from a real pre-hand (scores, mano) of a TrucoMatch.
+        # A separate stream keyed on the seed keeps the deal itself independent of it.
+        scores, mano = self._bank.sample(random.Random(f"ctx-{seed}"))
+        return self._game.reset(seed=seed, scores=scores, mano=mano)
 
     def legal_actions(self, state: GameState) -> list[Action]:
         return self._game.legal_actions(state)
@@ -119,16 +127,30 @@ class TrucoEnv(SingleAgentEnv[GameState, Action]):
         threshold_mix: float = 0.2,
         mc_rollouts: int = 0,
         inference_handle: Any = None,
+        opponent_pool: "OpponentPool[GameState, Action] | None" = None,
+        context_bank: ContextBank | None = None,
     ):
         self._reward_shaper = reward_shaper or SparseReward()
         self._mc_rollouts = mc_rollouts
         self._v_mc: float | None = None  # V_MC computed at each reset(), None if disabled
 
-        game = _GameAdapter(target_score)
+        game = _GameAdapter(target_score, context_bank)
         codec = _ActionCodec()
         observation_space = spaces.Box(low=0.0, high=1.0, shape=(OBS_DIM,), dtype=np.float32)
 
-        if selfplay_dir is None:
+        if opponent_pool is not None:
+            super().__init__(
+                game=game,
+                codec=codec,
+                encode=self._encode,
+                reward=self._reward_shaper,
+                observation_space=observation_space,
+                num_seats=6,
+                opponent_pool=opponent_pool,
+                randomize_seat=randomize_seat,
+                seed=seed,
+            )
+        elif selfplay_dir is None:
             agents = (
                 opponent_agents
                 if opponent_agents is not None
@@ -172,6 +194,14 @@ class TrucoEnv(SingleAgentEnv[GameState, Action]):
     # ------------------------------------------------------------------
     # Truco-specific hooks
     # ------------------------------------------------------------------
+
+    def step(self, action: Any) -> tuple[Any, float, bool, bool, dict[str, Any]]:
+        obs, reward, terminated, truncated, info = super().step(action)
+        if terminated or truncated:
+            # Reported by VecMonitor(info_keywords=...) so the trainer can log how often each
+            # opponent role was drawn and how the learner fared against it.
+            info["opp_role"] = getattr(self._opponent_pool, "last_opp_role", -1)
+        return obs, reward, terminated, truncated, info
 
     def _encode(self, state: GameState, seat: int) -> np.ndarray:
         return obs_to_vector(state, seat, v_mc=self._v_mc)
