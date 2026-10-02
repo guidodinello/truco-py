@@ -18,6 +18,17 @@ from training.policy import TrucoActorCriticPolicy
 from training.state_encoder import obs_to_vector
 
 
+def check_action_space(model: MaskablePPO, path: str | Path) -> None:
+    """Refuse a checkpoint trained on a different action space: masking it with
+    today's ``N_ACTIONS`` would silently map indices to the wrong actions."""
+    n = getattr(model.action_space, "n", None)
+    if n != N_ACTIONS:
+        raise ValueError(
+            f"{path}: checkpoint has {n} actions, engine has {N_ACTIONS}. It was trained "
+            "on an older engine (see docs/engine-rules-audit.md) and must be retrained."
+        )
+
+
 class RLAgent:
     """Trained PPO agent loaded from a checkpoint file."""
 
@@ -38,6 +49,7 @@ class RLAgent:
             )
         except RuntimeError:
             self._model = MaskablePPO.load(str(self._path), device=device)
+        check_action_space(self._model, self._path)
 
     def choose_action(
         self,

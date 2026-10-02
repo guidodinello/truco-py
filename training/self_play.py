@@ -37,7 +37,11 @@ class _CheckpointAgent:
 
             # Force CPU: checkpoint agents run inside subprocess workers where
             # CUDA initialization can deadlock with PyTorch's multiprocessing fork.
-            _MODEL_CACHE[self._path] = MaskablePPO.load(self._path, device="cpu")
+            from agents.rl_agent import check_action_space
+
+            model = MaskablePPO.load(self._path, device="cpu")
+            check_action_space(model, self._path)
+            _MODEL_CACHE[self._path] = model
 
     def choose_action(self, state, legal_actions, player_idx):
         import numpy as np

@@ -5,14 +5,14 @@ Now a thin adapter over ``gamekit.rl.env.SingleAgentEnv`` (gamekit#7). The
 generic structure -- turn-advancing until the learner's turn, legal-action
 masking, self-play opponent resampling, the reset/step gym protocol -- lives
 in ``gamekit.rl``; this module supplies only what's genuinely truco-specific:
-the 204-dim state encoder, the flat 53-action codec, reward shaping, and the
+the 204-dim state encoder, the flat N_ACTIONS (65) codec, reward shaping, and the
 V_MC Monte-Carlo win-probability estimate computed once per episode from the
 initial deal (Track C -- this one stays here, not in gamekit, since it's
 built from truco's own ``hand_pts``/``team_of`` and was never part of
 gamekit#7's scope).
 
 Observation: 204-dim float32 vector (see state_encoder.py).
-Action:       Discrete(53) with legal action masking.
+Action:       Discrete(N_ACTIONS) with legal action masking.
 Reward:       Configurable via reward_shaper (default: sparse ±1 on DONE).
 """
 

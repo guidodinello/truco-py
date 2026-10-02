@@ -110,8 +110,11 @@ class InferenceServer:
         """
         from sb3_contrib import MaskablePPO
 
+        from agents.rl_agent import check_action_space
+
         logger.info("InferenceServer: loading %s → %s", path.split("/")[-1], self._device)
         new_model = MaskablePPO.load(path, device=self._device)
+        check_action_space(new_model, path)
         with self._lock:
             self._models[path] = new_model
         logger.info("InferenceServer: model ready  pool_size=%d", len(self._models))

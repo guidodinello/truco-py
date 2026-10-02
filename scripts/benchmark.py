@@ -36,7 +36,6 @@ import sys
 import time
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
-from functools import partial
 from pathlib import Path
 
 from gamekit.benchmark import run_arm
@@ -50,6 +49,7 @@ from agents.threshold_agent import ThresholdAgent
 from agents.von_neumann_agent import VonNeumannAgent
 from engine.game import TrucoGame
 from engine.game_state import TEAM_A, TEAM_B
+from engine.match import TrucoMatch
 from engine.phases import Phase
 from log import get_logger
 
@@ -58,9 +58,8 @@ sys.stdout.reconfigure(line_buffering=True)  # type: ignore[union-attr]
 
 logger = get_logger("benchmark")
 
-# A deterministic policy can lock into an endless raise/counter-raise cycle (observed: Flor
-# FLOR_CONTRA_RESTO <-> FLOR_CON_ENVIDO, 0 points on the table). Normal hands take well under
-# ~100 actions; a hand exceeding this cap is voided (no points, a fresh hand is dealt).
+# The pre-audit engine let a deterministic policy cycle forever in the flor ladder (#7); exp 008
+# voided such hands. Every call ladder is now bounded, so a hand over this cap is an engine bug.
 MAX_ACTIONS_PER_HAND = 2000
 
 # One role occupies each gamekit "seat" (team slot); slot 0 = Team A, slot 1 = Team B.
@@ -115,45 +114,26 @@ def run_game(game: TrucoGame, agents: list, seed: int | None = None) -> int:
     return -1
 
 
-def run_match(
-    game: TrucoGame,
-    agents: list,
-    seed: int | None = None,
-    on_void: Callable[[], None] | None = None,
-) -> int:
+def run_match(match: TrucoMatch, agents: list, seed: int | None = None) -> int:
     """
-    Play a full match (multiple hands) until one team reaches game.target points.
-    A hand exceeding MAX_ACTIONS_PER_HAND is voided (``on_void`` is called, scores unchanged).
+    Play a full match (``engine.match``): chicos to ``match.rules.chico_points``,
+    mano rotating every round, redondilla / pico-a-pico alternation.
 
     Returns:
         0 if team A wins, 1 if team B wins.
     """
-    scores = [0, 0]
-    hand = 0
-    rng_seed = seed
-    while scores[0] < game.target and scores[1] < game.target:
-        state = game.reset(seed=rng_seed, scores=scores)
-        rng_seed = (rng_seed + 1) if rng_seed is not None else None
-        n_actions = 0
-        while state.phase != Phase.DONE:
-            cp = state.current_player
-            legal = game.legal_actions(state)
-            if not legal:
-                break
-            action = agents[cp].choose_action(state, legal, cp)
-            game.apply_action(state, action)
-            n_actions += 1
-            if n_actions > MAX_ACTIONS_PER_HAND:
-                logger.warning("voided hand: >%d actions (policy cycle)", MAX_ACTIONS_PER_HAND)
-                if on_void is not None:
-                    on_void()
-                state.scores = list(scores)
-                break
-        scores = list(state.scores)
-        hand += 1
-        if hand > 200:  # safety valve against infinite loops
-            break
-    return 0 if scores[0] >= game.target else 1
+    ms = match.reset(seed=seed)
+    hand, n_actions = ms.hand, 0
+    while not match.is_terminal(ms):
+        cp = ms.hand.current_player
+        legal = match.legal_actions(ms)
+        action = agents[cp].choose_action(ms.hand, legal, cp)
+        match.apply_action(ms, action)
+        n_actions = n_actions + 1 if ms.hand is hand else 0
+        hand = ms.hand
+        if n_actions > MAX_ACTIONS_PER_HAND:
+            raise RuntimeError(f"hand exceeded {MAX_ACTIONS_PER_HAND} actions: engine liveness bug")
+    return ms.winner
 
 
 def _build_agent(
@@ -257,12 +237,16 @@ def benchmark(
         sys.exit(1)
 
     game = TrucoGame()
+    # The rebuilt engine bounds every hand (#7, #9), so no hand is voided any more;
+    # the stamp keeps exp 008's result schema.
     voided_hands = [0]
+    match = TrucoMatch()
 
-    def count_void() -> None:
-        voided_hands[0] += 1
+    def run_fn(agents: list[TrucoAgent], seed: int) -> int:
+        if mode_def.is_match:
+            return run_match(match, agents, seed=seed)
+        return run_game(game, agents, seed=seed)
 
-    run_fn = partial(run_match, on_void=count_void) if mode_def.is_match else run_game
     unit = "matches" if mode_def.is_match else "hands"
     label_A, label_B = _labels(mode, rollouts, checkpoint)
 
@@ -278,7 +262,7 @@ def benchmark(
         for i, (engine_seed, _driver_seed) in enumerate(pairs):
             rotated = rotate(mode_def.lineup, rotation_offset(engine_seed))
             agents = _place_agents(rotated, role_agents)
-            result = run_fn(game, agents, seed=engine_seed)
+            result = run_fn(agents, engine_seed)
             if result == -1:
                 winning_seats.append(None)
             else:
