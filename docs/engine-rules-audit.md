@@ -1,7 +1,8 @@
 # Engine rules audit
 
 Audit of the engine (`engine/game.py`, `engine/card.py`, `engine/truco.py`) against
-[`rules.md`](rules.md). **Docs only — nothing in the engine was changed.** Source IDs (`S1`…`S7`)
+[`rules.md`](rules.md). The audit itself was docs only; every finding has since been fixed — see
+[Status](#status-after-the-fixes). File:line references below are to the **audited** engine (`64a1ce4`). Source IDs (`S1`…`S7`)
 and the SB/CP tags are defined in `rules.md`; every quotation below was checked against the saved
 source texts.
 
@@ -17,6 +18,40 @@ source texts.
   `game_state.py` `TEAM_A/TEAM_B`. Seat rotation is done by the harness, not the engine
   (`scripts/benchmark.py` team-slot mapping). "Mano wins" in the engine therefore means "seat 0 /
   team A wins".
+
+## Status after the fixes
+
+All findings below were fixed (A-13, A-14 and A-15 with the remaining simplifications noted) by rebuilding the hand engine (`engine/game.py`) on pure rule
+functions (`engine/rules.py`) and adding a match runner (`engine/match.py`). Where sources disagree
+the engine follows S2; the variants that change benchmark numbers are `engine.rules.Rules` knobs,
+with defaults recorded in the `rules.md` [variants register](rules.md#10-variants-register).
+Each finding has a regression test.
+
+| ID | Issue | Fix | Test (`tests/`) |
+|---|---|---|---|
+| A-01 | [#7](https://github.com/guidodinello/truco-py/issues/7) | flor envites only rise (raise ≥ the call, S2 Art 35); contra flor al resto is terminal | `test_engine.py::test_contra_flor_al_resto_is_terminal`, `::test_flor_ladder_never_goes_backwards`, `::test_random_hands_always_terminate` |
+| A-02 | [#15](https://github.com/guidodinello/truco-py/issues/15) | resto = the leader's shortfall (`rules.falta`), paid with both sides' flors (S2 Art 31) | `test_engine.py::test_contra_flor_al_resto_is_the_leaders_shortfall` |
+| A-03 | [#8](https://github.com/guidodinello/truco-py/issues/8) | vale cuatro only answers a retruco | `test_engine.py::test_vale_cuatro_is_not_an_answer_to_truco` |
+| A-04 | [#9](https://github.com/guidodinello/truco-py/issues/9) | totals capped at the falta (S2 Art 36); a capped exchange can only be answered | `test_engine.py::test_envido_total_capped_at_falta_and_chain_ends`, `::test_envido_chain_bounded_at_any_score` |
+| A-05 | [#10](https://github.com/guidodinello/truco-py/issues/10) | declaration procedure (S2 Art 39, reading (b) of V-14) | `test_rules.py::TestDeclarationProcedure`, `test_engine.py::test_envido_tie_goes_by_declaration_procedure` |
+| A-06 | [#16](https://github.com/guidodinello/truco-py/issues/16) | same procedure over the flor holders (S2 Art 40) | `test_engine.py::test_flor_tie_goes_by_declaration_procedure` |
+| A-07 | [#11](https://github.com/guidodinello/truco-py/issues/11) | `rules.hand_winner`, checked against the §6 table for all 27 sequences | `test_rules.py::test_hand_winner_matches_spec_for_all_27_sequences`, `test_engine.py::test_two_pardas_then_b_wins_trick_three` |
+| A-08 | [#17](https://github.com/guidodinello/truco-py/issues/17) | 3 per flor of the winning side; envites add their tantos (S2 Art 20, 31) | `test_engine.py::test_contested_flor_pays_every_flor_of_the_winning_side`, `::test_con_flor_envido_pays_tantos_plus_winner_flors` |
+| A-09 | [#18](https://github.com/guidodinello/truco-py/issues/18) | a flor contest with no envite is compared, never declined | `test_engine.py::test_flor_contest_cannot_be_folded_without_a_challenge` |
+| A-10 | [#19](https://github.com/guidodinello/truco-py/issues/19) | the full envite ladder «con flor» (S2 Art 27, 37) | `test_engine.py::test_full_envido_ladder_available_con_flor` |
+| A-11 | [#12](https://github.com/guidodinello/truco-py/issues/12) | `PASO` (that player out) and `MAZO` (the side out; rival takes the hand's value) on any turn | `test_engine.py::test_mazo_concedes_the_hand`, `::test_paso_leaves_teammates_in_play` |
+| A-12 | [#20](https://github.com/guidodinello/truco-py/issues/20) | truco called in a player's turn in any trick; the accepting side raises later | `test_engine.py::test_truco_can_be_called_mid_hand_and_raised_later_by_accepting_side` |
+| A-13 | [#21](https://github.com/guidodinello/truco-py/issues/21) | any player calls in their turn; all flor holders count. Still simplified: one seat (first rival to the caller's right) answers a pending call | `test_engine.py::test_any_team_member_may_call_truco` |
+| A-14 | [#22](https://github.com/guidodinello/truco-py/issues/22) | `TrucoMatch`: chicos, malas/buenas, mano rotation, redondilla / pico-a-pico (S2 Art 83–87). Not implemented: Chumbo (V-06) | `test_match.py` |
+| A-15 | [#23](https://github.com/guidodinello/truco-py/issues/23) | a ley de juego (`Rules.ley_de_juego`, off by default), ×2/×3 real envido, hasta igualar; envido + truco together = two calls in one turn (S2 Art 69). Not offered: free «N tantos envido» | `test_engine.py::test_ley_*`, `::test_hasta_igualar_levels_the_scores`, `::test_envido_then_truco_in_one_turn` |
+| A-16 | [#24](https://github.com/guidodinello/truco-py/issues/24) | code rewritten; the module docstring lists what remains simplified | — |
+| R-01 | [#25](https://github.com/guidodinello/truco-py/issues/25) | every `reset` shuffles a fresh deck | `test_engine.py::test_same_seed_same_deal_on_a_reused_game` |
+
+Tracking issue [#13](https://github.com/guidodinello/truco-py/issues/13) covered A-12 to A-15.
+
+**Comparability.** Results measured before this change (including exp 008) used the audited engine:
+a 53-action space, different rules, and seeds that did not replay a deal. They are not comparable
+with runs on the fixed engine, and checkpoints trained before it are refused by `RLAgent` (65 actions now).
 
 ## Summary
 

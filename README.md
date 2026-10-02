@@ -129,6 +129,7 @@ La lógica de cada fase:
 | Fase 5 | — | — | — | — | en curso |
 
 > `bc_init.zip` y los checkpoints de Fase 4 (`truco_threshold_*.zip`) son útiles como baselines de benchmarking — no borrar.
+> **Nota:** desde la reescritura del motor contra `docs/rules.md` (65 acciones en vez de 53), estos checkpoints ya no cargan con el motor actual — `RLAgent` los rechaza con un error explícito. Sirven sólo para reproducir resultados viejos desde un commit anterior; hay que re-entrenar.
 > `truco_selfplay_final.zip` (apr 6) es de una corrida que cargó `bc_init.zip` directamente, saltándose la Fase 4. Ignorar para entrenar, conservar como referencia.
 
 ### Comandos para entrenar el modelo top

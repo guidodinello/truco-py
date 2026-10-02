@@ -6,4 +6,7 @@ from .game_state import TEAM_A as TEAM_A
 from .game_state import TEAM_B as TEAM_B
 from .game_state import GameState as GameState
 from .game_state import team_of as team_of
+from .match import MatchState as MatchState
+from .match import TrucoMatch as TrucoMatch
 from .phases import Phase as Phase
+from .rules import Rules as Rules

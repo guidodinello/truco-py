@@ -3,12 +3,12 @@ Encodes a GameState into a fixed-size observation vector for the RL agent.
 
 Vector layout (204 dimensions total):
 
-  [  0: 40] own_cards          — one-hot over 40-card deck (own 3 cards)
+  [  0: 40] own_cards          — one-hot over 40-card deck (own remaining cards)
   [ 40: 80] played_cards       — one-hot: all cards played so far (public)
   [ 80:120] current_trick      — one-hot: cards in the current trick
-  [120:124] phase_onehot       — [FLOR, ENVIDO, TRUCO, PLAY]
-  [124:127] bid_levels         — [flor_stake/target, envido_stake/10, truco_stake/4]
-  [127:133] has_flor           — [bool]*6 (who declared flor, public)
+  [120:124] phase_onehot       — [FLOR, ENVIDO, TRUCO, PLAY] (LEY is at [170])
+  [124:127] bid_levels         — [flor envite total/target, envido total/10, truco level/4]
+  [127:133] has_flor           — [bool]*6 (flor is sung, so public)
   [133:134] own_envido         — normalized [0,1]
   [134:135] own_flor_score     — normalized [0,1]
   [135:136] team_score         — scores[my_team] / target
@@ -20,18 +20,33 @@ Vector layout (204 dimensions total):
   [157:163] player_position    — one-hot seat index
   [163:169] team_membership    — [1 if same team as me] * 6
   [169:170] v_mc               — P(my team wins | random play from deal), or 0.0 if disabled
-  [170:204] padding / reserved — zeros (34 dims)
+  [170:171] phase_ley          — «a ley de juego» decision
+  [171:172] truco_pending      — a truco call is waiting for an answer
+  [172:173] my_side_may_raise  — my side holds the right to the next truco raise
+  [173:174] call_against_me    — the pending call (envite or truco) was made by the rivals
+  [174:175] envido_settled     — envido / flor already settled this hand
+  [175:176] contra_flor        — a contra flor was called
+  [176:177] falta              — falta / target
+  [177:183] in_play            — [bool]*6 seats still in the hand
+  [183:189] mano               — one-hot mano seat
+  [189:190] mano_a_mano        — this hand is a pico-a-pico pair
+  [190:204] padding / reserved — zeros (14 dims)
+
+While a side decides whether to impose a ley de juego the cards are not yet
+known to it (S2 Art 79: «antes de ver sus cartas»): own cards, envido and flor
+are zeroed in that phase.
 
 Total = 204
 """
 
 import numpy as np
 
-from engine.game_state import TEAM_A, TEAM_B, GameState, team_of
+from engine.game_state import ENVITE_ENVIDO, ENVITE_FLOR, TEAM_A, TEAM_B, GameState, team_of
 from engine.phases import Phase
 from engine.truco import NUMEROS
 
 OBS_DIM = 204
+MAX_TRUCO_LEVEL = 4
 
 
 def _card_idx(palo: int, numero: int) -> int:
@@ -57,16 +72,16 @@ def obs_to_vector(
     my_team = team_of(p)
     opp_team = 1 - my_team
     half = state.target // 2
+    blind = state.phase == Phase.LEY and state.ley_team == -1
 
     # [0:40] own cards
-    for card in state.cards_in_hand[p]:
-        obs[_card_idx(*card)] = 1.0
+    if not blind:
+        for card in state.cards_in_hand[p]:
+            obs[_card_idx(*card)] = 1.0
 
-    # [40:80] played cards (all cards no longer in any player's hand)
-    for i in range(6):
-        original = set(state.manos[i])
-        remaining = set(state.cards_in_hand[i])
-        for card in original - remaining:
+    # [40:80] played cards (every card played to a trick so far)
+    for trick in state.tricks:
+        for card in trick.values():
             obs[40 + _card_idx(*card)] = 1.0
 
     # [80:120] current trick cards
@@ -74,27 +89,31 @@ def obs_to_vector(
         for card in state.tricks[state.trick_num].values():
             obs[80 + _card_idx(*card)] = 1.0
 
-    # [120:124] phase one-hot
-    phase_map = {Phase.FLOR: 0, Phase.ENVIDO: 1, Phase.TRUCO: 2, Phase.PLAY: 3}
+    # [120:124] phase one-hot ([170] for LEY)
+    phase_map = {Phase.FLOR: 120, Phase.ENVIDO: 121, Phase.TRUCO: 122, Phase.PLAY: 123}
     if state.phase in phase_map:
-        obs[120 + phase_map[state.phase]] = 1.0
+        obs[phase_map[state.phase]] = 1.0
+    obs[170] = float(state.phase == Phase.LEY)
 
     # [124:127] bid levels (normalized)
-    obs[124] = min(state.flor_stake / max(state.target, 1), 1.0)
-    obs[125] = min(state.envido_stake / 10.0, 1.0)
-    obs[126] = state.truco_stake / 4.0
+    if state.envite_kind == ENVITE_FLOR:
+        obs[124] = min(state.envite_total / max(state.target, 1), 1.0)
+    elif state.envite_kind == ENVITE_ENVIDO:
+        obs[125] = min(state.envite_total / 10.0, 1.0)
+    obs[126] = state.truco_level / MAX_TRUCO_LEVEL
 
     # [127:133] has_flor (public after announcement)
-    for i in range(6):
-        obs[127 + i] = float(state.has_flor[i])
+    if not blind:
+        for s in state.flor_holders:
+            obs[127 + s] = 1.0
 
-    # [133:135] own envido and flor (normalized)
-    obs[133] = state.envido[p] / 37.0
-    obs[134] = state.flor_score[p] / 47.0
+        # [133:135] own envido and flor (normalized)
+        obs[133] = state.envido[p] / 37.0
+        obs[134] = state.flor_score[p] / 47.0
 
     # [135:139] scores and malas
-    obs[135] = state.scores[my_team] / state.target
-    obs[136] = state.scores[opp_team] / state.target
+    obs[135] = min(state.scores[my_team] / state.target, 1.0)
+    obs[136] = min(state.scores[opp_team] / state.target, 1.0)
     obs[137] = 1.0 if state.scores[my_team] < half else 0.0
     obs[138] = 1.0 if state.scores[opp_team] < half else 0.0
 
@@ -121,6 +140,21 @@ def obs_to_vector(
     # [169] V_MC: MC-estimated win probability from initial deal (0.0 if disabled)
     if v_mc is not None:
         obs[169] = float(np.clip(v_mc, 0.0, 1.0))
-    # [170:204] padding — zeros
+
+    # [171:190] calls, table and limits
+    obs[171] = float(state.truco_pending)
+    obs[172] = float(state.truco_raise_team == my_team)
+    rival_call = (state.envite_team == opp_team) or (
+        state.truco_pending and state.truco_team == opp_team
+    )
+    obs[173] = float(rival_call)
+    obs[174] = float(state.envido_done)
+    obs[175] = float(state.envite_contra)
+    obs[176] = min(state.falta / max(state.target, 1), 1.0)
+    for s in range(6):
+        obs[177 + s] = float(state.in_play[s])
+    obs[183 + state.mano] = 1.0
+    obs[189] = float(len(state.seats) == 2)
+    # [190:204] padding — zeros
 
     return obs

@@ -84,3 +84,28 @@ def test_obs_stable_across_phases():
         legal = game.legal_actions(state)
         game.apply_action(state, legal[0])
         steps += 1
+
+
+def test_ley_challenger_decides_blind():
+    """S2 Art 79: the side imposing a ley de juego has not seen its cards."""
+    from engine.rules import Rules
+
+    game = TrucoGame(rules=Rules(ley_de_juego=True))
+    state = game.reset(seed=0)
+    assert state.phase == Phase.LEY
+    obs = obs_to_vector(state, state.current_player)
+    assert obs[:40].sum() == 0 and obs[133] == 0 and obs[134] == 0
+    assert obs[170] == 1.0
+
+
+def test_obs_bounds_over_random_play():
+    import random
+
+    game = TrucoGame()
+    rng = random.Random(0)
+    for seed in range(200):
+        state = game.reset(seed=seed, scores=[rng.randrange(40), rng.randrange(40)])
+        while state.phase != Phase.DONE:
+            obs = obs_to_vector(state, state.current_player)
+            assert obs.min() >= 0.0 and obs.max() <= 1.0
+            game.apply_action(state, rng.choice(game.legal_actions(state)))

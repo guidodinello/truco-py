@@ -2,21 +2,24 @@
 ThresholdAgent: rule-based policy derived from the Monte Carlo analysis.
 
 Decision rules:
-  Flor:
-    - 1v1: raise if flor_score >= 35
+  Flor (contest between both sides' flor holders):
+    - 1v1: envite «con flor envido» if flor_score >= 35, else let flors compare
     - 1v2: raise if flor_score >= 37 (aggressive) / 38 (passive EV)
-  Envido:
+    - answer a flor envite with «quiero» above the threshold, else «no quiero»
+  Envido (on its first turn, before playing a card):
     - 1v1: bid if own envido >= 28
     - Team (pie): bid if team best envido >= 33
   Truco:
-    - Bid truco if holding a strong card (3, 2, 1E, 1B, or a pieza).
+    - Call truco once, on its first turn, if holding a strong card
+      (3, 2, 1E, 1B, or a pieza); answer a truco with retruco/quiero when strong.
   Card play:
-    - Play the strongest card in hand (greedy).
+    - Play the strongest card in hand (greedy). Never goes to the mazo.
+  A ley de juego: never imposes it; declines it.
 """
 
 import random
 
-from engine.actions import Action, is_card_action
+from engine.actions import ENVIDO_CALLS, Action, action_to_card, is_card_action
 from engine.card import card_strength
 from engine.game_state import TEAM_A, TEAM_B, GameState, team_of
 from engine.phases import Phase
@@ -29,6 +32,7 @@ MC_THRESHOLDS = {
     "flor_1v2_aggressive": 37,
     "flor_1v2_passive": 38,
 }
+STRONG_CARD = 8  # card_strength >= 8: a non-pieza 2 or better
 
 
 class ThresholdAgent:
@@ -50,18 +54,26 @@ class ThresholdAgent:
     ) -> Action:
         phase = state.phase
 
+        if phase == Phase.LEY:
+            return self._first_legal(legal_actions, [Action.LEY_PASS, Action.FOLD])
         if phase == Phase.FLOR:
             return self._flor_action(state, legal_actions, player_idx)
         if phase == Phase.ENVIDO:
-            return self._envido_action(state, legal_actions, player_idx)
+            return self._envido_answer(state, legal_actions, player_idx)
         if phase == Phase.TRUCO:
-            return self._truco_action(state, legal_actions, player_idx)
+            return self._truco_answer(state, legal_actions, player_idx)
         if phase == Phase.PLAY:
             return self._play_action(state, legal_actions, player_idx)
 
         return self._rng.choice(legal_actions)
 
     # ------------------------------------------------------------------
+
+    def _first_legal(self, legal: list[Action], preferred: list[Action]) -> Action:
+        for a in preferred:
+            if a in legal:
+                return a
+        return self._rng.choice(legal)
 
     def _flor_action(
         self,
@@ -73,90 +85,49 @@ class ThresholdAgent:
         my_team = team_of(p)
 
         # Count opponent flor players
-        opp_team_members = TEAM_B if my_team == 0 else TEAM_A
-        opp_flors = sum(1 for i in opp_team_members if state.has_flor[i])
+        opp_flors = sum(1 for s in state.flor_holders if team_of(s) != my_team)
+        threshold = (
+            MC_THRESHOLDS["flor_1v2_aggressive"] if opp_flors >= 2 else MC_THRESHOLDS["flor_1v1"]
+        )
+        strong = my_score >= threshold
 
-        # Determine threshold
-        if opp_flors >= 2:
-            threshold = MC_THRESHOLDS["flor_1v2_aggressive"]
-        else:
-            threshold = MC_THRESHOLDS["flor_1v1"]
+        if state.envite_team == -1:  # our turn to open the contest
+            preferred = [Action.ENVIDO, Action.FLOR_PASS] if strong else [Action.FLOR_PASS]
+            return self._first_legal(legal, preferred)
+        return self._first_legal(legal, [Action.QUIERO] if strong else [Action.FOLD])
 
-        if my_score >= threshold:
-            # Raise if possible
-            for a in [Action.FLOR_CON_ENVIDO, Action.FLOR_CHICO, Action.FLOR_PASS]:
-                if a in legal:
-                    return a
-        # Fold or accept (passive)
-        for a in [Action.FLOR_PASS, Action.FOLD]:
-            if a in legal:
-                return a
-        return self._rng.choice(legal)
-
-    def _envido_action(
-        self,
-        state: GameState,
-        legal: list[Action],
-        p: int,
-    ) -> Action:
-        my_envido = state.envido[p]
-        my_team = team_of(p)
-        team_members = TEAM_A if my_team == 0 else TEAM_B
+    def _should_bid_envido(self, state: GameState, p: int) -> bool:
+        team_members = TEAM_A if team_of(p) == 0 else TEAM_B
         team_best = max(state.envido[i] for i in team_members)
+        return (
+            team_best >= MC_THRESHOLDS["envido_team"]
+            or state.envido[p] >= MC_THRESHOLDS["envido_1v1"]
+        )
 
-        # Use team threshold when deciding to initiate
-        should_bid = team_best >= MC_THRESHOLDS["envido_team"]
-        # Fallback to individual threshold
-        if not should_bid:
-            should_bid = my_envido >= MC_THRESHOLDS["envido_1v1"]
-
-        if state.envido_bid_team == -1:
-            # Initiation turn
-            if should_bid:
-                for a in [Action.REAL_ENVIDO, Action.ENVIDO]:
-                    if a in legal:
-                        return a
-            return Action.ENVIDO_PASS if Action.ENVIDO_PASS in legal else self._rng.choice(legal)
-
-        # Responding to opponent
-        if state.envido_bid_team != my_team:
-            if should_bid:
-                return (
-                    Action.ENVIDO_PASS if Action.ENVIDO_PASS in legal else self._rng.choice(legal)
-                )
-            return Action.FOLD if Action.FOLD in legal else self._rng.choice(legal)
-
-        return self._rng.choice(legal)
-
-    def _truco_action(
+    def _envido_answer(
         self,
         state: GameState,
         legal: list[Action],
         p: int,
     ) -> Action:
+        if self._should_bid_envido(state, p):
+            return self._first_legal(legal, [Action.QUIERO])
+        return self._first_legal(legal, [Action.FOLD])
+
+    def _strong_hand(self, state: GameState, p: int) -> bool:
         pm, nm = state.muestra
         hand = state.cards_in_hand[p]
-        max_str = max(card_strength(*c, pm, nm) for c in hand) if hand else 0
+        return bool(hand) and max(card_strength(*c, pm, nm) for c in hand) >= STRONG_CARD
 
-        # Bid truco if holding a strong card (strength >= 8 = non-pieza 2 or better)
-        should_bid = max_str >= 8
-
-        if state.truco_bid_team == -1:
-            # Initiation
-            if should_bid and Action.TRUCO in legal:
-                return Action.TRUCO
-            return Action.TRUCO_PASS if Action.TRUCO_PASS in legal else self._rng.choice(legal)
-
-        # Responding
-        if state.truco_bid_team != team_of(p):
-            if should_bid:
-                # Accept and potentially raise
-                for a in [Action.RETRUCO, Action.TRUCO_PASS]:
-                    if a in legal:
-                        return a
-            return Action.FOLD if Action.FOLD in legal else self._rng.choice(legal)
-
-        return self._rng.choice(legal)
+    def _truco_answer(
+        self,
+        state: GameState,
+        legal: list[Action],
+        p: int,
+    ) -> Action:
+        if self._strong_hand(state, p):
+            return self._first_legal(legal, [Action.RETRUCO, Action.QUIERO])
+        return self._first_legal(legal, [Action.FOLD])
 
     def _play_action(
         self,
@@ -164,11 +135,17 @@ class ThresholdAgent:
         legal: list[Action],
         p: int,
     ) -> Action:
-        """Play the strongest available card."""
-        from engine.actions import action_to_card
+        """Call envido / truco on the first turn if strong, then play the strongest card."""
+        first_turn = state.trick_num == 0 and len(state.cards_in_hand[p]) == 3
+        if first_turn:
+            if self._should_bid_envido(state, p):
+                for a in (Action.REAL_ENVIDO, Action.ENVIDO):
+                    if a in legal:
+                        return a
+            if Action.TRUCO in legal and self._strong_hand(state, p):
+                return Action.TRUCO
 
         pm, nm = state.muestra
-
         best_action = None
         best_strength = -1
         for action in legal:
@@ -179,4 +156,6 @@ class ThresholdAgent:
                     best_strength = s
                     best_action = action
 
-        return best_action if best_action is not None else self._rng.choice(legal)
+        if best_action is not None:
+            return best_action
+        return self._rng.choice([a for a in legal if a not in ENVIDO_CALLS] or legal)
