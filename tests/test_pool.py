@@ -37,7 +37,7 @@ def _pool(tmp_path: Path, steps=(0, 1_000_000, 2_000_000), **kw) -> TeamOpponent
         (d / snapshot_name(s)).touch()
     kw.setdefault("mix", OpponentMix())
     kw.setdefault("partners", "snapshot")
-    return TeamOpponentPool(tmp_path, run_id=RUN_ID, load_opponent=_Snap, seed=7, **kw)
+    return TeamOpponentPool(tmp_path, run_id=RUN_ID, load_opponent=_Snap, seed=7, **kw)  # type: ignore[arg-type]
 
 
 def _kind(agent) -> str:

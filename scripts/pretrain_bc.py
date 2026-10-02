@@ -276,7 +276,11 @@ def build_fresh_model(seed: int) -> MaskablePPO:
 def load_model(path: Path, seed: int) -> MaskablePPO:
     from stable_baselines3.common.vec_env import DummyVecEnv
 
-    vec_env = DummyVecEnv([lambda: ActionMasker(TrucoEnv(seed=seed), lambda e: e.action_masks())])
+    def make() -> ActionMasker:
+        env = TrucoEnv(seed=seed)
+        return ActionMasker(env, lambda _: env.action_masks())
+
+    vec_env = DummyVecEnv([make])
     model = MaskablePPO.load(path, env=vec_env, device="auto")
     check_action_space(model, path)
     return model
@@ -324,7 +328,7 @@ def main() -> int:
         )
         if args.dataset is not None:
             args.dataset.parent.mkdir(parents=True, exist_ok=True)
-            np.savez(args.dataset, **ds)
+            np.savez(args.dataset, **ds)  # type: ignore[arg-type]
             logger.info("saved dataset %s", args.dataset)
     logger.info("%s (obs, action) pairs", f"{len(ds['actions']):,}")
 

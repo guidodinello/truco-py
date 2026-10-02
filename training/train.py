@@ -24,6 +24,7 @@ from sb3_contrib.common.wrappers import ActionMasker
 from stable_baselines3.common.vec_env import SubprocVecEnv, VecEnv, VecMonitor
 
 from agents.random_agent import RandomAgent
+from agents.rl_agent import check_action_space
 from agents.threshold_agent import ThresholdAgent
 from log import get_logger
 from training.env import TrucoEnv
@@ -178,7 +179,7 @@ def aux_update_step(
         ).unsqueeze(1)
         flor_msk = torch.tensor(flor_mask[batch_idx], dtype=torch.bool, device=device)
 
-        env_pred, flor_pred = policy.predict_aux(obs_t)
+        env_pred, flor_pred = policy.predict_aux(obs_t)  # type: ignore[operator]
 
         envido_loss = F.binary_cross_entropy(env_pred, env_lbl)
         flor_loss = (
@@ -258,6 +259,13 @@ def _graft_aux_heads(model: MaskablePPO) -> None:
 
 
 def _load_checkpoint(path: str, vec_env, aux_heads: bool) -> MaskablePPO:
+    """Load a checkpoint, refusing any whose action space is not the current engine's."""
+    model = _load_checkpoint_unchecked(path, vec_env, aux_heads)
+    check_action_space(model, Path(path))
+    return model
+
+
+def _load_checkpoint_unchecked(path: str, vec_env, aux_heads: bool) -> MaskablePPO:
     """Load a checkpoint, handling all combinations of saved/requested policy class.
 
     Four cases:

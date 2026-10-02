@@ -50,6 +50,7 @@ known-first-party = ["engine", "agents", "training", "experimentos"]
 python_version = "3.13"
 strict = false
 ignore_missing_imports = true
+explicit_package_bases = true
 warn_unused_ignores = true
 
 [tool.pytest.ini_options]

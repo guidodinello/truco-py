@@ -13,9 +13,14 @@ from training.env import TrucoEnv
 from training.state_encoder import OBS_DIM
 
 
+def _masked_env(seed: int) -> ActionMasker:
+    env = TrucoEnv(seed=seed)
+    return ActionMasker(env, lambda _: env.action_masks())
+
+
 def tiny_model(seed: int = 0, **kwargs) -> MaskablePPO:
     """A CPU MaskablePPO on the real 65-action TrucoEnv (cheap to build and save)."""
-    env = DummyVecEnv([lambda: ActionMasker(TrucoEnv(seed=seed), lambda e: e.action_masks())])
+    env = DummyVecEnv([lambda: _masked_env(seed)])
     return MaskablePPO(
         "MlpPolicy",
         env,
