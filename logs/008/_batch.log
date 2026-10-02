@@ -1,0 +1,41 @@
+start 2026-10-01T23:22:30+00:00 commit fefe6aa
+2026-10-01T23:22:30+00:00 start thr5M_vs_thr
+2026-10-01T23:22:30+00:00 start thr2M_vs_thr
+2026-10-01T23:22:30+00:00 start thr3.5M_vs_thr
+start 2026-10-01T23:28:03+00:00 commit d84352b
+2026-10-01T23:28:03+00:00 start thr3.5M_vs_thr
+2026-10-01T23:28:03+00:00 start thr5M_vs_thr
+2026-10-01T23:28:03+00:00 start thr2M_vs_thr
+2026-10-01T23:38:01+00:00 end   thr3.5M_vs_thr rc=0
+2026-10-01T23:38:01+00:00 start thr4M_vs_thr
+2026-10-01T23:39:01+00:00 end   thr2M_vs_thr rc=0
+2026-10-01T23:39:01+00:00 start thr3M_vs_thr
+2026-10-01T23:39:54+00:00 end   thr5M_vs_thr rc=0
+2026-10-01T23:39:54+00:00 start bc_vs_thr
+2026-10-01T23:49:03+00:00 end   bc_vs_thr rc=0
+2026-10-01T23:49:03+00:00 start sp5.5M_vs_thr
+2026-10-01T23:51:00+00:00 end   thr4M_vs_thr rc=0
+2026-10-01T23:51:00+00:00 start sp6.6M_vs_thr
+2026-10-01T23:52:08+00:00 end   thr3M_vs_thr rc=0
+2026-10-01T23:52:08+00:00 start spApril_vs_thr
+2026-10-02T00:02:43+00:00 end   spApril_vs_thr rc=0
+2026-10-02T00:02:43+00:00 start random_vs_thr
+2026-10-02T00:02:45+00:00 end   sp6.6M_vs_thr rc=0
+2026-10-02T00:02:45+00:00 start sp5.6M_vs_thr
+2026-10-02T00:03:31+00:00 end   sp5.5M_vs_thr rc=0
+2026-10-02T00:03:31+00:00 start sp6.1M_vs_thr
+2026-10-02T00:10:00+00:00 end   random_vs_thr rc=0
+2026-10-02T00:10:01+00:00 start thr5M_vs_rnd
+2026-10-02T00:15:53+00:00 end   sp6.1M_vs_thr rc=0
+2026-10-02T00:15:53+00:00 start thr2M_vs_rnd
+2026-10-02T00:18:03+00:00 end   sp5.6M_vs_thr rc=0
+2026-10-02T00:18:03+00:00 start bc_vs_rnd
+2026-10-02T00:19:42+00:00 end   thr5M_vs_rnd rc=0
+2026-10-02T00:19:42+00:00 start random_vs_rnd
+2026-10-02T00:22:05+00:00 end   thr2M_vs_rnd rc=0
+2026-10-02T00:22:05+00:00 start baseline_thr_vs_rnd
+2026-10-02T00:22:31+00:00 end   baseline_thr_vs_rnd rc=0
+2026-10-02T00:23:49+00:00 end   random_vs_rnd rc=0
+2026-10-02T00:25:22+00:00 end   bc_vs_rnd rc=0
+2026-10-02T00:25:22+00:00 BATCH DONE
+exit 0 2026-10-02T00:25:22+00:00
