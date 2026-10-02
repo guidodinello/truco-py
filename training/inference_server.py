@@ -76,6 +76,7 @@ class InferenceServer:
     """
 
     _BATCH_WAIT_S: float = 0.005  # seconds to collect a batch before processing
+    _STOP_JOIN_S = 10.0
 
     def __init__(self, n_envs: int, device: str = "cuda") -> None:
         self._n_envs = n_envs
@@ -129,8 +130,14 @@ class InferenceServer:
         logger.info("InferenceServer: model ready  pool_size=%d", len(self._models))
 
     def stop(self) -> None:
-        """Signal the server thread to shut down cleanly."""
+        """Shut the server thread down and wait for it.
+
+        Joining matters: a daemon thread still inside a torch call when the interpreter
+        finalizes aborts the process (``terminate called without an active exception``,
+        exit 134) after the run state was already saved as complete.
+        """
         self._stop.set()
+        self._thread.join(timeout=self._STOP_JOIN_S)
 
     # ── Background thread ─────────────────────────────────────────────────────
 

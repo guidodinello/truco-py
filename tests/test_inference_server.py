@@ -47,3 +47,9 @@ def test_a_53_action_checkpoint_is_refused(server, tmp_path):
     old = save_old_checkpoint(tmp_path / "old.zip")
     with pytest.raises(ValueError, match="53 actions"):
         server.update_model(str(old))
+
+
+def test_stop_joins_the_server_thread():
+    s = InferenceServer(n_envs=1, device="cpu")
+    s.stop()
+    assert not s._thread.is_alive(), "a live daemon thread at interpreter exit aborts the process"
