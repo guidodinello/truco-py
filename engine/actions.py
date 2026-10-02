@@ -4,72 +4,109 @@ from .truco import NUMEROS
 
 
 class Action(IntEnum):
-    FOLD = 0  # give up current bid (opponent wins stake)
+    # Answers to a pending call (envido, flor envite, truco, a ley de juego)
+    FOLD = 0  # «no quiero»
+    QUIERO = 1  # «quiero» — accept the pending call (all of it, under a ley de juego)
 
-    # Flor bidding
-    FLOR_PASS = 1  # accept current flor stake / pass without bidding
-    FLOR_CHICO = 2  # announce flor for 3 pts
-    FLOR_CON_ENVIDO = 3  # raise flor to 5 pts
-    FLOR_CONTRA_RESTO = 4  # game-ending flor bid
+    # Flor contest: decline to make an envite, flors are compared as they stand
+    FLOR_PASS = 2
 
-    # Envido bidding
-    ENVIDO_PASS = 5  # pass (no bid) OR accept current envido stake
-    ENVIDO = 6  # bid envido (+2 pts to stake)
-    REAL_ENVIDO = 7  # bid real envido (+3 pts to stake)
-    FALTA_ENVIDO = 8  # game-ending envido bid
+    # Envites. The same calls are made «con flor» in a flor contest (S2 Art 27).
+    ENVIDO = 3  # 2 tantos
+    REAL_ENVIDO = 4  # 3 tantos
+    DOS_REAL_ENVIDO = 5  # 2 × 3 tantos (S2 Art 24 multiplier)
+    TRES_REAL_ENVIDO = 6  # 3 × 3 tantos
+    HASTA_IGUALAR = 7  # the tantos that level the caller's side with the leader (S2 Art 24)
+    FALTA_ENVIDO = 8  # the falta (S2 Art 25)
+    CONTRA_FLOR_AL_RESTO = 9  # flor contest only: the resto, contra flor (S2 Art 31, 33)
 
-    # Truco bidding
-    TRUCO_PASS = 9  # pass (no bid) OR accept current truco stake
-    TRUCO = 10  # bid truco (2 pts)
-    RETRUCO = 11  # raise to 3 pts
-    VALE_CUATRO = 12  # raise to 4 pts
+    # Truco ladder (S1 Art 42–47, S2 Art 60–66)
+    TRUCO = 10
+    RETRUCO = 11
+    VALE_CUATRO = 12
 
-    # Card play: 40 cards
-    # card_idx = palo * 10 + NUMEROS.index(numero)
-    PLAY_CARD_0 = 13
-    PLAY_CARD_1 = 14
-    PLAY_CARD_2 = 15
-    PLAY_CARD_3 = 16
-    PLAY_CARD_4 = 17
-    PLAY_CARD_5 = 18
-    PLAY_CARD_6 = 19
-    PLAY_CARD_7 = 20
-    PLAY_CARD_8 = 21
-    PLAY_CARD_9 = 22
-    PLAY_CARD_10 = 23
-    PLAY_CARD_11 = 24
-    PLAY_CARD_12 = 25
-    PLAY_CARD_13 = 26
-    PLAY_CARD_14 = 27
-    PLAY_CARD_15 = 28
-    PLAY_CARD_16 = 29
-    PLAY_CARD_17 = 30
-    PLAY_CARD_18 = 31
-    PLAY_CARD_19 = 32
-    PLAY_CARD_20 = 33
-    PLAY_CARD_21 = 34
-    PLAY_CARD_22 = 35
-    PLAY_CARD_23 = 36
-    PLAY_CARD_24 = 37
-    PLAY_CARD_25 = 38
-    PLAY_CARD_26 = 39
-    PLAY_CARD_27 = 40
-    PLAY_CARD_28 = 41
-    PLAY_CARD_29 = 42
-    PLAY_CARD_30 = 43
-    PLAY_CARD_31 = 44
-    PLAY_CARD_32 = 45
-    PLAY_CARD_33 = 46
-    PLAY_CARD_34 = 47
-    PLAY_CARD_35 = 48
-    PLAY_CARD_36 = 49
-    PLAY_CARD_37 = 50
-    PLAY_CARD_38 = 51
-    PLAY_CARD_39 = 52
+    # Leaving the hand (S2 Art 88–90)
+    PASO = 13  # «paso»: this player is out, teammates play on
+    MAZO = 14  # to the mazo without «paso»: the whole side is out
+
+    # «A ley de juego» (S2 Art 70–82): the bundle imposed before the muestra
+    LEY_PASS = 15  # do not impose the régimen
+    LEY_TODO = 16  # «todo dicho»: falta envido, resto and truco
+    LEY_FALTA = 17
+    LEY_RESTO = 18
+    LEY_FALTA_RESTO = 19
+    LEY_FALTA_TRUCO = 20
+    LEY_TRUCO = 21
+    LEY_RESTO_TRUCO = 22
+    # Partial answers to a ley de juego (S2 Art 75); QUIERO / FOLD answer all of it
+    LEY_QUIERO_ENVITE = 23
+    LEY_QUIERO_TRUCO = 24
+
+    # Card play: 40 cards, card_idx = palo * 10 + NUMEROS.index(numero)
+    PLAY_CARD_0 = 25
+    PLAY_CARD_1 = 26
+    PLAY_CARD_2 = 27
+    PLAY_CARD_3 = 28
+    PLAY_CARD_4 = 29
+    PLAY_CARD_5 = 30
+    PLAY_CARD_6 = 31
+    PLAY_CARD_7 = 32
+    PLAY_CARD_8 = 33
+    PLAY_CARD_9 = 34
+    PLAY_CARD_10 = 35
+    PLAY_CARD_11 = 36
+    PLAY_CARD_12 = 37
+    PLAY_CARD_13 = 38
+    PLAY_CARD_14 = 39
+    PLAY_CARD_15 = 40
+    PLAY_CARD_16 = 41
+    PLAY_CARD_17 = 42
+    PLAY_CARD_18 = 43
+    PLAY_CARD_19 = 44
+    PLAY_CARD_20 = 45
+    PLAY_CARD_21 = 46
+    PLAY_CARD_22 = 47
+    PLAY_CARD_23 = 48
+    PLAY_CARD_24 = 49
+    PLAY_CARD_25 = 50
+    PLAY_CARD_26 = 51
+    PLAY_CARD_27 = 52
+    PLAY_CARD_28 = 53
+    PLAY_CARD_29 = 54
+    PLAY_CARD_30 = 55
+    PLAY_CARD_31 = 56
+    PLAY_CARD_32 = 57
+    PLAY_CARD_33 = 58
+    PLAY_CARD_34 = 59
+    PLAY_CARD_35 = 60
+    PLAY_CARD_36 = 61
+    PLAY_CARD_37 = 62
+    PLAY_CARD_38 = 63
+    PLAY_CARD_39 = 64
 
 
-CARD_OFFSET = Action.PLAY_CARD_0.value  # 13
-N_ACTIONS = 53
+CARD_OFFSET = Action.PLAY_CARD_0.value
+N_ACTIONS = len(Action)
+
+ENVIDO_CALLS = (
+    Action.ENVIDO,
+    Action.REAL_ENVIDO,
+    Action.DOS_REAL_ENVIDO,
+    Action.TRES_REAL_ENVIDO,
+    Action.HASTA_IGUALAR,
+    Action.FALTA_ENVIDO,
+)
+ENVITE_CALLS = (*ENVIDO_CALLS, Action.CONTRA_FLOR_AL_RESTO)
+TRUCO_CALLS = (Action.TRUCO, Action.RETRUCO, Action.VALE_CUATRO)
+LEY_BUNDLES = (
+    Action.LEY_TODO,
+    Action.LEY_FALTA,
+    Action.LEY_RESTO,
+    Action.LEY_FALTA_RESTO,
+    Action.LEY_FALTA_TRUCO,
+    Action.LEY_TRUCO,
+    Action.LEY_RESTO_TRUCO,
+)
 
 
 def card_to_action(palo: int, numero: int) -> Action:
