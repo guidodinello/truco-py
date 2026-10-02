@@ -140,8 +140,39 @@ carries simplifications #21-#23; D4 excludes pico a pico contexts; vs-Random is 
 
 ## Deviations
 
-None yet. Each resume, restart, or change from the Config section is listed here with its date.
+Each resume, restart, or change from the Config section is listed here with its date.
+
+| Date | Entry |
+|---|---|
+| 2026-10-02 | **Night stop 1 (owner instruction, laptop is daytime-only).** `touch STOP` at 20:54:50 in `runs/009/M` and `runs/009/C`; both stopped within 2 s, `run.json` status `stopped`, `run.pid` removed, no training/inference/env-worker processes left. **M stopped at 4,629,504 steps** (`ckpt_0004629504.zip`, 5 snapshots in the pool); **C stopped at 7,080,960 steps** (`ckpt_0007080960.zip`, 8 snapshots). Neither is a fixed point yet (first fixed point is the first checkpoint at or after 5M). The exit code was not observed directly (the processes were not children of the controlling shell); the clean-stop log line, status `stopped`, a removed pid file and no traceback or abort message in either stdout log are the evidence it was 0. |
+| (resume, to be logged) | **Resume command**, run from the repo root with the same flags as the launch (run state is restored from `run.json`; immutable fields are checked): `python -m training.run --run-id <M\|C> --runs-root runs/009 --n-envs 8 --steps 20000000 --checkpoint-every 250000 --snapshot-every 1000000 --eval-every 250000 --eval-n 200 --inference cpu --reward diff --reward-scale 15 --seed 42 --partners snapshot --init runs/009/bc/bc_init.zip --context-bank runs/009/bc/bank.npz --resume`, plus `--opponent-mix thr=1.0,rand=0.0,self=0.0` for C. A resume replays the opponent draws (harmless); each one gets a row here. |
+
+**Disclosure: inference mode.** The Config pins `--inference cpu` (the batching CPU server). That default was chosen from a
+16-env micro-benchmark; Decision (b) then moved the layout to 8 envs per arm. At 8 envs the same micro-benchmark measured
+`local` (each worker holds its own single-thread CPU model copy, no server) at 1343 env-steps/s against 893 for the `cpu`
+server, so `cpu` was probably not the fastest choice for this layout. That micro-benchmark had no learner, so the real
+gain is unknown. Inference mode affects speed, not what is learned, and the config was not changed mid-run. Tracked in
+[#30](https://github.com/guidodinello/truco-py/issues/30) (profile first, then decide).
+
+## Run log
+
+- 2026-10-02 18:58: arms M and C launched concurrently from main **e5efc184aa2514e734b636b106dd9f83cb1e0fb8**, exactly per Config
+  (learner on `cuda`, `device=auto`). First 250k chunk: M 750 fps, C 1069 fps.
+- Night stop 1: see Deviations.
 
 ## Result / Verdict
 
-Not yet run.
+PPO arms and finals: not yet run to completion; no verdict.
+
+### H0 (BC gate): passed
+
+`python -m scripts.pretrain_bc --games 50000 --workers 12 --context-bank runs/009/bc/bank.npz --dataset runs/009/bc/dataset.npz --out runs/009/bc/bc_init.zip --min-val-acc 0.70`
+(seed 42, 10 epochs, batch 2048, lr 1e-3; the unpinned flags are the script defaults).
+
+- Context bank: 162,662 pre-hand states from 20,000 Threshold-vs-Threshold matches (seed 1).
+- Dataset: 604,308 (obs, action) pairs from 48,521 games; 544,048 train / 60,260 validation samples (4,865 held-out games, `game_id % 10 == 0`).
+- Best epoch by validation loss: epoch 10 (val loss 0.0889). **Validation accuracy 0.955 (gate 0.70): H0 passes** (`results/009/bc_metrics.json`).
+  Training took 8 s.
+- **Soft flag fired:** the clone (`bc_init`, sha256_12 `8280da87016b`) vs Threshold, n=4000, seed 20261002, seat-rotated:
+  **39.7 % [38.2, 41.2]**, outside the pre-registered [45 %, 55 %] (`results/009/bc_vs_thr.json`, 0 voided hands).
+  The flag does not stop the run; the arms start from a clone that is weaker than its teacher.
