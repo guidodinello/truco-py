@@ -1,7 +1,8 @@
 # Retraining on the fixed engine: BC warm start + PPO against a mixed opponent pool
 
 **Status:** PRE-REGISTERED 2026-10-02, before any measured run. Phase 0 (smoke and throughput) is
-done and recorded below; those runs are not results. "Result" and "Verdict" are empty on purpose.
+recorded below and is not a result. Both arms completed 20M steps and the finals ran 2026-10-05; see
+"Result / Verdict".
 **Date:** 2026-10-02 (owner decisions D1-D9, (a), (b) recorded)
 **Notes:** gamekit#001 (opponent mix), #002 (BC fine-tune lr), #009 (fixed-point trend, resume),
 #011 (collapse detection), #013 (run-scoped pool), #022 (team-consistent opponents)
@@ -147,6 +148,8 @@ Each resume, restart, or change from the Config section is listed here with its 
 | 2026-10-02 | **Night stop 1 (owner instruction, laptop is daytime-only).** `touch STOP` at 20:54:50 in `runs/009/M` and `runs/009/C`; both stopped within 2 s, `run.json` status `stopped`, `run.pid` removed, no training/inference/env-worker processes left. **M stopped at 4,629,504 steps** (`ckpt_0004629504.zip`, 5 snapshots in the pool); **C stopped at 7,080,960 steps** (`ckpt_0007080960.zip`, 8 snapshots). Neither is a fixed point yet (first fixed point is the first checkpoint at or after 5M). The exit code was not observed directly (the processes were not children of the controlling shell); the clean-stop log line, status `stopped`, a removed pid file and no traceback or abort message in either stdout log are the evidence it was 0. |
 | 2026-10-04 | **Resume 1 (22:20:41).** The laptop was off from night stop 1 until 2026-10-04 22:20; nothing ran in between. Both arms resumed with the command below from main e9424d5: **M from 4,629,504**, **C from 7,080,960** (the "start at" line in each `train.log` matches the stop). Stale `STOP` files were removed at start; both reloaded their snapshot pools from a cold HDD (about a minute in disk wait). First chunk after resume: M 643 fps (to 4,752,384), C 990 fps (to 7,252,992), both partial chunks that include warm-up. The resume replays the opponent draws (harmless, listed per the pre-registration). |
 | 2026-10-04 | **Night stop 2 (owner instruction).** `touch STOP` at 23:37:29 in `runs/009/M` and `runs/009/C`; the clean-stop line was logged within 2 s and both processes had fully exited about 40 s after the STOP. `run.json` status `stopped`, `run.pid` removed, no training/inference/env-worker processes left, no traceback or abort message in either stdout log. **M stopped at 7,266,304 steps** (`ckpt_0007266304.zip`, 8 snapshots in the pool); **C stopped at 11,296,256 steps** (`ckpt_0011296256.zip`, 12 snapshots). Progress this session (about 77 min): M +2.64M, C +4.22M. Fixed points already written: the first checkpoint at or after 5M for both arms, and at or after 10M for C. Exit codes were again not observed directly (same evidence as night stop 1). |
+| 2026-10-05 | **Resume 2 (13:29:14 by the laptop clock; the orchestrator's note said 10:30).** Resumed with the command below from main fb1eb18: **M from 7,266,304**, **C from 11,296,256**. Stale `STOP` files removed. First chunk: M 588 fps (to 7,503,872), C 956 fps (to 11,501,056). **C completed** at 20,000,256 steps (15:53:00, `status: complete`), **M completed** at 20,000,768 (18:55:12, `status: complete`). No further stop or resume; the freeze detector never fired in either arm. Exit codes not observed directly (same evidence as the night stops). |
+| 2026-10-05 | **Finals launch.** `scripts/rebench_009.sh 8` on the **laptop** (the pre-registered first route), main **fb1eb1830dd0c644658fdae282a71d1d54574245**, 8 workers, `PY` = the HDD venv. 19:06:15 to 19:35:01 (29 min wall). 15 jobs: 14 run, all `rc=0`; `bc_vs_thr` was **not re-run**: `results/009/bc_vs_thr.json` already existed from the H0 check (commit e5efc18, same seed 20261002 and n=4000, same code path), and counts as the final. |
 | (next resume, to be logged) | **Resume command**, run from the repo root with the same flags as the launch (run state is restored from `run.json`; immutable fields are checked): `python -m training.run --run-id <M\|C> --runs-root runs/009 --n-envs 8 --steps 20000000 --checkpoint-every 250000 --snapshot-every 1000000 --eval-every 250000 --eval-n 200 --inference cpu --reward diff --reward-scale 15 --seed 42 --partners snapshot --init runs/009/bc/bc_init.zip --context-bank runs/009/bc/bank.npz --resume`, plus `--opponent-mix thr=1.0,rand=0.0,self=0.0` for C. A resume replays the opponent draws (harmless); each one gets a row here. |
 
 **Disclosure: inference mode.** The Config pins `--inference cpu` (the batching CPU server). That default was chosen from a
@@ -160,11 +163,61 @@ gain is unknown. Inference mode affects speed, not what is learned, and the conf
 
 - 2026-10-02 18:58: arms M and C launched concurrently from main **e5efc184aa2514e734b636b106dd9f83cb1e0fb8**, exactly per Config
   (learner on `cuda`, `device=auto`). First 250k chunk: M 750 fps, C 1069 fps.
-- Night stop 1: see Deviations.
+- Night stop 1 (10-02), resume 1 (10-04), night stop 2 (10-04), resume 2 (10-05): see Deviations.
+- 2026-10-05: M and C complete (20,000,768 and 20,000,256 steps). Fixed points (first checkpoint at or after each
+  target): M `ckpt_0005002240` / `ckpt_0010002432` / `ckpt_0020000768`; C `ckpt_0005001216` / `ckpt_0010001408` / `ckpt_0020000256`.
+- 2026-10-05: finals run on the laptop; analysis by `scripts/analyze_009.py` -> `results/009/analysis.json`.
 
 ## Result / Verdict
 
-PPO arms and finals: not yet run to completion; no verdict.
+Source of every number: `results/009/*.json` (n=4000 seat-rotated matches per row, seed 20261002, deterministic RL, 0 voided
+hands in every job), analysed by `scripts/analyze_009.py` -> `results/009/analysis.json`. Wilson 95 % intervals.
+
+### Win rates of the RL agent (or Threshold, for the baselines)
+
+| agent | vs Threshold | vs VonNeumann (held out) | vs Random (descriptive) |
+|---|---|---|---|
+| **M-final** (20M, mix) | 91.8 [90.9, 92.6] | 56.8 [55.3, 58.3] | 87.0 [85.9, 88.0] |
+| **C-final** (20M, Threshold-only) | 91.2 [90.3, 92.1] | 64.1 [62.6, 65.5] | 93.4 [92.6, 94.2] |
+| bc_init | 39.7 [38.2, 41.2] | 50.1 [48.6, 51.7] | 83.4 [82.2, 84.5] |
+| M at 10M | 90.5 [89.5, 91.3] | | 88.6 [87.6, 89.5] |
+| M at 5M | 85.2 [84.0, 86.2] | | 85.1 [84.0, 86.2] |
+| Threshold (baseline) | | 64.6 [63.1, 66.1] | 87.5 [86.5, 88.5] |
+
+### Pre-registered tests
+
+- **H1 (learns): holds.** M-final vs Threshold, Wilson lower bound 90.9 % > 50 %.
+- **H2 (primary; M vs C against VonNeumann, one two-proportion test at alpha = 0.05): M does not beat C; C beats M.**
+  M - C = -7.28 pp (95 % CI [-9.41, -5.14]), z = -6.65, p < 0.001
+  (p = 2.9e-11). The "Control better" rung uses this same comparison.
+- **Non-inferiority (M - C vs Threshold, 95 % CI lower bound > -5 pp): satisfied.** Difference +0.58 pp,
+  95 % CI [-0.64, 1.79] (unpooled normal interval); the Newcombe interval
+  gives [-0.65, 1.80], same conclusion. (The CI method was not named in the
+  pre-registration; the unpooled normal interval was used, with Newcombe as a sensitivity check.)
+- **M-trend vs Threshold (secondary BH family, q = 0.05, later minus earlier):**
+
+| pair | difference | p | BH-rejected |
+|---|---|---|---|
+| 10M - 5M | +5.33 pp | 3.35e-13 | yes |
+| 20M - 5M | +6.67 pp | < 1e-15 (underflows) | yes |
+| 20M - 10M | +1.35 pp | 0.0335 | yes |
+
+- **H3 (descriptive only):** reported in the table above. M-final vs Random 87.0 [85.9, 88.0] against the re-measured Threshold-vs-Random
+  baseline 87.5 [86.5, 88.5]; C-final 93.4 [92.6, 94.2]. No test.
+- **Freeze detector:** did not fire in either arm.
+
+### Verdict (ladder, first match wins)
+
+Rung 1 (Collapsed): no. Rung 2 (Generalises): requires H2 for M; H2 fails. Rung 3: requires H2; fails.
+**Rung 4 (Control better): C beats M against VonNeumann (unadjusted p < 0.05, same comparison as H2): yes.**
+
+**Verdict: 4. Control better.**
+
+### Disclosure
+
+Deviations (resume, finals launch, `bc_vs_thr` not re-run) are in the Deviations table. `bc_vs_thr.json` is stamped with
+code commit e5efc18; all other finals with fb1eb18 (docs-only differences between the two). The limitations declared above stand
+(one seed per arm, VonNeumann a single held-out opponent, no BC-vs-cold-start ablation).
 
 ### H0 (BC gate): passed
 
