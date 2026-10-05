@@ -1,0 +1,41 @@
+{
+  "agents": {
+    "C10": {
+      "deterministic": true,
+      "path": "runs/009/C/ckpt/ckpt_0010001408.zip",
+      "sha256": "6b796317a244ab2c6d7b2b413e6b34d3f9985065f01cc7f74ab7374affeec752"
+    },
+    "C20": {
+      "deterministic": true,
+      "path": "runs/009/C/ckpt/ckpt_0020000256.zip",
+      "sha256": "62b60962114d095b82d5c7e59b1d499e2908b94f872c22b75ce828b3e07ebd11"
+    },
+    "C5": {
+      "deterministic": true,
+      "path": "runs/009/C/ckpt/ckpt_0005001216.zip",
+      "sha256": "7e42419b58b8ab79b432c1df86174539e8dcc1f9319a0c1653e7ca0f5c73cfcf"
+    },
+    "M10": {
+      "deterministic": true,
+      "path": "runs/009/M/ckpt/ckpt_0010002432.zip",
+      "sha256": "7c80bfd7eef1658631c0a947fe0a5ace5dd1e4f070c77ba19e0e6c87a70ca3ef"
+    },
+    "M20": {
+      "deterministic": true,
+      "path": "runs/009/M/ckpt/ckpt_0020000768.zip",
+      "sha256": "3a8309bf2850eaa9b98f5051bcacbcf5809744cc4463992a6d38ac77fe36aa0c"
+    },
+    "M5": {
+      "deterministic": true,
+      "path": "runs/009/M/ckpt/ckpt_0005002240.zip",
+      "sha256": "f66c396e4930a6e024a7da96a1c3e860064c19e50a5797028ab752d1f146b826"
+    },
+    "bc_init": {
+      "deterministic": true,
+      "path": "runs/009/bc/bc_init.zip",
+      "sha256": "8280da87016b6e2243cbcf73c302ae79462db5e3e39aeeb57757087b69e7ee55"
+    }
+  },
+  "experiment": "010",
+  "source": "exp 009 fixed points"
+}
