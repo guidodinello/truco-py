@@ -1,0 +1,307 @@
+{
+  "detector_fired": {
+    "C": false,
+    "M": false
+  },
+  "results": {
+    "C_vs_random": {
+      "n": 4000,
+      "rate": 0.93425,
+      "wilson95": [
+        0.9261451076959776,
+        0.9415216158069168
+      ],
+      "wins": 3737
+    },
+    "C_vs_threshold": {
+      "n": 4000,
+      "rate": 0.9125,
+      "wilson95": [
+        0.9033428265397513,
+        0.920865632746245
+      ],
+      "wins": 3650
+    },
+    "C_vs_von_neumann": {
+      "n": 4000,
+      "rate": 0.64075,
+      "wilson95": [
+        0.6257531971082233,
+        0.6554767196057258
+      ],
+      "wins": 2563
+    },
+    "M10_vs_random": {
+      "n": 4000,
+      "rate": 0.886,
+      "wilson95": [
+        0.8757785247248907,
+        0.8954807850554598
+      ],
+      "wins": 3544
+    },
+    "M10_vs_threshold": {
+      "n": 4000,
+      "rate": 0.90475,
+      "wilson95": [
+        0.8952603924532226,
+        0.9134629382037641
+      ],
+      "wins": 3619
+    },
+    "M5_vs_random": {
+      "n": 4000,
+      "rate": 0.85125,
+      "wilson95": [
+        0.8398856849280572,
+        0.8619403061609274
+      ],
+      "wins": 3405
+    },
+    "M5_vs_threshold": {
+      "n": 4000,
+      "rate": 0.8515,
+      "wilson95": [
+        0.8401430833217416,
+        0.8621824280455984
+      ],
+      "wins": 3406
+    },
+    "M_vs_random": {
+      "n": 4000,
+      "rate": 0.86975,
+      "wilson95": [
+        0.8589637395468372,
+        0.8798267521404286
+      ],
+      "wins": 3479
+    },
+    "M_vs_threshold": {
+      "n": 4000,
+      "rate": 0.91825,
+      "wilson95": [
+        0.9093526254596259,
+        0.9263448002285388
+      ],
+      "wins": 3673
+    },
+    "M_vs_von_neumann": {
+      "n": 4000,
+      "rate": 0.568,
+      "wilson95": [
+        0.5525910746872855,
+        0.583278441025315
+      ],
+      "wins": 2272
+    },
+    "baseline_threshold_vs_random": {
+      "n": 4000,
+      "rate": 0.87525,
+      "wilson95": [
+        0.8646484467228729,
+        0.8851314910882062
+      ],
+      "wins": 3501
+    },
+    "baseline_threshold_vs_von_neumann": {
+      "n": 4000,
+      "rate": 0.64625,
+      "wilson95": [
+        0.6312989110391559,
+        0.6609204517986064
+      ],
+      "wins": 2585
+    },
+    "bc_vs_random": {
+      "n": 4000,
+      "rate": 0.834,
+      "wilson95": [
+        0.8221499380726602,
+        0.8452091538098192
+      ],
+      "wins": 3336
+    },
+    "bc_vs_threshold": {
+      "n": 4000,
+      "rate": 0.39675,
+      "wilson95": [
+        0.38169510492921344,
+        0.41200302011011
+      ],
+      "wins": 1587
+    },
+    "bc_vs_von_neumann": {
+      "n": 4000,
+      "rate": 0.5015,
+      "wilson95": [
+        0.4860111896653295,
+        0.5169859320048013
+      ],
+      "wins": 2006
+    }
+  },
+  "stamps": {
+    "C20M_vs_rnd": {
+      "checkpoint_sha256_12": "62b60962114d",
+      "git_commit": "fb1eb1830dd0c644658fdae282a71d1d54574245",
+      "seed": 20261002,
+      "voided_hands": 0
+    },
+    "C20M_vs_thr": {
+      "checkpoint_sha256_12": "62b60962114d",
+      "git_commit": "fb1eb1830dd0c644658fdae282a71d1d54574245",
+      "seed": 20261002,
+      "voided_hands": 0
+    },
+    "C20M_vs_vn": {
+      "checkpoint_sha256_12": "62b60962114d",
+      "git_commit": "fb1eb1830dd0c644658fdae282a71d1d54574245",
+      "seed": 20261002,
+      "voided_hands": 0
+    },
+    "M10M_vs_rnd": {
+      "checkpoint_sha256_12": "7c80bfd7eef1",
+      "git_commit": "fb1eb1830dd0c644658fdae282a71d1d54574245",
+      "seed": 20261002,
+      "voided_hands": 0
+    },
+    "M10M_vs_thr": {
+      "checkpoint_sha256_12": "7c80bfd7eef1",
+      "git_commit": "fb1eb1830dd0c644658fdae282a71d1d54574245",
+      "seed": 20261002,
+      "voided_hands": 0
+    },
+    "M20M_vs_rnd": {
+      "checkpoint_sha256_12": "3a8309bf2850",
+      "git_commit": "fb1eb1830dd0c644658fdae282a71d1d54574245",
+      "seed": 20261002,
+      "voided_hands": 0
+    },
+    "M20M_vs_thr": {
+      "checkpoint_sha256_12": "3a8309bf2850",
+      "git_commit": "fb1eb1830dd0c644658fdae282a71d1d54574245",
+      "seed": 20261002,
+      "voided_hands": 0
+    },
+    "M20M_vs_vn": {
+      "checkpoint_sha256_12": "3a8309bf2850",
+      "git_commit": "fb1eb1830dd0c644658fdae282a71d1d54574245",
+      "seed": 20261002,
+      "voided_hands": 0
+    },
+    "M5M_vs_rnd": {
+      "checkpoint_sha256_12": "f66c396e4930",
+      "git_commit": "fb1eb1830dd0c644658fdae282a71d1d54574245",
+      "seed": 20261002,
+      "voided_hands": 0
+    },
+    "M5M_vs_thr": {
+      "checkpoint_sha256_12": "f66c396e4930",
+      "git_commit": "fb1eb1830dd0c644658fdae282a71d1d54574245",
+      "seed": 20261002,
+      "voided_hands": 0
+    },
+    "bc_vs_rnd": {
+      "checkpoint_sha256_12": "8280da87016b",
+      "git_commit": "fb1eb1830dd0c644658fdae282a71d1d54574245",
+      "seed": 20261002,
+      "voided_hands": 0
+    },
+    "bc_vs_thr": {
+      "checkpoint_sha256_12": "8280da87016b",
+      "git_commit": "e5efc184aa2514e734b636b106dd9f83cb1e0fb8",
+      "seed": 20261002,
+      "voided_hands": 0
+    },
+    "bc_vs_vn": {
+      "checkpoint_sha256_12": "8280da87016b",
+      "git_commit": "fb1eb1830dd0c644658fdae282a71d1d54574245",
+      "seed": 20261002,
+      "voided_hands": 0
+    }
+  },
+  "tests": {
+    "H1": {
+      "M_vs_threshold_wilson_lower": 0.9093526254596259,
+      "holds": true
+    },
+    "H2_M_vs_C_against_von_neumann": {
+      "C_beats_M": true,
+      "M_beats_C": false,
+      "ci95_newcombe": [
+        -0.09406457833592971,
+        -0.051341243447158603
+      ],
+      "ci95_unpooled": [
+        -0.09412092092483178,
+        -0.05137907907516841
+      ],
+      "diff": -0.07275000000000009,
+      "p_value": 2.8612223701429684e-11,
+      "z": -6.653541745972998
+    },
+    "M_trend_vs_threshold_BH": [
+      {
+        "bh_rejected_q05": true,
+        "ci95_newcombe": [
+          0.03896130095700658,
+          0.06756414854539092
+        ],
+        "ci95_unpooled": [
+          0.038960223042121905,
+          0.06753977695787813
+        ],
+        "diff": 0.05325000000000002,
+        "later_minus_earlier": "10M - 5M",
+        "p_value": 3.352873534367973e-13,
+        "z": 7.27945934344558
+      },
+      {
+        "bh_rejected_q05": true,
+        "ci95_newcombe": [
+          0.05284757062017273,
+          0.08069651738524196
+        ],
+        "ci95_unpooled": [
+          0.05283858046606765,
+          0.0806614195339323
+        ],
+        "diff": 0.06674999999999998,
+        "later_minus_earlier": "20M - 5M",
+        "p_value": 0.0,
+        "z": 9.352774934585847
+      },
+      {
+        "bh_rejected_q05": true,
+        "ci95_newcombe": [
+          0.0010469455211056938,
+          0.02597310875972008
+        ],
+        "ci95_unpooled": [
+          0.0010559891249739602,
+          0.02594401087502595
+        ],
+        "diff": 0.013499999999999956,
+        "later_minus_earlier": "20M - 10M",
+        "p_value": 0.03352954299775668,
+        "z": 2.1256844447203695
+      }
+    ],
+    "noninferiority_M_minus_C_vs_threshold": {
+      "ci95_newcombe": [
+        -0.0064625789641968474,
+        0.01797209542267756
+      ],
+      "ci95_unpooled": [
+        -0.006447161830900078,
+        0.017947161830900143
+      ],
+      "diff": 0.005750000000000033,
+      "lower_bound_gt_minus5pp": true,
+      "lower_bound_gt_minus5pp_newcombe": true,
+      "p_value": 0.3555284015191811,
+      "z": 0.923919169810925
+    }
+  },
+  "verdict": "4. Control better"
+}

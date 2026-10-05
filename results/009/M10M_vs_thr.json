@@ -1,0 +1,73 @@
+{
+  "git_commit": "fb1eb1830dd0c644658fdae282a71d1d54574245",
+  "generated_at": "2026-10-05T22:08:22.343794+00:00",
+  "experiment": "benchmark",
+  "num_seats": 2,
+  "n_games": 4000,
+  "engine_seed_base": 20261002,
+  "driver_seed_base": 20261002,
+  "by_role": {
+    "rl": {
+      "n_seat_occupancies": 4000,
+      "wins": 3619,
+      "win_rate": 0.90475,
+      "win_rate_wilson_ci": [
+        0.8952603924532226,
+        0.9134629382037641
+      ],
+      "seat_occupancy_counts": {
+        "0": 2000,
+        "1": 2000
+      }
+    },
+    "threshold": {
+      "n_seat_occupancies": 4000,
+      "wins": 381,
+      "win_rate": 0.09525,
+      "win_rate_wilson_ci": [
+        0.08653706179623598,
+        0.10473960754677739
+      ],
+      "seat_occupancy_counts": {
+        "0": 2000,
+        "1": 2000
+      }
+    }
+  },
+  "by_seat": {
+    "0": {
+      "n_games": 4000,
+      "wins": 1979,
+      "win_rate": 0.49475,
+      "win_rate_wilson_ci": [
+        0.4792684492303034,
+        0.5102416249242387
+      ],
+      "expected_under_null": 0.5
+    },
+    "1": {
+      "n_games": 4000,
+      "wins": 2021,
+      "win_rate": 0.50525,
+      "win_rate_wilson_ci": [
+        0.4897583750757614,
+        0.5207315507696967
+      ],
+      "expected_under_null": 0.5
+    }
+  },
+  "comparisons": {
+    "rl_vs_threshold": {
+      "z": 72.4038811114432,
+      "p_value": 0.0
+    }
+  },
+  "mode": "match_rl_vs_threshold",
+  "seed": 20261002,
+  "rollouts": 20,
+  "checkpoint": "runs/009/M/ckpt/ckpt_0010002432.zip",
+  "checkpoint_sha256": "7c80bfd7eef1658631c0a947fe0a5ace5dd1e4f070c77ba19e0e6c87a70ca3ef",
+  "checkpoint_sha256_12": "7c80bfd7eef1",
+  "elapsed_s": 75.60146811899904,
+  "voided_hands": 0
+}

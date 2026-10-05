@@ -1,0 +1,30 @@
+2026-10-05T19:06:15-03:00 start baseline_thr_vs_rnd
+2026-10-05T19:06:15-03:00 start baseline_thr_vs_vn
+2026-10-05T19:06:15-03:00 start M20M_vs_thr
+2026-10-05T19:06:15-03:00 start C20M_vs_thr
+2026-10-05T19:06:15-03:00 start C20M_vs_vn
+2026-10-05T19:06:15-03:00 start M20M_vs_vn
+2026-10-05T19:06:15-03:00 start M20M_vs_rnd
+2026-10-05T19:06:15-03:00 start C20M_vs_rnd
+2026-10-05T19:06:21-03:00 end   baseline_thr_vs_rnd rc=0
+skip bc_vs_thr (done)
+2026-10-05T19:06:21-03:00 start bc_vs_rnd
+2026-10-05T19:06:58-03:00 end   M20M_vs_rnd rc=0
+2026-10-05T19:06:58-03:00 start bc_vs_vn
+2026-10-05T19:07:05-03:00 end   C20M_vs_rnd rc=0
+2026-10-05T19:07:05-03:00 start M10M_vs_thr
+2026-10-05T19:07:06-03:00 end   bc_vs_rnd rc=0
+2026-10-05T19:07:06-03:00 start M5M_vs_thr
+2026-10-05T19:07:42-03:00 end   M20M_vs_thr rc=0
+2026-10-05T19:07:42-03:00 start M10M_vs_rnd
+2026-10-05T19:08:22-03:00 end   M10M_vs_thr rc=0
+2026-10-05T19:08:22-03:00 start M5M_vs_rnd
+2026-10-05T19:08:30-03:00 end   M10M_vs_rnd rc=0
+2026-10-05T19:08:32-03:00 end   C20M_vs_thr rc=0
+2026-10-05T19:08:36-03:00 end   M5M_vs_thr rc=0
+2026-10-05T19:08:55-03:00 end   M5M_vs_rnd rc=0
+2026-10-05T19:25:18-03:00 end   M20M_vs_vn rc=0
+2026-10-05T19:26:37-03:00 end   baseline_thr_vs_vn rc=0
+2026-10-05T19:29:07-03:00 end   bc_vs_vn rc=0
+2026-10-05T19:35:01-03:00 end   C20M_vs_vn rc=0
+2026-10-05T19:35:01-03:00 BATCH DONE
