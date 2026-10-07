@@ -20,8 +20,13 @@ dependencies = [
     "sb3-contrib>=2.9.0",
     "stable-baselines3>=2.9.0",
     "tensorboard>=2.20.0",
-    "torch>=2.3",
 ]
+
+# torch is an extra so CI can take the CPU wheels and the laptop the CUDA ones
+# from the same uv.lock (capped <2.12 so both match). Always sync/install with exactly one of the two.
+[project.optional-dependencies]
+cpu = ["torch>=2.3,<2.12"]
+cu128 = ["torch>=2.3,<2.12"]
 
 [dependency-groups]
 dev = [
@@ -58,7 +63,18 @@ testpaths = ["tests"]
 
 [tool.uv.sources]
 gamekit = { git = "https://github.com/guidodinello/gamekit", branch = "main" }
-torch = { index = "pytorch-cu128" }
+torch = [
+    { index = "pytorch-cpu", extra = "cpu" },
+    { index = "pytorch-cu128", extra = "cu128" },
+]
+
+[tool.uv]
+conflicts = [[{ extra = "cpu" }, { extra = "cu128" }]]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
 
 [[tool.uv.index]]
 name = "pytorch-cu128"
