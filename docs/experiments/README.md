@@ -84,4 +84,4 @@ These are stated once here instead of being repeated in every log:
 | [008](008-seat-rotated-rebenchmarks.md) | 2026-10-01 | gamekit#016, #009, #005 | H1 inconclusive (rules overlap); 90% rejected; H2 not confirmed; H3 rejected; H4 inconclusive; pre-fix engine |
 | [009](009-retrain-mixed-pool.md) | 2026-10-02 | gamekit#001, #002, #009, #011, #013, #022 | H1 holds; H2 fails (C beats M vs VonNeumann); verdict: control better; H3 descriptive |
 | [010](010-league-009-checkpoints.md) | 2026-10-05 | gamekit#022 | descriptive only (no verdict rule); 36 pairings x 10000 on the HP, no ties, no significant 3-cycles; M20 rates highest (Elo 353) and beats C20 58.9 % head to head |
-| [011](011-league-vonneumann.md) | 2026-10-07 | gamekit#022 | pre-registered: one confirmatory test (C20 vs M20 against VonNeumann, replication of 009 H2), rest descriptive; not yet run |
+| [011](011-league-vonneumann.md) | 2026-10-07 | gamekit#022 | pre-registered: one confirmatory test (C20 vs M20 against VonNeumann, replication of 009 H2), rest descriptive; not yet run (amended before any run: runs on the HP) |

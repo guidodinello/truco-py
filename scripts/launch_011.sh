@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-# Exp 011 launcher (laptop): the 9 VonNeumann pairings on top of the 36 copied exp 010 files.
-# Usage: bash scripts/launch_011.sh [workers]    (default 9)
+# Exp 011 launcher: the 9 VonNeumann pairings on top of the 36 copied exp 010 files.
+# Usage: bash scripts/launch_011.sh [workers]    (default 9, laptop)
+#   HP (the registered run after the amendment): PY=.venv/bin/python bash scripts/launch_011.sh 3
+# The caller checks out the commit first; this script does no git or uv sync.
 # Refuses to start while a catan job is running (catan #46 measures latency: the two never overlap).
 # Detached tmux session truco-011-league, nice 19, one thread per worker, log logs/011/league.log.
 # Resumable: re-running skips finished pairings.
@@ -10,7 +12,7 @@ cd "$(dirname "$0")/.."
 if pgrep -f 'experiments.search_eval' >/dev/null; then
   echo "catan search_eval is running; not launching" >&2; exit 1
 fi
-PY=/media/guido/0DF7128F0DF7128F/truco-py-retrain-venv/bin/python
+PY=${PY:-/media/guido/0DF7128F0DF7128F/truco-py-retrain-venv/bin/python}
 mkdir -p logs/011 results/011/league
 # Exp 010 pairings, byte-identical (hashes in results/011/010_pairings.sha256).
 for f in results/010/league/*__vs__*.json; do cp -n "$f" results/011/league/; done
