@@ -1,15 +1,25 @@
 # Pro Agent Roadmap — reaching 90%+ win rate
 
-Current baselines (500 games, 20 rollouts, warm cache):
+**Status (2026-10-07).** Rebuilt engine (#26), n=4000 seat-rotated matches per row, deterministic RL
+([log 009](experiments/009-retrain-mixed-pool.md), `logs/009/*.log`). Numbers from before #26 describe a different game.
 
 | Matchup | Win rate |
 |---|---|
-| VonNeumann vs Random | ~65-70% |
-| VonNeumann vs Threshold | ~69% |
+| M20 (mixed pool) vs Threshold | 91.8% |
+| C20 (Threshold-only) vs Threshold | 91.2% |
+| C20 vs VonNeumann (held out) | 64.1% |
+| M20 vs VonNeumann (held out) | 56.8% |
+| Threshold vs VonNeumann | 64.6% |
+| Threshold vs Random | 87.5% |
+
+The ~90% target is met against Threshold, but no RL agent beats its teacher against VonNeumann.
+The sections below are the original June plan, kept as history with a status line each.
 
 ---
 
 ## Option 1 — Better rollout policy (easy, ~75-80%)
+
+> **Status:** not done. `VonNeumannAgent` still uses `_SimpleRandom` rollouts (`agents/von_neumann_agent.py`).
 
 **Effort:** ~2h, ~5 lines of code.
 
@@ -42,6 +52,8 @@ is rule-based (no rollouts of its own).
 
 ## Option 2 — Train the existing RL pipeline (medium, ~80-90%)
 
+> **Status:** done, via `training/run.py` rather than the `train.py` commands below ([log 009](experiments/009-retrain-mixed-pool.md)): BC warm start, then PPO against a mixed pool. 91.8% / 91.2% vs Threshold at 20M. The Phase 2 self-play step is superseded by Option 4.
+
 **Effort:** compute time (~hours on GPU), no new code needed.
 
 The PPO + self-play infrastructure already exists in `training/`. A well-converged
@@ -71,6 +83,8 @@ diversity.
 
 ## Option 3 — CFR / DeepCFR (hard, theoretically optimal)
 
+> **Status:** not started.
+
 **Effort:** weeks, requires building the game tree or a neural network approximation.
 
 Counterfactual Regret Minimization is the gold standard for imperfect-information games
@@ -92,6 +106,8 @@ there at a fraction of the complexity.
 
 ## Recommended path
 
+> **Status:** step 2 is done (see Option 2); step 1 is not; step 3 is not started. Next direction: Option 4.
+
 1. **Start with Option 1** — quick win, validates that better rollout opponents help.
    Benchmark the result; if win rate jumps to 75%+, the EV-estimation hypothesis is confirmed.
 
@@ -100,3 +116,21 @@ there at a fraction of the complexity.
    track progress.
 
 3. **Revisit CFR** only if self-play plateaus below 90% and you need a Nash-optimal strategy.
+
+---
+
+## Option 4 — League-based self-play (planned, gated)
+
+Naive self-play did not carry over to a different-style opponent: in [log 009](experiments/009-retrain-mixed-pool.md) the arm with
+self-snapshot and Random opponents (M) lost to the Threshold-only arm (C) against held-out VonNeumann, 56.8% vs 64.1%, one seed,
+yet beat C head to head in [log 010](experiments/010-league-009-checkpoints.md) (M20 beats C20 58.9%). M changed the self share and
+the Random share together and both arms used snapshot partners, so the cause is untested. Truco is imperfect-information and
+team-based, and the partner is also learned.
+
+Proposal: league / prioritized fictitious self-play. Sample opponents from past snapshots plus fixed baselines, weighted by win rate
+against the learner, baselines always kept, judged only on held-out opponents (VonNeumann). The method and the possible gamekit
+support (a sampler driven by `gamekit.league`, [gamekit#39](https://github.com/guidodinello/gamekit/issues/39)) live in
+[gamekit note 023](https://github.com/guidodinello/gamekit/blob/main/docs/research/023-league-selfplay.md).
+
+Do first: (1) gamekit note 001's ablation (`--opponent-mix thr=0.8,rand=0.2,self=0` and `--partners threshold`, each vs C, more than one
+seed); (2) [exp 011](experiments/011-league-vonneumann.md), a league that adds VonNeumann (pre-registered, not yet run).
