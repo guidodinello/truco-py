@@ -22,11 +22,15 @@ dependencies = [
     "tensorboard>=2.20.0",
 ]
 
-# torch is an extra so CI can take the CPU wheels and the laptop the CUDA ones
-# from the same uv.lock (capped <2.12 so both match). Always sync/install with exactly one of the two.
+# torch comes from one of two mutually exclusive variants, both locked in uv.lock and
+# capped <2.12 so they resolve the same version:
+#   - cu128 (CUDA wheels): a default dependency group, so plain `uv sync` / `uv run`
+#     on the laptop keep the CUDA build.
+#   - cpu: the only extra; CI opts in with `--extra cpu --no-group cu128`.
+# uv requires every torch index to be gated by an extra or a group (an unconditional
+# or `extra != ...` fallback source fails to lock), hence this shape.
 [project.optional-dependencies]
 cpu = ["torch>=2.3,<2.12"]
-cu128 = ["torch>=2.3,<2.12"]
 
 [dependency-groups]
 dev = [
@@ -35,6 +39,7 @@ dev = [
     "pre-commit>=4.0",
     "pytest>=8.0",
 ]
+cu128 = ["torch>=2.3,<2.12"]
 
 [tool.ruff]
 target-version = "py313"
@@ -65,11 +70,12 @@ testpaths = ["tests"]
 gamekit = { git = "https://github.com/guidodinello/gamekit", branch = "main" }
 torch = [
     { index = "pytorch-cpu", extra = "cpu" },
-    { index = "pytorch-cu128", extra = "cu128" },
+    { index = "pytorch-cu128", group = "cu128" },
 ]
 
 [tool.uv]
-conflicts = [[{ extra = "cpu" }, { extra = "cu128" }]]
+default-groups = ["dev", "cu128"]
+conflicts = [[{ extra = "cpu" }, { group = "cu128" }]]
 
 [[tool.uv.index]]
 name = "pytorch-cpu"

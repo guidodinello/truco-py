@@ -2,14 +2,14 @@
 # templates/ci/python-ci.yml: Lint + Typecheck + Tests as the required gate (pre-commit
 # only runs locally, so CI is the only place a required check can enforce it).
 #
-# torch: pyproject.toml exposes it as the mutually exclusive `cpu` / `cu128` extras,
-# each pinned to its own index via tool.uv.sources, both resolved in uv.lock. CI syncs
-# `--extra cpu` (no CUDA wheels, no multi-GB nvidia downloads); the laptop installs
-# `.[cu128]`. `--locked` fails the job if uv.lock is stale. stable-baselines3 also
-# depends on torch, so a sync with neither extra would pull PyPI's CUDA build — every
-# job that needs torch must pass --extra cpu. Lint doesn't need it (--only-dev). `uv run`
-# re-syncs the default (no-extra) set and would swap the CPU wheel for the CUDA one,
-# so every run step is `uv run --no-sync` after the explicit sync.
+# torch: pyproject.toml has two mutually exclusive variants, each pinned to its own
+# index via tool.uv.sources and both resolved in uv.lock: `cu128` (CUDA wheels) is a
+# *default dependency group*, so plain `uv sync` / `uv run` on the laptop keep it; `cpu`
+# is the only extra. CI opts into CPU with `--extra cpu --no-group cu128` (no CUDA
+# wheels, no multi-GB nvidia downloads). `--locked` fails the job if uv.lock is stale.
+# `--extra cpu` alone errors on purpose (conflicts with the default cu128 group).
+# Lint doesn't need torch (--only-dev). Every run step is `uv run --no-sync`: a syncing
+# `uv run` would re-sync the default set and swap the CPU wheel for the CUDA one.
 #
 # Required status checks (no matrix, so contexts are the bare job names):
 #   Lint Python, Typecheck Python, Tests (Python)
@@ -62,7 +62,7 @@ jobs:
       # Full dependency set on purpose: without gamekit / stable_baselines3 installed,
       # mypy falls back to ignore_missing_imports and under-reports real errors.
       - name: Install dependencies
-        run: uv sync --locked --extra cpu
+        run: uv sync --locked --extra cpu --no-group cu128
 
       - name: mypy
         run: uv run --no-sync python -m mypy .
@@ -79,7 +79,7 @@ jobs:
           cache-dependency-glob: "uv.lock"
 
       - name: Install dependencies
-        run: uv sync --locked --extra cpu
+        run: uv sync --locked --extra cpu --no-group cu128
 
       - name: Run tests
         run: uv run --no-sync pytest
