@@ -1,7 +1,7 @@
 # League over the exp 009 checkpoints: round-robin ratings
 
-**Status:** PRE-REGISTERED 2026-10-05, before any measured run. The only runs so far are the laptop timing runs
-listed under "Timing (not results)". Results and verdict are placeholders.
+**Status:** PRE-REGISTERED 2026-10-05, before any measured run (the only earlier runs are the laptop timing runs under
+"Timing (not results)"). RUN on the HP 2026-10-05/06; results below. Descriptive only, no verdict scored.
 **Date:** 2026-10-05
 **Note:** [gamekit#022 — League ratings: anchored Bradley-Terry/Elo over a round-robin, with the win matrix alongside](https://github.com/guidodinello/gamekit/blob/main/docs/research/022-league-ratings.md)
 (module `gamekit.league`, gamekit#38). This is the first truco league, run after the engine fixes (#26) that the note
@@ -51,7 +51,7 @@ in 009, so theirs are first recorded here. **VonNeumann is excluded** (too slow 
 
 Fixed now; any difference at run time is a deviation and is listed under "Deviations".
 
-- Code: `scripts/league_010.py` (driver), `scripts/launch_010.sh` (HP launcher), `tests/test_league_010.py`. Commit: filled at launch.
+- Code: `scripts/league_010.py` (driver), `scripts/launch_010.sh` (HP launcher), `tests/test_league_010.py`. Commit: `dbaabc8` (the merge of #34).
 - **Unit:** full `TrucoMatch` (default rules), RL agents deterministic, exactly as the 009 finals.
 - **Seat reduction:** `num_seats=2` *team slots*, as in `scripts/benchmark.py`: slot 0 is Team A's three players, slot 1 is Team B's,
   each filled with 3 copies of one agent. gamekit#022's multi-player A-B-A-B lineup (an agent holds N/2 individual seats) is the
@@ -101,7 +101,7 @@ The `xcheck` files are discarded afterwards and never enter the league.
   76c364b (includes `gamekit.league`, a7cb5ae), GPU not used.
 - **HP (`homelab-hp`):** CPU-only, 4 cores, no AVX2 (AVX only), about 5.5 GB RAM free. **Environment difference:** torch 2.11.0+cpu
   installed from the PyTorch CPU index with all other packages from the lock (`--no-deps`), so it is **not** the lock's cu128 wheel. The
-  cross-machine check is the evidence that the difference does not change the results. Commit, Python and package versions are filled at launch.
+  cross-machine check is the evidence that the difference does not change the results. Recorded at launch: commit `dbaabc8`, Python 3.13.15, torch 2.11.0+cpu, gamekit 0.3.0 at 76c364b (same as the laptop).
 
 ## Timing (not results)
 
@@ -113,15 +113,77 @@ coarse number for that cell before launch. It changes nothing: there are no deci
 
 | date | what | why |
 |---|---|---|
+| 2026-10-05 | HP measured about 7.1x slower per core than the laptop (31.55 vs 4.46 matches/s, C20 vs M20, 1 worker), not the assumed 4x | the timing assumption was unmeasured. The re-estimate was about 7.3 h (3 workers), under the 8 h line, so **n stayed 10000**; the 6000 fallback was not used |
+| 2026-10-05 | Untracked exp 008 outputs on the HP (`logs/008`, `results/008`) moved to `~/truco-py-hp-008-backup/`, nothing deleted | they blocked the checkout of the merge commit; no effect on 010 |
+| 2026-10-05 | HP venv rebuilt (torch 2.11.0+cpu, others from the lock with `--no-deps`); the old `.venv-old` was deleted after pytest passed on the HP (167 tests) | planned environment difference, see Environment |
+| 2026-10-05 | PR #34 was committed with `SKIP=mypy` (the hook runs bare `uv run mypy`, outside the HDD venv); mypy was run directly and passed | process note, no effect on results |
 
 ## Run log
 
-(filled at launch)
+- Launch: `bash scripts/launch_010.sh dbaabc8 league 10000 3`, tmux `truco-010-league` on `homelab-hp`, nice 19, one thread per worker,
+  **start 2026-10-05T23:28:52Z**, **exit 0 at 2026-10-06T06:15:41Z**. Wall **6 h 47 m**, against the 7.3 h re-estimate (3.3 h in the
+  pre-registration, which used the unmeasured 4x). No errors or tracebacks in `logs/010/league.log`.
+- Cross-machine check (gate): C20 vs M20, n=200, seed 20261005, `xcheck`: **passed**. Laptop and HP gave identical wins (80 for C20, 120 for M20),
+  0 ties, config hash `38b17aeb8a5a` and winners sha256 `4e7760c5...` (full value in the launch session log). The xcheck files were deleted on both machines.
+- The HP driver verified the 7-checkpoint manifest at launch (log: `manifest verified: 7 checkpoints`); it was re-verified on the laptop at analysis.
+- Results pulled with rsync; for all 36 pairing files the stamp was re-derived and matched: names cover every pair of the roster, seed 20261005,
+  n 10000, `num_seats` 2, `config_hash` equal to gamekit's hash of that config, engine/driver seed bases equal to `pairing_seeds`, commit `dbaabc8`,
+  and the two roles' wins sum to 10000 (no ties anywhere).
+- Committed: `results/010/league/` (36 pairing files + `league.json`, 152 KB) and `logs/010/league.log` (388 KB).
+  `league.json` was regenerated with `python -m scripts.league_010 summarize` (the in-run copy is the known race).
 
 ## Result
 
-(not yet run)
+### Ratings (Elo, threshold = 0, 95 % bootstrap CI, 1000 resamples)
+
+| agent | Elo | 95 % CI |
+|---|---|---|
+| M20 | 353.2 | [348.9, 357.2] |
+| M10 | 333.4 | [329.6, 337.2] |
+| C20 | 308.3 | [304.4, 312.2] |
+| C10 | 305.4 | [301.3, 309.3] |
+| M5 | 298.9 | [294.9, 302.9] |
+| C5 | 285.4 | [281.5, 288.9] |
+| threshold | 0.0 | [0.0, 0.0] |
+| bc_init | -13.3 | [-17.1, -9.7] |
+| random | -171.7 | [-175.9, -167.2] |
+
+### Win matrix (row beats column, % of 10000 decisive matches; Wilson 95 % half-width is 0.4 to 1.0 points in every cell, the per-cell intervals are in `results/010/league/league.json`)
+
+| row \ col | M20 | M10 | C20 | C10 | M5 | C5 | threshold | bc_init | random |
+|---|---|---|---|---|---|---|---|---|---|
+| M20 | - | 55.1 | 58.9 | 58.2 | 56.1 | 60.3 | 92.5 | 88.7 | 86.7 |
+| M10 | 44.9 | - | 55.4 | 57.0 | 53.8 | 59.7 | 90.4 | 87.5 | 88.0 |
+| C20 | 41.1 | 44.6 | - | 49.2 | 48.6 | 53.4 | 90.5 | 90.6 | 92.9 |
+| C10 | 41.8 | 43.0 | 50.8 | - | 47.9 | 53.2 | 90.7 | 87.5 | 93.1 |
+| M5 | 43.9 | 46.2 | 51.4 | 52.1 | - | 54.8 | 85.1 | 83.5 | 84.4 |
+| C5 | 39.7 | 40.3 | 46.6 | 46.8 | 45.2 | - | 88.3 | 86.5 | 94.1 |
+| threshold | 7.5 | 9.6 | 9.5 | 9.3 | 14.9 | 11.7 | - | 59.9 | 87.3 |
+| bc_init | 11.3 | 12.6 | 9.4 | 12.5 | 16.6 | 13.5 | 40.1 | - | 83.0 |
+| random | 13.4 | 12.0 | 7.1 | 6.9 | 15.6 | 5.9 | 12.7 | 17.0 | - |
+
+Ties: none in any of the 36 pairings. Significant 3-cycles (gamekit cycle report): **none**.
+Source: `results/010/league/league.json` (`python -m scripts.league_010 summarize`, all numbers above are copied from it).
+
+### Reading (descriptive, no test)
+
+- **Ladder.** Every RL checkpoint rates 285 to 353 Elo above Threshold; bc_init is 13 below it and Random 172 below. By checkpoint,
+  the M line rates M20 > M10 > M5 and the C line C20 ~ C10 > C5 (C20 and C10 CIs overlap, 304 to 312 vs 301 to 309).
+- **The 009 "C beats M against VonNeumann" ordering does not show up here.** Head to head M beats C at every matched step:
+  M5 vs C5 54.8 %, M10 vs C10 57.0 %, M20 vs C20 58.9 % (C20 wins 41.1 %, Wilson [40.1, 42.0]). In the ratings M20 (353) and M10 (333) sit above C20 (308) with non-overlapping CIs.
+  This is a different opponent set from 009 (no VonNeumann here), so it does not contradict the 009 numbers; it is what these 36 pairings show.
+- **Within a line, later checkpoints are not always better head to head.** M20 beats M10 55.1 % and M10 beats M5 53.8 %, but C20 vs C10 is 49.2 % (the interval spans 50 %) and C20 beats C5 only 53.4 %.
+  M5 slightly beats C10 (52.1 %) and C20 (51.4 %), although M5 rates below both on the Elo scale, because Elo also uses their results against the baselines.
+- **Baseline cells fit the one-dimensional scale worst.** The largest Bradley-Terry residuals are all Random cells:
+  Random vs Threshold wins 12.7 % against a predicted 27.1 % (residual -0.145), Random vs bc_init 17.0 % vs 28.7 %, and Random vs M5 15.6 % vs 6.2 %.
+  M-line agents beat Random less often than they beat Threshold (M20: 86.7 % vs 92.5 %; M5: 84.4 % vs 85.1 %), while C-line agents beat Random at least as often as Threshold (C5: 94.1 % vs 88.3 %).
+  The anchored rating puts Random near the bottom, but the matrix shows the M and C lines treat it differently. No significant 3-cycle appears.
+- **Seat order.** In the C20-vs-M20 file the two slot positions win 49.9 % / 50.1 %, i.e. the rotation removed the mano effect, as designed.
+
 
 ## Verdict
 
-Descriptive only: no verdict is scored for gamekit#022 from this run alone beyond a record of the ratings and matrix.
+Descriptive only, as pre-registered: no verdict is scored for gamekit#022 and no 009 conclusion is changed. Recorded: the league ran as
+specified (36 pairings, n=10000 each, no ties, no deviation that affects results; cross-machine check passed), and it rates the M line above the C line at every
+matched checkpoint, with no significant 3-cycles. Whether M or C is better against VonNeumann-style opponents was not measured here. Any follow-up
+(for example adding VonNeumann to the roster, or more checkpoints) must pre-register its own rule.

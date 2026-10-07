@@ -1,0 +1,992 @@
+{
+  "git_commit": "dbaabc8b3de46d61fa0af0bea6644c350a327c99",
+  "generated_at": "2026-10-07T17:14:43.129691+00:00",
+  "experiment": "league",
+  "anchor": "threshold",
+  "anchor_rating": 0.0,
+  "prior_draws": 1.0,
+  "n_bootstrap": 1000,
+  "bootstrap_seed": 0,
+  "alpha": 0.05,
+  "agents": [
+    "C10",
+    "C20",
+    "C5",
+    "M10",
+    "M20",
+    "M5",
+    "bc_init",
+    "random",
+    "threshold"
+  ],
+  "ratings": {
+    "M20": {
+      "elo": 353.22998602896354,
+      "elo_ci": [
+        348.94663198243813,
+        357.2104395817674
+      ]
+    },
+    "M10": {
+      "elo": 333.4133243203185,
+      "elo_ci": [
+        329.6419223997818,
+        337.18513524999565
+      ]
+    },
+    "C20": {
+      "elo": 308.2958998762919,
+      "elo_ci": [
+        304.4084518618006,
+        312.18860599178333
+      ]
+    },
+    "C10": {
+      "elo": 305.37828399119377,
+      "elo_ci": [
+        301.2749283977007,
+        309.32141835102755
+      ]
+    },
+    "M5": {
+      "elo": 298.93078648048333,
+      "elo_ci": [
+        294.8838418603637,
+        302.91374734011004
+      ]
+    },
+    "C5": {
+      "elo": 285.4359065614261,
+      "elo_ci": [
+        281.4747679743161,
+        288.9354474641953
+      ]
+    },
+    "threshold": {
+      "elo": 0.0,
+      "elo_ci": [
+        0.0,
+        0.0
+      ]
+    },
+    "bc_init": {
+      "elo": -13.30209679175358,
+      "elo_ci": [
+        -17.126279487401412,
+        -9.712113257382184
+      ]
+    },
+    "random": {
+      "elo": -171.67696372540036,
+      "elo_ci": [
+        -175.8537876898847,
+        -167.15627296351772
+      ]
+    }
+  },
+  "matrix": {
+    "C10__vs__C20": {
+      "wins": 5077,
+      "losses": 4923,
+      "n_decisive": 10000,
+      "win_rate": 0.5077,
+      "win_rate_wilson_ci": [
+        0.49790026649015684,
+        0.5174938199349348
+      ],
+      "bt_predicted": 0.49580131191806714,
+      "residual": 0.011898688081932896
+    },
+    "C10__vs__C5": {
+      "wins": 5322,
+      "losses": 4678,
+      "n_decisive": 10000,
+      "win_rate": 0.5322,
+      "win_rate_wilson_ci": [
+        0.5224100281481939,
+        0.5419652423567345
+      ],
+      "bt_predicted": 0.5286679117436175,
+      "residual": 0.003532088256382515
+    },
+    "C10__vs__M10": {
+      "wins": 4299,
+      "losses": 5701,
+      "n_decisive": 10000,
+      "win_rate": 0.4299,
+      "win_rate_wilson_ci": [
+        0.4202257149877512,
+        0.43962812158381753
+      ],
+      "bt_predicted": 0.4597416710977867,
+      "residual": -0.02984167109778668
+    },
+    "C10__vs__M20": {
+      "wins": 4177,
+      "losses": 5823,
+      "n_decisive": 10000,
+      "win_rate": 0.4177,
+      "win_rate_wilson_ci": [
+        0.4080672531602584,
+        0.4273959529715549
+      ],
+      "bt_predicted": 0.43156801610328477,
+      "residual": -0.013868016103284753
+    },
+    "C10__vs__M5": {
+      "wins": 4794,
+      "losses": 5206,
+      "n_decisive": 10000,
+      "win_rate": 0.4794,
+      "win_rate_wilson_ci": [
+        0.46961828822385726,
+        0.4891975325090145
+      ],
+      "bt_predicted": 0.5092776298091294,
+      "residual": -0.02987762980912939
+    },
+    "C10__vs__bc_init": {
+      "wins": 8750,
+      "losses": 1250,
+      "n_decisive": 10000,
+      "win_rate": 0.875,
+      "win_rate_wilson_ci": [
+        0.8683736740520526,
+        0.8813383271699399
+      ],
+      "bt_predicted": 0.862293576505002,
+      "residual": 0.012706423494997954
+    },
+    "C10__vs__random": {
+      "wins": 9308,
+      "losses": 692,
+      "n_decisive": 10000,
+      "win_rate": 0.9308,
+      "win_rate_wilson_ci": [
+        0.9256585084682405,
+        0.9356106385355845
+      ],
+      "bt_predicted": 0.9396955904427714,
+      "residual": -0.00889559044277144
+    },
+    "C10__vs__threshold": {
+      "wins": 9074,
+      "losses": 926,
+      "n_decisive": 10000,
+      "win_rate": 0.9074,
+      "win_rate_wilson_ci": [
+        0.9015611274520348,
+        0.9129259906755378
+      ],
+      "bt_predicted": 0.8529462932353368,
+      "residual": 0.05445370676466321
+    },
+    "C20__vs__C10": {
+      "wins": 4923,
+      "losses": 5077,
+      "n_decisive": 10000,
+      "win_rate": 0.4923,
+      "win_rate_wilson_ci": [
+        0.4825061800650652,
+        0.5020997335098432
+      ],
+      "bt_predicted": 0.5041986880819328,
+      "residual": -0.011898688081932784
+    },
+    "C20__vs__C5": {
+      "wins": 5345,
+      "losses": 4655,
+      "n_decisive": 10000,
+      "win_rate": 0.5345,
+      "win_rate_wilson_ci": [
+        0.5247121567133616,
+        0.5442613473990617
+      ],
+      "bt_predicted": 0.5328507831433045,
+      "residual": 0.0016492168566955012
+    },
+    "C20__vs__M10": {
+      "wins": 4458,
+      "losses": 5542,
+      "n_decisive": 10000,
+      "win_rate": 0.4458,
+      "win_rate_wilson_ci": [
+        0.43608058802924704,
+        0.45556103739413417
+      ],
+      "bt_predicted": 0.463915961727165,
+      "residual": -0.01811596172716501
+    },
+    "C20__vs__M20": {
+      "wins": 4107,
+      "losses": 5893,
+      "n_decisive": 10000,
+      "win_rate": 0.4107,
+      "win_rate_wilson_ci": [
+        0.4010938254340766,
+        0.42037475667492613
+      ],
+      "bt_predicted": 0.4356927960301077,
+      "residual": -0.024992796030107678
+    },
+    "C20__vs__M5": {
+      "wins": 4864,
+      "losses": 5136,
+      "n_decisive": 10000,
+      "win_rate": 0.4864,
+      "win_rate_wilson_ci": [
+        0.476610907924867,
+        0.4961995368308153
+      ],
+      "bt_predicted": 0.5134742183990548,
+      "residual": -0.027074218399054828
+    },
+    "C20__vs__bc_init": {
+      "wins": 9063,
+      "losses": 937,
+      "n_decisive": 10000,
+      "win_rate": 0.9063,
+      "win_rate_wilson_ci": [
+        0.9004313986432024,
+        0.9118565642807857
+      ],
+      "bt_predicted": 0.8642757809188498,
+      "residual": 0.04202421908115017
+    },
+    "C20__vs__random": {
+      "wins": 9292,
+      "losses": 708,
+      "n_decisive": 10000,
+      "win_rate": 0.9292,
+      "win_rate_wilson_ci": [
+        0.9240063309636143,
+        0.9340640448349969
+      ],
+      "bt_predicted": 0.9406403353598706,
+      "residual": -0.011440335359870546
+    },
+    "C20__vs__threshold": {
+      "wins": 9050,
+      "losses": 950,
+      "n_decisive": 10000,
+      "win_rate": 0.905,
+      "win_rate_wilson_ci": [
+        0.8990965726766117,
+        0.9105923886431403
+      ],
+      "bt_predicted": 0.8550404274965416,
+      "residual": 0.049959572503458394
+    },
+    "C5__vs__C10": {
+      "wins": 4678,
+      "losses": 5322,
+      "n_decisive": 10000,
+      "win_rate": 0.4678,
+      "win_rate_wilson_ci": [
+        0.45803475764326534,
+        0.47758997185180607
+      ],
+      "bt_predicted": 0.4713320882563824,
+      "residual": -0.003532088256382404
+    },
+    "C5__vs__C20": {
+      "wins": 4655,
+      "losses": 5345,
+      "n_decisive": 10000,
+      "win_rate": 0.4655,
+      "win_rate_wilson_ci": [
+        0.45573865260093827,
+        0.47528784328663837
+      ],
+      "bt_predicted": 0.4671492168566955,
+      "residual": -0.0016492168566955012
+    },
+    "C5__vs__M10": {
+      "wins": 4028,
+      "losses": 5972,
+      "n_decisive": 10000,
+      "win_rate": 0.4028,
+      "win_rate_wilson_ci": [
+        0.39322623570064036,
+        0.4124484135826191
+      ],
+      "bt_predicted": 0.4313904943739307,
+      "residual": -0.028590494373930686
+    },
+    "C5__vs__M20": {
+      "wins": 3969,
+      "losses": 6031,
+      "n_decisive": 10000,
+      "win_rate": 0.3969,
+      "win_rate_wilson_ci": [
+        0.38735212929938745,
+        0.40652705116464594
+      ],
+      "bt_predicted": 0.40365613473871936,
+      "residual": -0.006756134738719388
+    },
+    "C5__vs__M5": {
+      "wins": 4519,
+      "losses": 5481,
+      "n_decisive": 10000,
+      "win_rate": 0.4519,
+      "win_rate_wilson_ci": [
+        0.4421659572428611,
+        0.4616709834003979
+      ],
+      "bt_predicted": 0.4805890671410995,
+      "residual": -0.028689067141099478
+    },
+    "C5__vs__bc_init": {
+      "wins": 8649,
+      "losses": 1351,
+      "n_decisive": 10000,
+      "win_rate": 0.8649,
+      "win_rate_wilson_ci": [
+        0.8580599482730321,
+        0.8714598097160481
+      ],
+      "bt_predicted": 0.84808686430665,
+      "residual": 0.016813135693349968
+    },
+    "C5__vs__random": {
+      "wins": 9406,
+      "losses": 594,
+      "n_decisive": 10000,
+      "win_rate": 0.9406,
+      "win_rate_wilson_ci": [
+        0.9357958082816813,
+        0.9450658123540784
+      ],
+      "bt_predicted": 0.9328523620923491,
+      "residual": 0.007747637907650873
+    },
+    "C5__vs__threshold": {
+      "wins": 8827,
+      "losses": 1173,
+      "n_decisive": 10000,
+      "win_rate": 0.8827,
+      "win_rate_wilson_ci": [
+        0.8762458209753705,
+        0.8888602666717137
+      ],
+      "bt_predicted": 0.8379564710116252,
+      "residual": 0.04474352898837486
+    },
+    "M10__vs__C10": {
+      "wins": 5701,
+      "losses": 4299,
+      "n_decisive": 10000,
+      "win_rate": 0.5701,
+      "win_rate_wilson_ci": [
+        0.5603718784161824,
+        0.5797742850122488
+      ],
+      "bt_predicted": 0.5402583289022133,
+      "residual": 0.029841671097786793
+    },
+    "M10__vs__C20": {
+      "wins": 5542,
+      "losses": 4458,
+      "n_decisive": 10000,
+      "win_rate": 0.5542,
+      "win_rate_wilson_ci": [
+        0.5444389626058659,
+        0.5639194119707529
+      ],
+      "bt_predicted": 0.536084038272835,
+      "residual": 0.01811596172716501
+    },
+    "M10__vs__C5": {
+      "wins": 5972,
+      "losses": 4028,
+      "n_decisive": 10000,
+      "win_rate": 0.5972,
+      "win_rate_wilson_ci": [
+        0.5875515864173808,
+        0.6067737642993596
+      ],
+      "bt_predicted": 0.5686095056260693,
+      "residual": 0.028590494373930686
+    },
+    "M10__vs__M20": {
+      "wins": 4493,
+      "losses": 5507,
+      "n_decisive": 10000,
+      "win_rate": 0.4493,
+      "win_rate_wilson_ci": [
+        0.4395720122425858,
+        0.45906692519220066
+      ],
+      "bt_predicted": 0.471512416701502,
+      "residual": -0.022212416701502036
+    },
+    "M10__vs__M5": {
+      "wins": 5377,
+      "losses": 4623,
+      "n_decisive": 10000,
+      "win_rate": 0.5377,
+      "win_rate_wilson_ci": [
+        0.5279154654724023,
+        0.5474555810504486
+      ],
+      "bt_predicted": 0.5494620620202553,
+      "residual": -0.011762062020255315
+    },
+    "M10__vs__bc_init": {
+      "wins": 8745,
+      "losses": 1255,
+      "n_decisive": 10000,
+      "win_rate": 0.8745,
+      "win_rate_wilson_ci": [
+        0.8678627801215489,
+        0.8808496050988143
+      ],
+      "bt_predicted": 0.8803611290345383,
+      "residual": -0.005861129034538282
+    },
+    "M10__vs__random": {
+      "wins": 8797,
+      "losses": 1203,
+      "n_decisive": 10000,
+      "win_rate": 0.8797,
+      "win_rate_wilson_ci": [
+        0.8731777545014767,
+        0.8859306371358315
+      ],
+      "bt_predicted": 0.948217586796057,
+      "residual": -0.06851758679605702
+    },
+    "M10__vs__threshold": {
+      "wins": 9040,
+      "losses": 960,
+      "n_decisive": 10000,
+      "win_rate": 0.904,
+      "win_rate_wilson_ci": [
+        0.8980700069478733,
+        0.90961972236862
+      ],
+      "bt_predicted": 0.872058276335874,
+      "residual": 0.031941723664126065
+    },
+    "M20__vs__C10": {
+      "wins": 5823,
+      "losses": 4177,
+      "n_decisive": 10000,
+      "win_rate": 0.5823,
+      "win_rate_wilson_ci": [
+        0.5726040470284451,
+        0.5919327468397416
+      ],
+      "bt_predicted": 0.5684319838967152,
+      "residual": 0.013868016103284808
+    },
+    "M20__vs__C20": {
+      "wins": 5893,
+      "losses": 4107,
+      "n_decisive": 10000,
+      "win_rate": 0.5893,
+      "win_rate_wilson_ci": [
+        0.5796252433250739,
+        0.5989061745659233
+      ],
+      "bt_predicted": 0.5643072039698923,
+      "residual": 0.024992796030107733
+    },
+    "M20__vs__C5": {
+      "wins": 6031,
+      "losses": 3969,
+      "n_decisive": 10000,
+      "win_rate": 0.6031,
+      "win_rate_wilson_ci": [
+        0.593472948835354,
+        0.6126478707006124
+      ],
+      "bt_predicted": 0.5963438652612807,
+      "residual": 0.006756134738719277
+    },
+    "M20__vs__M10": {
+      "wins": 5507,
+      "losses": 4493,
+      "n_decisive": 10000,
+      "win_rate": 0.5507,
+      "win_rate_wilson_ci": [
+        0.5409330748077993,
+        0.5604279877574141
+      ],
+      "bt_predicted": 0.528487583298498,
+      "residual": 0.02221241670150198
+    },
+    "M20__vs__M5": {
+      "wins": 5611,
+      "losses": 4389,
+      "n_decisive": 10000,
+      "win_rate": 0.5611,
+      "win_rate_wilson_ci": [
+        0.5513520018961676,
+        0.5708010735029357
+      ],
+      "bt_predicted": 0.5775127664346443,
+      "residual": -0.016412766434644288
+    },
+    "M20__vs__bc_init": {
+      "wins": 8868,
+      "losses": 1132,
+      "n_decisive": 10000,
+      "win_rate": 0.8868,
+      "win_rate_wilson_ci": [
+        0.8804409920243146,
+        0.89286194683613
+      ],
+      "bt_predicted": 0.8918644161116244,
+      "residual": -0.005064416111624337
+    },
+    "M20__vs__random": {
+      "wins": 8665,
+      "losses": 1335,
+      "n_decisive": 10000,
+      "win_rate": 0.8665,
+      "win_rate_wilson_ci": [
+        0.8596929407243404,
+        0.8730255884699537
+      ],
+      "bt_predicted": 0.953540781771,
+      "residual": -0.08704078177099994
+    },
+    "M20__vs__threshold": {
+      "wins": 9251,
+      "losses": 749,
+      "n_decisive": 10000,
+      "win_rate": 0.9251,
+      "win_rate_wilson_ci": [
+        0.9197759590786571,
+        0.9300975655065937
+      ],
+      "bt_predicted": 0.8842549246187604,
+      "residual": 0.040845075381239604
+    },
+    "M5__vs__C10": {
+      "wins": 5206,
+      "losses": 4794,
+      "n_decisive": 10000,
+      "win_rate": 0.5206,
+      "win_rate_wilson_ci": [
+        0.5108024674909853,
+        0.5303817117761427
+      ],
+      "bt_predicted": 0.4907223701908706,
+      "residual": 0.029877629809129336
+    },
+    "M5__vs__C20": {
+      "wins": 5136,
+      "losses": 4864,
+      "n_decisive": 10000,
+      "win_rate": 0.5136,
+      "win_rate_wilson_ci": [
+        0.5038004631691846,
+        0.5233890920751328
+      ],
+      "bt_predicted": 0.48652578160094523,
+      "residual": 0.027074218399054717
+    },
+    "M5__vs__C5": {
+      "wins": 5481,
+      "losses": 4519,
+      "n_decisive": 10000,
+      "win_rate": 0.5481,
+      "win_rate_wilson_ci": [
+        0.5383290165996021,
+        0.5578340427571389
+      ],
+      "bt_predicted": 0.5194109328589005,
+      "residual": 0.028689067141099533
+    },
+    "M5__vs__M10": {
+      "wins": 4623,
+      "losses": 5377,
+      "n_decisive": 10000,
+      "win_rate": 0.4623,
+      "win_rate_wilson_ci": [
+        0.4525444189495514,
+        0.47208453452759747
+      ],
+      "bt_predicted": 0.45053793797974473,
+      "residual": 0.01176206202025526
+    },
+    "M5__vs__M20": {
+      "wins": 4389,
+      "losses": 5611,
+      "n_decisive": 10000,
+      "win_rate": 0.4389,
+      "win_rate_wilson_ci": [
+        0.42919892649706426,
+        0.4486479981038323
+      ],
+      "bt_predicted": 0.42248723356535567,
+      "residual": 0.016412766434644344
+    },
+    "M5__vs__bc_init": {
+      "wins": 8345,
+      "losses": 1655,
+      "n_decisive": 10000,
+      "win_rate": 0.8345,
+      "win_rate_wilson_ci": [
+        0.8270879807753858,
+        0.8416551243146315
+      ],
+      "bt_predicted": 0.857826894490104,
+      "residual": -0.023326894490103944
+    },
+    "M5__vs__random": {
+      "wins": 8444,
+      "losses": 1556,
+      "n_decisive": 10000,
+      "win_rate": 0.8444,
+      "win_rate_wilson_ci": [
+        0.8371634907256399,
+        0.8513720111966381
+      ],
+      "bt_predicted": 0.937557735324542,
+      "residual": -0.09315773532454197
+    },
+    "M5__vs__threshold": {
+      "wins": 8510,
+      "losses": 1490,
+      "n_decisive": 10000,
+      "win_rate": 0.851,
+      "win_rate_wilson_ci": [
+        0.8438860492880459,
+        0.857844383855739
+      ],
+      "bt_predicted": 0.848229784175166,
+      "residual": 0.0027702158248339437
+    },
+    "bc_init__vs__C10": {
+      "wins": 1250,
+      "losses": 8750,
+      "n_decisive": 10000,
+      "win_rate": 0.125,
+      "win_rate_wilson_ci": [
+        0.11866167283006009,
+        0.13162632594794738
+      ],
+      "bt_predicted": 0.13770642349499806,
+      "residual": -0.012706423494998065
+    },
+    "bc_init__vs__C20": {
+      "wins": 937,
+      "losses": 9063,
+      "n_decisive": 10000,
+      "win_rate": 0.0937,
+      "win_rate_wilson_ci": [
+        0.0881434357192143,
+        0.0995686013567975
+      ],
+      "bt_predicted": 0.13572421908115015,
+      "residual": -0.042024219081150144
+    },
+    "bc_init__vs__C5": {
+      "wins": 1351,
+      "losses": 8649,
+      "n_decisive": 10000,
+      "win_rate": 0.1351,
+      "win_rate_wilson_ci": [
+        0.12854019028395192,
+        0.14194005172696783
+      ],
+      "bt_predicted": 0.15191313569334985,
+      "residual": -0.016813135693349857
+    },
+    "bc_init__vs__M10": {
+      "wins": 1255,
+      "losses": 8745,
+      "n_decisive": 10000,
+      "win_rate": 0.1255,
+      "win_rate_wilson_ci": [
+        0.11915039490118576,
+        0.13213721987845098
+      ],
+      "bt_predicted": 0.11963887096546166,
+      "residual": 0.005861129034538337
+    },
+    "bc_init__vs__M20": {
+      "wins": 1132,
+      "losses": 8868,
+      "n_decisive": 10000,
+      "win_rate": 0.1132,
+      "win_rate_wilson_ci": [
+        0.10713805316386998,
+        0.11955900797568542
+      ],
+      "bt_predicted": 0.10813558388837564,
+      "residual": 0.005064416111624351
+    },
+    "bc_init__vs__M5": {
+      "wins": 1655,
+      "losses": 8345,
+      "n_decisive": 10000,
+      "win_rate": 0.1655,
+      "win_rate_wilson_ci": [
+        0.15834487568536856,
+        0.17291201922461408
+      ],
+      "bt_predicted": 0.14217310550989604,
+      "residual": 0.023326894490103972
+    },
+    "bc_init__vs__random": {
+      "wins": 8304,
+      "losses": 1696,
+      "n_decisive": 10000,
+      "win_rate": 0.8304,
+      "win_rate_wilson_ci": [
+        0.8229180722229203,
+        0.8376281816537365
+      ],
+      "bt_predicted": 0.7133436191157977,
+      "residual": 0.11705638088420234
+    },
+    "bc_init__vs__threshold": {
+      "wins": 4009,
+      "losses": 5991,
+      "n_decisive": 10000,
+      "win_rate": 0.4009,
+      "win_rate_wilson_ci": [
+        0.3913344160864848,
+        0.41054169239058314
+      ],
+      "bt_predicted": 0.4808660921661072,
+      "residual": -0.07996609216610723
+    },
+    "random__vs__C10": {
+      "wins": 692,
+      "losses": 9308,
+      "n_decisive": 10000,
+      "win_rate": 0.0692,
+      "win_rate_wilson_ci": [
+        0.06438936146441547,
+        0.07434149153175948
+      ],
+      "bt_predicted": 0.06030440955722861,
+      "residual": 0.00889559044277139
+    },
+    "random__vs__C20": {
+      "wins": 708,
+      "losses": 9292,
+      "n_decisive": 10000,
+      "win_rate": 0.0708,
+      "win_rate_wilson_ci": [
+        0.06593595516500315,
+        0.07599366903638564
+      ],
+      "bt_predicted": 0.059359664640129435,
+      "residual": 0.011440335359870567
+    },
+    "random__vs__C5": {
+      "wins": 594,
+      "losses": 9406,
+      "n_decisive": 10000,
+      "win_rate": 0.0594,
+      "win_rate_wilson_ci": [
+        0.05493418764592149,
+        0.0642041917183187
+      ],
+      "bt_predicted": 0.0671476379076509,
+      "residual": -0.007747637907650894
+    },
+    "random__vs__M10": {
+      "wins": 1203,
+      "losses": 8797,
+      "n_decisive": 10000,
+      "win_rate": 0.1203,
+      "win_rate_wilson_ci": [
+        0.11406936286416848,
+        0.12682224549852333
+      ],
+      "bt_predicted": 0.051782413203943035,
+      "residual": 0.06851758679605696
+    },
+    "random__vs__M20": {
+      "wins": 1335,
+      "losses": 8665,
+      "n_decisive": 10000,
+      "win_rate": 0.1335,
+      "win_rate_wilson_ci": [
+        0.1269744115300464,
+        0.14030705927565956
+      ],
+      "bt_predicted": 0.046459218229000065,
+      "residual": 0.08704078177099994
+    },
+    "random__vs__M5": {
+      "wins": 1556,
+      "losses": 8444,
+      "n_decisive": 10000,
+      "win_rate": 0.1556,
+      "win_rate_wilson_ci": [
+        0.14862798880336192,
+        0.16283650927436008
+      ],
+      "bt_predicted": 0.06244226467545795,
+      "residual": 0.09315773532454204
+    },
+    "random__vs__bc_init": {
+      "wins": 1696,
+      "losses": 8304,
+      "n_decisive": 10000,
+      "win_rate": 0.1696,
+      "win_rate_wilson_ci": [
+        0.1623718183462634,
+        0.17708192777707968
+      ],
+      "bt_predicted": 0.2866563808842024,
+      "residual": -0.11705638088420242
+    },
+    "random__vs__threshold": {
+      "wins": 1267,
+      "losses": 8733,
+      "n_decisive": 10000,
+      "win_rate": 0.1267,
+      "win_rate_wilson_ci": [
+        0.12032346482862424,
+        0.1333632283549229
+      ],
+      "bt_predicted": 0.2712574699655852,
+      "residual": -0.1445574699655852
+    },
+    "threshold__vs__C10": {
+      "wins": 926,
+      "losses": 9074,
+      "n_decisive": 10000,
+      "win_rate": 0.0926,
+      "win_rate_wilson_ci": [
+        0.0870740093244621,
+        0.0984388725479652
+      ],
+      "bt_predicted": 0.14705370676466323,
+      "residual": -0.054453706764663226
+    },
+    "threshold__vs__C20": {
+      "wins": 950,
+      "losses": 9050,
+      "n_decisive": 10000,
+      "win_rate": 0.095,
+      "win_rate_wilson_ci": [
+        0.08940761135685978,
+        0.10090342732338826
+      ],
+      "bt_predicted": 0.14495957250345842,
+      "residual": -0.04995957250345842
+    },
+    "threshold__vs__C5": {
+      "wins": 1173,
+      "losses": 8827,
+      "n_decisive": 10000,
+      "win_rate": 0.1173,
+      "win_rate_wilson_ci": [
+        0.1111397333282864,
+        0.12375417902462947
+      ],
+      "bt_predicted": 0.1620435289883748,
+      "residual": -0.04474352898837479
+    },
+    "threshold__vs__M10": {
+      "wins": 960,
+      "losses": 9040,
+      "n_decisive": 10000,
+      "win_rate": 0.096,
+      "win_rate_wilson_ci": [
+        0.09038027763138,
+        0.1019299930521267
+      ],
+      "bt_predicted": 0.127941723664126,
+      "residual": -0.03194172366412601
+    },
+    "threshold__vs__M20": {
+      "wins": 749,
+      "losses": 9251,
+      "n_decisive": 10000,
+      "win_rate": 0.0749,
+      "win_rate_wilson_ci": [
+        0.06990243449340622,
+        0.080224040921343
+      ],
+      "bt_predicted": 0.11574507538123956,
+      "residual": -0.04084507538123956
+    },
+    "threshold__vs__M5": {
+      "wins": 1490,
+      "losses": 8510,
+      "n_decisive": 10000,
+      "win_rate": 0.149,
+      "win_rate_wilson_ci": [
+        0.14215561614426095,
+        0.156113950711954
+      ],
+      "bt_predicted": 0.15177021582483408,
+      "residual": -0.0027702158248340825
+    },
+    "threshold__vs__bc_init": {
+      "wins": 5991,
+      "losses": 4009,
+      "n_decisive": 10000,
+      "win_rate": 0.5991,
+      "win_rate_wilson_ci": [
+        0.5894583076094168,
+        0.6086655839135151
+      ],
+      "bt_predicted": 0.5191339078338929,
+      "residual": 0.07996609216610706
+    },
+    "threshold__vs__random": {
+      "wins": 8733,
+      "losses": 1267,
+      "n_decisive": 10000,
+      "win_rate": 0.8733,
+      "win_rate_wilson_ci": [
+        0.866636771645077,
+        0.8796765351713757
+      ],
+      "bt_predicted": 0.7287425300344148,
+      "residual": 0.14455746996558516
+    }
+  },
+  "ties": {
+    "C10__vs__C20": 0,
+    "C10__vs__C5": 0,
+    "C10__vs__M10": 0,
+    "C10__vs__M20": 0,
+    "C10__vs__M5": 0,
+    "C10__vs__bc_init": 0,
+    "C10__vs__random": 0,
+    "C10__vs__threshold": 0,
+    "C20__vs__C5": 0,
+    "C20__vs__M10": 0,
+    "C20__vs__M20": 0,
+    "C20__vs__M5": 0,
+    "C20__vs__bc_init": 0,
+    "C20__vs__random": 0,
+    "C20__vs__threshold": 0,
+    "C5__vs__M10": 0,
+    "C5__vs__M20": 0,
+    "C5__vs__M5": 0,
+    "C5__vs__bc_init": 0,
+    "C5__vs__random": 0,
+    "C5__vs__threshold": 0,
+    "M10__vs__M20": 0,
+    "M10__vs__M5": 0,
+    "M10__vs__bc_init": 0,
+    "M10__vs__random": 0,
+    "M10__vs__threshold": 0,
+    "M20__vs__M5": 0,
+    "M20__vs__bc_init": 0,
+    "M20__vs__random": 0,
+    "M20__vs__threshold": 0,
+    "M5__vs__bc_init": 0,
+    "M5__vs__random": 0,
+    "M5__vs__threshold": 0,
+    "bc_init__vs__random": 0,
+    "bc_init__vs__threshold": 0,
+    "random__vs__threshold": 0
+  },
+  "cycles": []
+}
