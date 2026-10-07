@@ -8,7 +8,7 @@ Follow them for all new code; apply them when touching existing code.
 ## Running the project
 
 ```bash
-uv pip install -e .          # editable install — do this once on a fresh clone
+uv pip install -e ".[cu128]"   # editable install — once on a fresh clone (torch comes from an extra: cu128 here, cpu in CI)
 uv run ruff check .          # lint (must be clean before committing)
 uv run ruff check --fix .    # auto-fix what ruff can
 uv run pytest tests/ -v      # run test suite (must be green before committing)
@@ -24,7 +24,7 @@ The main disk is nearly full. The venv lives on an external HDD, symlinked into 
 - **uv cache:** also on the HDD — always prefix uv commands with `UV_CACHE_DIR`:
 
 ```bash
-UV_CACHE_DIR=/media/guido/0DF7128F0DF7128F/.uv-cache uv pip install -e .
+UV_CACHE_DIR=/media/guido/0DF7128F0DF7128F/.uv-cache uv pip install -e ".[cu128]"
 UV_CACHE_DIR=/media/guido/0DF7128F0DF7128F/.uv-cache uv run scripts/benchmark.py ...
 ```
 
