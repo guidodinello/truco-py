@@ -133,4 +133,4 @@ support (a sampler driven by `gamekit.league`, [gamekit#39](https://github.com/g
 [gamekit note 023](https://github.com/guidodinello/gamekit/blob/main/docs/research/023-league-selfplay.md).
 
 Do first: (1) gamekit note 001's ablation (`--opponent-mix thr=0.8,rand=0.2,self=0` and `--partners threshold`, each vs C, more than one
-seed); (2) exp 011, a league that adds VonNeumann (in progress, not yet on main).
+seed); (2) [exp 011](experiments/011-league-vonneumann.md), a league that adds VonNeumann (pre-registered, not yet run).
