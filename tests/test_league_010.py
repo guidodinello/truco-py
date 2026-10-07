@@ -8,6 +8,7 @@ from gamekit.league import ScheduledGame, load_pairings
 
 from agents.random_agent import RandomAgent
 from agents.threshold_agent import ThresholdAgent
+from agents.von_neumann_agent import VonNeumannAgent
 from scripts import league_010
 from training.eval import sha256_file, validate_agent_name
 
@@ -96,3 +97,46 @@ def test_committed_manifest_is_well_formed() -> None:
         validate_agent_name(name)
         assert len(entry["sha256"]) == 64
     assert len(league_010.roster_names(manifest)) == 9
+
+
+@pytest.fixture
+def cheap_vn(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(league_010, "VN_ROLLOUTS", 1)
+
+
+def test_von_neumann_pairing_is_deterministic(cheap_vn: None) -> None:
+    games = _games(("random", "vonneumann"), 2)
+    play = league_010.make_play({}, Path("."))
+    first = play(games)
+    assert first == play(games)
+    assert all(w in (0, 1) for w in first)
+
+
+def test_von_neumann_is_built_per_pairing_with_no_disk_cache(cheap_vn: None) -> None:
+    agents = league_010._triplet("vonneumann", (0, 2, 4), 7, {}, Path("."))
+    assert [type(a).__name__ for a in agents] == ["VonNeumannAgent"] * 3
+    for a in agents:
+        assert isinstance(a, VonNeumannAgent)
+        assert a._cfg.cache_path is None and a._cfg.n_rollouts == 1
+
+
+def test_added_pairings_join_existing_files_with_mixed_n(
+    baseline_only: Path, cheap_vn: None
+) -> None:
+    """Exp 011: finished 010-style files are skipped; new pairings are rated together with them."""
+    old = league_010.LeagueConfig("t", 4, 1, 1, baseline_only, baseline_only)
+    league_010.play_pairing(("random", "threshold", old))
+    new = league_010.LeagueConfig(
+        "t", 2, 1, 1, baseline_only, baseline_only, baselines=(*league_010.BASELINES, "vonneumann")
+    )
+    manifest = league_010.load_manifest()
+    assert league_010.pending_pairings(new, manifest) == [
+        ("random", "vonneumann"),
+        ("threshold", "vonneumann"),
+    ]
+    for a, b in league_010.pending_pairings(new, manifest):
+        league_010.play_pairing((a, b, new))
+    assert league_010.pending_pairings(new, manifest) == []
+    summary = league_010.summarize(baseline_only, "t")
+    assert set(summary["ratings"]) == {"random", "threshold", "vonneumann"}
+    assert summary["ratings"]["threshold"]["elo"] == 0.0
