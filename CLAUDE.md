@@ -8,12 +8,23 @@ Follow them for all new code; apply them when touching existing code.
 ## Running the project
 
 ```bash
-uv pip install -e ".[cu128]"   # editable install — once on a fresh clone (torch comes from an extra: cu128 here, cpu in CI)
+uv sync                      # install from uv.lock: dev tools + CUDA torch (cu128 default group) + editable project
 uv run ruff check .          # lint (must be clean before committing)
 uv run ruff check --fix .    # auto-fix what ruff can
 uv run pytest tests/ -v      # run test suite (must be green before committing)
 pre-commit install           # install git hooks (once per clone)
 ```
+
+### torch variants (cu128 default, cpu opt-in)
+
+torch is gated behind two mutually exclusive variants, both in `uv.lock`: the `cu128`
+**default dependency group** (what a plain `uv sync` / `uv run` uses) and the `cpu`
+**extra** (CI: `uv sync --locked --extra cpu --no-group cu128`).
+
+- Don't use `uv pip install -e .` or `--no-default-groups`: both ignore the default
+  group, so stable-baselines3 pulls PyPI's torch (CUDA 13) instead of the locked cu128.
+- `uv sync` is exact: it removes packages not in the lock from the venv.
+- Prefer `uv run --no-sync …` when the venv is already set up, so nothing is re-synced.
 
 ### Virtual environment — external HDD setup
 
@@ -24,7 +35,7 @@ The main disk is nearly full. The venv lives on an external HDD, symlinked into 
 - **uv cache:** also on the HDD — always prefix uv commands with `UV_CACHE_DIR`:
 
 ```bash
-UV_CACHE_DIR=/media/guido/0DF7128F0DF7128F/.uv-cache uv pip install -e ".[cu128]"
+UV_CACHE_DIR=/media/guido/0DF7128F0DF7128F/.uv-cache uv sync
 UV_CACHE_DIR=/media/guido/0DF7128F0DF7128F/.uv-cache uv run scripts/benchmark.py ...
 ```
 
@@ -67,7 +78,7 @@ python3 scripts/benchmark.py
 ## Imports
 
 **Never use `sys.path.insert` or `sys.path.append`.**
-The project is installed as an editable package (`uv pip install -e .`), so all
+The project is installed as an editable package (`uv sync`), so all
 top-level packages (`engine`, `agents`, `training`, `experimentos`, `scripts`) are
 importable without path manipulation.
 
