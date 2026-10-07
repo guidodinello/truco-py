@@ -37,6 +37,7 @@ from agents.base import TrucoAgent
 from agents.random_agent import RandomAgent
 from agents.rl_agent import RLAgent
 from agents.threshold_agent import ThresholdAgent
+from agents.von_neumann_agent import VonNeumannAgent
 from engine.match import TrucoMatch
 from log import get_logger
 from training.eval import place_agents, run_match, sha256_file
@@ -57,6 +58,8 @@ RESULTS_DIR = ROOT / "results" / "010"
 _SLOT_OFFSETS = ((0, 2, 4), (1, 3, 5))  # role a keeps Team A's RNG offsets, role b Team B's
 
 BASELINES = ("threshold", "random")
+VON_NEUMANN = "vonneumann"  # exp 011 only: not in the exp 010 roster
+VN_ROLLOUTS = 20  # as in exp 009 (benchmark.py default)
 
 
 @dataclass(slots=True)
@@ -68,6 +71,8 @@ class LeagueConfig:
     ckpt_root: Path
     results_dir: Path
     pairs: tuple[str, ...] = ()
+    baselines: tuple[str, ...] = BASELINES
+    manifest: Path | None = None  # default: MANIFEST
 
 
 def load_manifest(path: Path | None = None) -> dict[str, dict[str, Any]]:
@@ -75,8 +80,10 @@ def load_manifest(path: Path | None = None) -> dict[str, dict[str, Any]]:
     return agents
 
 
-def roster_names(manifest: dict[str, dict[str, Any]]) -> list[str]:
-    return sorted([*manifest, *BASELINES])
+def roster_names(
+    manifest: dict[str, dict[str, Any]], baselines: Sequence[str] = BASELINES
+) -> list[str]:
+    return sorted([*manifest, *baselines])
 
 
 def verify_manifest(manifest: dict[str, dict[str, Any]], ckpt_root: Path) -> None:
@@ -111,6 +118,10 @@ def _triplet(
         return [ThresholdAgent(seed=seed + o) for o in offsets]
     if name == "random":
         return [RandomAgent(seed=seed + o) for o in offsets]
+    if name == VON_NEUMANN:
+        # In-memory EV cache only (cache_path=None), built per pairing: no state leaks across
+        # pairings or runs, so a re-run pairing is reproducible.
+        return [VonNeumannAgent(n_rollouts=VN_ROLLOUTS, seed=seed + o) for o in offsets]
     rl = _rl_agent(ckpt_root / manifest[name]["path"])
     return [rl, rl, rl]
 
@@ -167,7 +178,7 @@ def _worker_init() -> None:
 
 def play_pairing(task: tuple[str, str, LeagueConfig]) -> str:
     a, b, cfg = task
-    manifest = load_manifest()
+    manifest = load_manifest(cfg.manifest)
     run_league(
         agents=[a, b],
         num_seats=NUM_SEATS,
@@ -188,18 +199,18 @@ def pending_pairings(
 ) -> list[tuple[str, str]]:
     """Unfinished pairings, RL-vs-RL first (the slowest), so the tail of the run is short."""
     league_dir = cfg.results_dir / cfg.name
-    pairs = list(itertools.combinations(roster_names(manifest), 2))
+    pairs = list(itertools.combinations(roster_names(manifest, cfg.baselines), 2))
     if cfg.pairs:
         wanted = set(cfg.pairs)
         pairs = [p for p in pairs if f"{p[0]}__vs__{p[1]}" in wanted]
     pairs = [p for p in pairs if not (league_dir / f"{p[0]}__vs__{p[1]}.json").exists()]
-    return sorted(pairs, key=lambda p: -sum(x not in BASELINES for x in p))
+    return sorted(pairs, key=lambda p: -sum(x not in cfg.baselines for x in p))
 
 
 def run(cfg: LeagueConfig) -> None:
     if cfg.n % NUM_SEATS or cfg.n < NUM_SEATS:
         raise ValueError(f"--n must be a positive even number, got {cfg.n}")
-    manifest = load_manifest()
+    manifest = load_manifest(cfg.manifest)
     verify_manifest(manifest, cfg.ckpt_root)
     todo = pending_pairings(cfg, manifest)
     logger.info(
@@ -257,6 +268,14 @@ def main() -> None:
             p.add_argument("--workers", type=int, default=3)
             p.add_argument("--ckpt-root", type=Path, default=ROOT)
             p.add_argument("--pairs", default="", help="comma list of a__vs__b to restrict to")
+            p.add_argument(
+                "--baselines",
+                default=",".join(BASELINES),
+                help="comma list of non-checkpoint agents (threshold, random, vonneumann)",
+            )
+            p.add_argument(
+                "--manifest", type=Path, default=None, help="default: results/010/manifest.json"
+            )
     args = parser.parse_args()
     if args.cmd == "run":
         run(
@@ -268,6 +287,8 @@ def main() -> None:
                 ckpt_root=args.ckpt_root,
                 results_dir=args.results_dir,
                 pairs=tuple(s for s in args.pairs.split(",") if s),
+                baselines=tuple(s for s in args.baselines.split(",") if s),
+                manifest=args.manifest,
             )
         )
     else:
