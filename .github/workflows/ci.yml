@@ -7,7 +7,9 @@
 # `--extra cpu` (no CUDA wheels, no multi-GB nvidia downloads); the laptop installs
 # `.[cu128]`. `--locked` fails the job if uv.lock is stale. stable-baselines3 also
 # depends on torch, so a sync with neither extra would pull PyPI's CUDA build — every
-# job that needs torch must pass --extra cpu. Lint doesn't need it (--only-dev).
+# job that needs torch must pass --extra cpu. Lint doesn't need it (--only-dev). `uv run`
+# re-syncs the default (no-extra) set and would swap the CPU wheel for the CUDA one,
+# so every run step is `uv run --no-sync` after the explicit sync.
 #
 # Required status checks (no matrix, so contexts are the bare job names):
 #   Lint Python, Typecheck Python, Tests (Python)
@@ -41,10 +43,10 @@ jobs:
         run: uv sync --locked --only-dev
 
       - name: ruff format check
-        run: uv run ruff format --check .
+        run: uv run --no-sync ruff format --check .
 
       - name: ruff lint
-        run: uv run ruff check .
+        run: uv run --no-sync ruff check .
 
   typecheck-python:
     name: Typecheck Python
@@ -63,7 +65,7 @@ jobs:
         run: uv sync --locked --extra cpu
 
       - name: mypy
-        run: uv run python -m mypy .
+        run: uv run --no-sync python -m mypy .
 
   test-python:
     name: Tests (Python)
@@ -80,4 +82,4 @@ jobs:
         run: uv sync --locked --extra cpu
 
       - name: Run tests
-        run: uv run pytest
+        run: uv run --no-sync pytest
