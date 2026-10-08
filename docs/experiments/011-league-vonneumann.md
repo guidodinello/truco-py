@@ -1,7 +1,6 @@
 # League with VonNeumann added: is the M/C order opponent-dependent?
 
-**Status:** PRE-REGISTERED 2026-10-07, before any measured run. The only runs so far are the laptop timing runs listed under
-"Timing (not results)". Results and verdict are placeholders.
+**Status:** RUN 2026-10-08 on the HP (amended before any measured run, see below). Primary test: **replicates** (C beats M against VonNeumann again). Result and Verdict filled below.
 **Date:** 2026-10-07
 **Note:** [gamekit#022](https://github.com/guidodinello/gamekit/blob/main/docs/research/022-league-ratings.md) (`gamekit.league`), as in [log 010](010-league-009-checkpoints.md).
 
@@ -135,15 +134,80 @@ gamekit 0.3.0 at 76c364b, no nvidia/triton packages. torch +cpu is now also the 
 | date | what | why |
 |---|---|---|
 | 2026-10-07 | Run machine changed from the laptop to the HP, 3 workers; cross-machine gate added (pre-run amendment, see above) | the owner needs the laptop's daytime hours for catan #46; no measured game had been played |
+| 2026-10-08 | none after the run started | the run was not stopped, restarted or altered; the laptop rebooting overnight did not touch it (it ran on the HP) |
 
 ## Run log
 
-(filled at launch)
+- **Cross-machine gate (passed).** `M20__vs__vonneumann`, n = 40, `--seed 1`, league `xcheck`, 1 worker. Laptop and HP gave identical results: M20 16 wins, VonNeumann 24, no ties,
+  config hash `331a07813175`, `winners_sha256` `bbd6e6c11c33776e5d2990130780113975a11e716ee2d008715e9aedf6cc9c04`. The laptop leg ran after `pgrep -af experiments.search_eval` was empty (catan's smoke had finished).
+  The xcheck files were deleted on both machines. (The xcheck's 16/24 is at seed 1, not registered data.)
+- **Launch.** HP `homelab-hp`, commit `6322efb`, `PY=.venv/bin/python bash scripts/launch_011.sh 3`, tmux `truco-011-league`, nice 19, 3 workers. Start 2026-10-08 00:41:33 UTC.
+  The 36 copied 010 files passed `sha256sum -c`; manifest verified (7 checkpoints); "9 pairings to play (n=10000, seed=20261005, workers=3)".
+- **Progress.** Pairings finished in this order (UTC, 2026-10-08): C20 08:25, C10 08:57, C5 09:03, M10 14:00, M20 14:01, M5 14:05, random 17:39, threshold 19:02, bc_init 20:04.
+- **End.** `league league: all pairings done`, `exit 0` at 2026-10-08 20:04:08 UTC. **Wall time 19 h 22 min** against the amendment's unvalidated estimate of 19 to 20 h.
+  The log has no warning, error or traceback. The `cp -n` warnings printed by the launcher at start are harmless (the 36 files were verified by `sha256sum -c` right after).
+  Memory: 3 workers at about 280 MB RSS each in the first minutes with about 5 GB free; no later RSS sample was kept, and no worker died or restarted.
+- **Provenance check at pull.** 45 pairing files, all n = 10000, no ties. The 9 VonNeumann files are stamped commit `6322efb`; the 36 copied files keep their 010 stamp (`dbaabc8`) and are byte-identical to log 010's (`sha256sum -c` ok).
+  Pulled with rsync into the worktree, summarized on the laptop with `python -m scripts.league_010 summarize --results-dir results/011` (HDD venv; no matches played on the laptop for the analysis).
+  Files: `results/011/league/` (45 pairings + `league.json`), `logs/011/league.log`.
 
 ## Result
 
-(not yet run)
+### Primary (confirmatory, one test)
+
+| cell | agent wins / 10000 | win rate | Wilson 95 % |
+|---|---|---|---|
+| C20 vs VonNeumann | 6352 | 63.52 % | [62.57, 64.46] |
+| M20 vs VonNeumann | 5704 | 57.04 % | [56.06, 58.01] |
+
+`d = 63.52 - 57.04 = +6.48 pp`, 95 % CI of d (unpooled) [+5.13, +7.83]. Pooled two-proportion z = **9.36**, two-sided **p < 1e-15** (far below 0.05).
+Decision rule as registered: d > 0 and p < 0.05, so **replicates**.
+For reference, 009 had C 64.1 %, M 56.8 % (d = 7.3 pp, n = 4000 each); the fresh seed 20261005 gives 63.5 % and 57.0 %, within about 0.6 pp on each side.
+
+### Ratings (Elo, threshold = 0, 95 % bootstrap CI, 1000 resamples; all 45 files)
+
+| agent | Elo | 95 % CI |
+|---|---|---|
+| M20 | 289.3 | [285.9, 292.6] |
+| M10 | 274.6 | [271.1, 277.8] |
+| C20 | 255.9 | [252.6, 258.9] |
+| C10 | 254.1 | [250.8, 257.2] |
+| M5 | 243.3 | [239.8, 246.5] |
+| C5 | 237.1 | [233.9, 240.2] |
+| vonneumann | 112.5 | [109.1, 115.9] |
+| threshold | 0.0 | [0.0, 0.0] |
+| bc_init | -23.7 | [-27.1, -20.4] |
+| random | -192.8 | [-196.9, -188.6] |
+
+### VonNeumann column of the win matrix (agent beats VonNeumann, % of 10000; Wilson half-width about 1 pt)
+
+| agent | C5 | C10 | C20 | M5 | M10 | M20 | threshold | bc_init | random |
+|---|---|---|---|---|---|---|---|---|---|
+| beats VonNeumann | 64.7 | 64.3 | 63.5 | 58.1 | 59.9 | 57.0 | 63.8 | 50.4 | 18.0 |
+| Bradley-Terry predicted | 67.2 | 69.3 | 69.5 | 68.0 | 71.8 | 73.5 | 34.4 | 31.3 | 14.7 |
+
+(Predicted = `1 / (1 + 10^(-(R_agent - R_VN) / 400))` from the ratings above; the other 36 cells are as in log 010 and are in `results/011/league/league.json`.)
+Ties: none in any of the 45 pairings. Significant 3-cycles (gamekit cycle report): **none** (`cycles` is empty).
+
+### Reading (descriptive, no test)
+
+- **C minus M against VonNeumann at the other steps** (win-rate differences, unpooled 95 % CI, not tested): 5M **+6.63 pp** [+5.28, +7.98] (C5 64.68 vs M5 58.05); 10M **+4.42 pp** [+3.08, +5.76] (C10 64.32 vs M10 59.90);
+  20M +6.48 pp [+5.13, +7.83] (the primary cell). C is ahead of M against VonNeumann at all three steps, by 4 to 7 points.
+- **The order is opponent-dependent, and the single Elo scale cannot show it.** Head to head M still beats C (M20 vs C20 58.9 %, M10 vs C10 57.0 %, M5 vs C5 54.8 %, unchanged from log 010) and rates above it
+  (M20 289 vs C20 256), yet against VonNeumann C beats M at every step. The two facts sit in the same matrix.
+- **VonNeumann rates 112 Elo above Threshold, but Threshold beats VonNeumann 63.8 %** (the model predicts 34.4 %, residual +0.29, the largest in the league).
+  Against VonNeumann, Threshold (63.8 %) does as well as C20 (63.5 %) and better than every M checkpoint (57.0 to 59.9 %), even though M20 beats Threshold 92.5 % and C20 beats it 90.5 %.
+  The one-dimensional scale places VonNeumann by its results against the other eight agents (it beats Random 82.0 %, bc_init 49.6 %/50.4 %, and loses to every RL checkpoint and to Threshold).
+- **Bradley-Terry residuals of the other VonNeumann cells:** the M cells are the next worst (M20 predicted 73.5 %, observed 57.0 %, residual -0.164; M10 -0.119; M5 -0.099), the C cells are mild (-0.025 to -0.060),
+  bc_init vs VonNeumann is +0.19 (50.4 % against 31.3 %), Random +0.03.
+- **Rating shifts from adding VonNeumann.** The old agents moved down on the scale relative to 010 (M20 353 -> 289, C20 308 -> 256, M5 299 -> 243, C5 285 -> 237), most likely because Threshold, the anchor, does as well against VonNeumann as the C agents and better than the M agents (not tested); the order among the six checkpoints is unchanged (M20 > M10 > C20 > C10 > M5 > C5). Treat the 011 and 010 scales as different scales.
+- **No tie, no significant 3-cycle**, in particular none involving VonNeumann, M and C, so the opponent-dependence appears as a poor fit of one cell group (residuals above), not as a gamekit-detectable cycle.
 
 ## Verdict
 
-(not yet run)
+**Primary (confirmatory): replicates.** `d = +6.48 pp`, z = 9.36, p < 0.05 by a wide margin: C20 beats M20 against VonNeumann, as 009's H2 found, with fresh seeds and n = 10000 per cell.
+The minimum detectable effect was about 1.9 pp, so this is not a borderline call.
+
+Descriptive, no verdict: M is ahead of C head to head (log 010) and C is ahead of M against VonNeumann (this log), at 5M, 10M and 20M; both hold at once, so which is "better" depends on the opponent
+and is not answered by either. VonNeumann rates 112.5 Elo (above Threshold, below all six checkpoints), with a large misfit against Threshold. Nothing here changes a 009 or 010 conclusion; any follow-up
+(for example whether the effect is VonNeumann-specific, or a rating model with an opponent-dependent term) must pre-register its own rule.
