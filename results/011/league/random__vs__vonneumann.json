@@ -1,0 +1,75 @@
+{
+  "git_commit": "6322efb343da410f5c9febfe8a9d8630bef5a87d",
+  "generated_at": "2026-10-08T17:39:21.532435+00:00",
+  "experiment": "benchmark",
+  "num_seats": 2,
+  "n_games": 10000,
+  "engine_seed_base": 466772043,
+  "driver_seed_base": 1874459209,
+  "by_role": {
+    "vonneumann": {
+      "n_seat_occupancies": 10000,
+      "wins": 8199,
+      "win_rate": 0.8199,
+      "win_rate_wilson_ci": [
+        0.8122460353995777,
+        0.8273082824428633
+      ],
+      "seat_occupancy_counts": {
+        "0": 5000,
+        "1": 5000
+      }
+    },
+    "random": {
+      "n_seat_occupancies": 10000,
+      "wins": 1801,
+      "win_rate": 0.1801,
+      "win_rate_wilson_ci": [
+        0.1726917175571367,
+        0.1877539646004222
+      ],
+      "seat_occupancy_counts": {
+        "0": 5000,
+        "1": 5000
+      }
+    }
+  },
+  "by_seat": {
+    "0": {
+      "n_games": 10000,
+      "wins": 4943,
+      "win_rate": 0.4943,
+      "win_rate_wilson_ci": [
+        0.48450488705233147,
+        0.5040994905290942
+      ],
+      "expected_under_null": 0.5
+    },
+    "1": {
+      "n_games": 10000,
+      "wins": 5057,
+      "win_rate": 0.5057,
+      "win_rate_wilson_ci": [
+        0.4959005094709058,
+        0.5154951129476686
+      ],
+      "expected_under_null": 0.5
+    }
+  },
+  "comparisons": {
+    "vonneumann_vs_random": {
+      "z": 90.4813837206306,
+      "p_value": 0.0
+    }
+  },
+  "league_config": {
+    "a": "random",
+    "b": "vonneumann",
+    "num_seats": 2,
+    "n_games": 10000,
+    "seed": 20261005,
+    "engine_seed_base": 466772043,
+    "driver_seed_base": 1874459209
+  },
+  "config_hash": "4599fb6586cf"
+}
