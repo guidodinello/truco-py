@@ -1,5 +1,12 @@
 """
-VonNeumannAgent: online Monte Carlo rollout agent.
+VonNeumannAgent: online Monte Carlo rollout agent, with PERFECT INFORMATION.
+
+Every rollout starts from a deep copy of the true GameState, so this agent sees all
+seats' real hands (and their envido / flor scores). It is NOT a fair player. It is
+kept frozen, unchanged, because experiment logs 009-011 are recorded against it
+("vonneumann" / "von_neumann"): they are valid only as results against this
+perfect-information, random-rollout opponent. For a fair opponent use
+``agents.determinized_von_neumann_agent.DeterminizedVonNeumannAgent``.
 
 For each legal action, simulates n_rollouts random completions of the game
 and picks the action with the highest expected reward for player_idx.
@@ -31,7 +38,11 @@ class VonNeumannConfig:
 
 
 class VonNeumannAgent:
-    """MC rollout agent: picks the action with the highest estimated EV."""
+    """MC rollout agent: picks the action with the highest estimated EV.
+
+    Perfect-information baseline (frozen for the reproducibility of logs 009-011):
+    rollouts copy the true deal, hidden cards included.
+    """
 
     name = "von_neumann"
 
@@ -141,8 +152,11 @@ class _SimpleRandom:
 def _state_key(state: GameState, player_idx: int, action: Action) -> str:
     """JSON-serialized key built from observable state for player_idx.
 
-    Only includes information visible to the current player — opponents'
-    cards are excluded, which is also game-theoretically correct.
+    Despite the name this is not purely observable: it includes EVERY seat's
+    ``envido`` and ``flor_score`` (hidden), and it omits ``muestra``, ``hand_pts``
+    and which seat played which card, so entries can collide across different public
+    states. Left as is on purpose (frozen, see module docstring); the fair agent
+    uses its own key.
     """
     return json.dumps(
         [

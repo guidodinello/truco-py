@@ -34,6 +34,7 @@ from gamekit.league import ScheduledGame, load_pairings, run_league, summarize_l
 from gamekit.results import write_result
 
 from agents.base import TrucoAgent
+from agents.determinized_von_neumann_agent import DeterminizedVonNeumannAgent
 from agents.random_agent import RandomAgent
 from agents.rl_agent import RLAgent
 from agents.threshold_agent import ThresholdAgent
@@ -58,7 +59,8 @@ RESULTS_DIR = ROOT / "results" / "010"
 _SLOT_OFFSETS = ((0, 2, 4), (1, 3, 5))  # role a keeps Team A's RNG offsets, role b Team B's
 
 BASELINES = ("threshold", "random")
-VON_NEUMANN = "vonneumann"  # exp 011 only: not in the exp 010 roster
+VON_NEUMANN = "vonneumann"  # exp 011 only: not in the exp 010 roster; PERFECT information
+VON_NEUMANN_DET = "vonneumann_determinized"  # the fair (determinized) variant
 VN_ROLLOUTS = 20  # as in exp 009 (benchmark.py default)
 
 
@@ -122,6 +124,8 @@ def _triplet(
         # In-memory EV cache only (cache_path=None), built per pairing: no state leaks across
         # pairings or runs, so a re-run pairing is reproducible.
         return [VonNeumannAgent(n_rollouts=VN_ROLLOUTS, seed=seed + o) for o in offsets]
+    if name == VON_NEUMANN_DET:
+        return [DeterminizedVonNeumannAgent(n_rollouts=VN_ROLLOUTS, seed=seed + o) for o in offsets]
     rl = _rl_agent(ckpt_root / manifest[name]["path"])
     return [rl, rl, rl]
 
@@ -271,7 +275,10 @@ def main() -> None:
             p.add_argument(
                 "--baselines",
                 default=",".join(BASELINES),
-                help="comma list of non-checkpoint agents (threshold, random, vonneumann)",
+                help=(
+                    "comma list of non-checkpoint agents "
+                    "(threshold, random, vonneumann, vonneumann_determinized)"
+                ),
             )
             p.add_argument(
                 "--manifest", type=Path, default=None, help="default: results/010/manifest.json"

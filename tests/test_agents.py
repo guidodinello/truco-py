@@ -3,6 +3,7 @@
 import pytest
 
 from agents.base import Agent
+from agents.determinized_von_neumann_agent import DeterminizedVonNeumannAgent
 from agents.random_agent import RandomAgent
 from agents.threshold_agent import ThresholdAgent
 from agents.von_neumann_agent import VonNeumannAgent
@@ -23,6 +24,7 @@ def game() -> TrucoGame:
         (RandomAgent, {"seed": 0}),
         (ThresholdAgent, {"seed": 0}),
         (VonNeumannAgent, {"seed": 0, "n_rollouts": 2}),
+        (DeterminizedVonNeumannAgent, {"seed": 0, "n_rollouts": 2}),
     ],
 )
 def test_agent_satisfies_protocol(agent_cls, kwargs):
@@ -36,6 +38,7 @@ def test_agent_satisfies_protocol(agent_cls, kwargs):
         (RandomAgent, {"seed": 1}),
         (ThresholdAgent, {"seed": 1}),
         (VonNeumannAgent, {"seed": 1, "n_rollouts": 2}),
+        (DeterminizedVonNeumannAgent, {"seed": 1, "n_rollouts": 2}),
     ],
 )
 def test_agent_always_returns_legal_action(agent_cls, kwargs, game: TrucoGame):
@@ -61,6 +64,7 @@ def test_agent_always_returns_legal_action(agent_cls, kwargs, game: TrucoGame):
         (RandomAgent, {"seed": 2}),
         (ThresholdAgent, {"seed": 2}),
         (VonNeumannAgent, {"seed": 2, "n_rollouts": 2}),
+        (DeterminizedVonNeumannAgent, {"seed": 2, "n_rollouts": 2}),
     ],
 )
 def test_agent_reset_does_not_raise(agent_cls, kwargs):

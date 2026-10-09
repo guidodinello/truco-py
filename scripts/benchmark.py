@@ -43,6 +43,7 @@ from gamekit.results import write_result
 from gamekit.seats import rotate
 
 from agents.base import TrucoAgent
+from agents.determinized_von_neumann_agent import DeterminizedVonNeumannAgent
 from agents.random_agent import RandomAgent
 from agents.rl_agent import RLAgent
 from agents.threshold_agent import ThresholdAgent
@@ -80,6 +81,15 @@ MODES: dict[str, Mode] = {
     "match_rl_vs_random": Mode(("rl", "random"), True),
     "match_rl_vs_threshold": Mode(("rl", "threshold"), True),
     "match_rl_vs_vonneumann": Mode(("rl", "von_neumann"), True),
+    # Fair (determinized) VonNeumann; the modes above stay on the perfect-information one.
+    "von_neumann_determinized_vs_threshold": Mode(("von_neumann_determinized", "threshold"), False),
+    "match_von_neumann_determinized_vs_threshold": Mode(
+        ("von_neumann_determinized", "threshold"), True
+    ),
+    "match_von_neumann_determinized_vs_von_neumann": Mode(
+        ("von_neumann_determinized", "von_neumann"), True
+    ),
+    "match_rl_vs_von_neumann_determinized": Mode(("rl", "von_neumann_determinized"), True),
 }
 
 
@@ -107,6 +117,14 @@ def run_game(game: TrucoGame, agents: list, seed: int | None = None) -> int:
     return -1
 
 
+def _determinized_cache_path(cache_path: Path | None) -> Path | None:
+    """The fair agent's own cache file next to ``cache_path``: its EVs must never mix with
+    the perfect-information agent's, so one ``--cache_path`` can serve both variants."""
+    if cache_path is None:
+        return None
+    return cache_path.with_name(f"{cache_path.stem}.determinized{cache_path.suffix}")
+
+
 def _build_agent(
     role: str,
     seed: int,
@@ -121,6 +139,10 @@ def _build_agent(
         return ThresholdAgent(seed=seed)
     if role == "von_neumann":
         return VonNeumannAgent(n_rollouts=rollouts, seed=seed, cache_path=cache_path)
+    if role == "von_neumann_determinized":
+        return DeterminizedVonNeumannAgent(
+            n_rollouts=rollouts, seed=seed, cache_path=_determinized_cache_path(cache_path)
+        )
     if role == "rl":
         assert rl_agent is not None
         return rl_agent
@@ -259,7 +281,7 @@ def benchmark(
 
     for agents in role_agents.values():
         for agent in agents:
-            if isinstance(agent, VonNeumannAgent):
+            if isinstance(agent, VonNeumannAgent):  # includes the determinized subclass
                 agent.save_cache()
 
     if out is not None:
@@ -319,6 +341,7 @@ def _labels(mode: str, rollouts: int, checkpoint: str | None) -> tuple[str, str]
     were before the mode-registry rewrite, including the ones parameterised
     by ``--rollouts``/``--checkpoint``."""
     vn = f"VonNeumann(r={rollouts})"
+    vn_det = f"VNDet(r={rollouts})"
     rl_label = f"RL({Path(checkpoint).stem})" if checkpoint else "RL"
     return {
         "random": ("Random A", "Random B"),
@@ -332,6 +355,10 @@ def _labels(mode: str, rollouts: int, checkpoint: str | None) -> tuple[str, str]
         "match_rl_vs_random": (rl_label, "Random"),
         "match_rl_vs_threshold": (rl_label, "Threshold"),
         "match_rl_vs_vonneumann": (rl_label, vn),
+        "von_neumann_determinized_vs_threshold": (vn_det, "Threshold"),
+        "match_von_neumann_determinized_vs_threshold": (vn_det, "Threshold"),
+        "match_von_neumann_determinized_vs_von_neumann": (vn_det, vn),
+        "match_rl_vs_von_neumann_determinized": (rl_label, vn_det),
     }[mode]
 
 
