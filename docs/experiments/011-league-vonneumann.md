@@ -1,5 +1,7 @@
 # League with VonNeumann added: is the M/C order opponent-dependent?
 
+> VonNeumann in this log = the omniscient (perfect-information) variant, renamed in #52.
+
 **Status:** RUN 2026-10-08 on the HP (amended before any measured run, see below). Primary test: **replicates** (C beats M against VonNeumann again). Result and Verdict filled below.
 **Date:** 2026-10-07
 **Note:** [gamekit#022](https://github.com/guidodinello/gamekit/blob/main/docs/research/022-league-ratings.md) (`gamekit.league`), as in [log 010](010-league-009-checkpoints.md).

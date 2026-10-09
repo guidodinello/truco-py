@@ -1,5 +1,7 @@
 # League over the exp 009 checkpoints: round-robin ratings
 
+> VonNeumann in this log = the omniscient (perfect-information) variant, renamed in #52.
+
 **Status:** PRE-REGISTERED 2026-10-05, before any measured run (the only earlier runs are the laptop timing runs under
 "Timing (not results)"). RUN on the HP 2026-10-05/06; results below. Descriptive only, no verdict scored.
 **Date:** 2026-10-05
