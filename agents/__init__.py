@@ -5,4 +5,5 @@ from .determinized_von_neumann_agent import (
 )
 from .random_agent import RandomAgent as RandomAgent
 from .threshold_agent import ThresholdAgent as ThresholdAgent
-from .von_neumann_agent import VonNeumannAgent as VonNeumannAgent
+from .von_neumann_agent import OmniscientVonNeumannAgent as OmniscientVonNeumannAgent
+from .von_neumann_agent import VonNeumannAgent as VonNeumannAgent  # permanent alias

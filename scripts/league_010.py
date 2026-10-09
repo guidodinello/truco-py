@@ -38,7 +38,7 @@ from agents.determinized_von_neumann_agent import DeterminizedVonNeumannAgent
 from agents.random_agent import RandomAgent
 from agents.rl_agent import RLAgent
 from agents.threshold_agent import ThresholdAgent
-from agents.von_neumann_agent import VonNeumannAgent
+from agents.von_neumann_agent import OmniscientVonNeumannAgent
 from engine.match import TrucoMatch
 from log import get_logger
 from training.eval import place_agents, run_match, sha256_file
@@ -59,7 +59,13 @@ RESULTS_DIR = ROOT / "results" / "010"
 _SLOT_OFFSETS = ((0, 2, 4), (1, 3, 5))  # role a keeps Team A's RNG offsets, role b Team B's
 
 BASELINES = ("threshold", "random")
-VON_NEUMANN = "vonneumann"  # exp 011 only: not in the exp 010 roster; PERFECT information
+# exp 011 only (not in the exp 010 roster); PERFECT information
+VON_NEUMANN = "vonneumann_omniscient"
+# PERMANENT alias: the name logs 010/011 and their commands use. It resolves to the OMNISCIENT
+# agent and must never be repointed to the fair one. Pairing seeds and result filenames derive
+# from the name string, so reproducing exp 011 needs "vonneumann"; "vonneumann_omniscient" is the
+# same agent but a distinct pairing with different seeds.
+LEGACY_VON_NEUMANN = "vonneumann"
 VON_NEUMANN_DET = "vonneumann_determinized"  # the fair (determinized) variant
 VN_ROLLOUTS = 20  # as in exp 009 (benchmark.py default)
 
@@ -120,10 +126,10 @@ def _triplet(
         return [ThresholdAgent(seed=seed + o) for o in offsets]
     if name == "random":
         return [RandomAgent(seed=seed + o) for o in offsets]
-    if name == VON_NEUMANN:
+    if name in (VON_NEUMANN, LEGACY_VON_NEUMANN):
         # In-memory EV cache only (cache_path=None), built per pairing: no state leaks across
         # pairings or runs, so a re-run pairing is reproducible.
-        return [VonNeumannAgent(n_rollouts=VN_ROLLOUTS, seed=seed + o) for o in offsets]
+        return [OmniscientVonNeumannAgent(n_rollouts=VN_ROLLOUTS, seed=seed + o) for o in offsets]
     if name == VON_NEUMANN_DET:
         return [DeterminizedVonNeumannAgent(n_rollouts=VN_ROLLOUTS, seed=seed + o) for o in offsets]
     rl = _rl_agent(ckpt_root / manifest[name]["path"])
@@ -277,7 +283,8 @@ def main() -> None:
                 default=",".join(BASELINES),
                 help=(
                     "comma list of non-checkpoint agents "
-                    "(threshold, random, vonneumann, vonneumann_determinized)"
+                    "(threshold, random, vonneumann_omniscient, vonneumann_determinized; "
+                    "vonneumann is an alias of vonneumann_omniscient)"
                 ),
             )
             p.add_argument(

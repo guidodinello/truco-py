@@ -1,11 +1,12 @@
 """
-VonNeumannAgent: online Monte Carlo rollout agent, with PERFECT INFORMATION.
+OmniscientVonNeumannAgent: online Monte Carlo rollout agent, with PERFECT INFORMATION.
 
 Every rollout starts from a deep copy of the true GameState, so this agent sees all
 seats' real hands (and their envido / flor scores). It is NOT a fair player. It is
 kept frozen, unchanged, because experiment logs 009-011 are recorded against it
-("vonneumann" / "von_neumann"): they are valid only as results against this
-perfect-information, random-rollout opponent. For a fair opponent use
+(under the old names "vonneumann" / "von_neumann" / ``VonNeumannAgent``): they are
+valid only as results against this perfect-information, random-rollout opponent.
+For a fair opponent use
 ``agents.determinized_von_neumann_agent.DeterminizedVonNeumannAgent``.
 
 For each legal action, simulates n_rollouts random completions of the game
@@ -37,14 +38,14 @@ class VonNeumannConfig:
     cache_path: Path | None = None
 
 
-class VonNeumannAgent:
-    """MC rollout agent: picks the action with the highest estimated EV.
+class VonNeumannBase:
+    """Shared MC rollout machinery: action selection and random rollouts.
 
-    Perfect-information baseline (frozen for the reproducibility of logs 009-011):
-    rollouts copy the true deal, hidden cards included.
+    Subclasses decide how a rollout's world is built and how EVs are cached, by
+    implementing ``_estimate_ev``, ``_load_cache`` and ``save_cache``.
     """
 
-    name = "von_neumann"
+    name = "von_neumann_base"
 
     def __init__(
         self,
@@ -83,6 +84,35 @@ class VonNeumannAgent:
                 best_action = action
 
         return best_action
+
+    def save_cache(self) -> None:
+        raise NotImplementedError
+
+    def _load_cache(self) -> dict[str, float]:
+        raise NotImplementedError
+
+    def _estimate_ev(self, state: GameState, action: Action, player_idx: int) -> float:
+        raise NotImplementedError
+
+    def _run_rollout(self, state: GameState, player_idx: int) -> float:
+        while not self._game.is_terminal(state):
+            cp = state.current_player
+            legal = self._game.legal_actions(state)
+            if not legal:
+                break
+            action = self._rollout_agents[cp].choose(legal)
+            self._game.apply_action(state, action)
+        return self._game.get_rewards(state)[player_idx]
+
+
+class OmniscientVonNeumannAgent(VonNeumannBase):
+    """MC rollout agent: picks the action with the highest estimated EV.
+
+    Perfect-information baseline (frozen for the reproducibility of logs 009-011):
+    rollouts copy the true deal, hidden cards included.
+    """
+
+    name = "von_neumann_omniscient"
 
     def save_cache(self) -> None:
         """Persist the EV cache to cache_path as JSON. No-op if cache_path is None."""
@@ -126,15 +156,10 @@ class VonNeumannAgent:
 
         return ev
 
-    def _run_rollout(self, state: GameState, player_idx: int) -> float:
-        while not self._game.is_terminal(state):
-            cp = state.current_player
-            legal = self._game.legal_actions(state)
-            if not legal:
-                break
-            action = self._rollout_agents[cp].choose(legal)
-            self._game.apply_action(state, action)
-        return self._game.get_rewards(state)[player_idx]
+
+# PERMANENT alias for the pre-rename class name. It must never be repointed to the fair
+# agent: logs 009-011 cite "VonNeumann" and are valid only against this omniscient one.
+VonNeumannAgent = OmniscientVonNeumannAgent
 
 
 class _SimpleRandom:

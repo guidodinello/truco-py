@@ -1,5 +1,7 @@
 # Retraining on the fixed engine: BC warm start + PPO against a mixed opponent pool
 
+> VonNeumann in this log = the omniscient (perfect-information) variant, renamed in #52.
+
 **Status:** PRE-REGISTERED 2026-10-02, before any measured run. Phase 0 (smoke and throughput) is
 recorded below and is not a result. Both arms completed 20M steps and the finals ran 2026-10-05; see
 "Result / Verdict".

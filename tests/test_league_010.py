@@ -8,7 +8,7 @@ from gamekit.league import ScheduledGame, load_pairings
 
 from agents.random_agent import RandomAgent
 from agents.threshold_agent import ThresholdAgent
-from agents.von_neumann_agent import VonNeumannAgent
+from agents.von_neumann_agent import OmniscientVonNeumannAgent
 from scripts import league_010
 from training.eval import sha256_file, validate_agent_name
 
@@ -123,9 +123,9 @@ def test_fair_von_neumann_pairing_is_deterministic_and_named_validly(cheap_vn: N
 
 def test_von_neumann_is_built_per_pairing_with_no_disk_cache(cheap_vn: None) -> None:
     agents = league_010._triplet("vonneumann", (0, 2, 4), 7, {}, Path("."))
-    assert [type(a).__name__ for a in agents] == ["VonNeumannAgent"] * 3
+    assert [type(a).__name__ for a in agents] == ["OmniscientVonNeumannAgent"] * 3
     for a in agents:
-        assert isinstance(a, VonNeumannAgent)
+        assert isinstance(a, OmniscientVonNeumannAgent)
         assert a._cfg.cache_path is None and a._cfg.n_rollouts == 1
 
 

@@ -9,11 +9,11 @@
 
 ## Option 1 — Better rollout policy (easy, ~75-80%)
 
-> Tracked in #42 (as a separate variant: VonNeumann is the held-out opponent of logs 009–011).
+> Tracked in #42 (as a separate variant: `OmniscientVonNeumannAgent` is the held-out opponent of logs 009–011; the fair one is `DeterminizedVonNeumannAgent`).
 
 **Effort:** ~2h, ~5 lines of code.
 
-VonNeumann's EV estimates are calibrated against random opponents. Swap the internal
+The omniscient VonNeumann's EV estimates are calibrated against random opponents. Swap the internal
 rollout agents from `RandomAgent` to `ThresholdAgent` so rollouts reflect how a real
 opponent actually plays.
 
