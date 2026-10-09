@@ -112,6 +112,15 @@ def test_von_neumann_pairing_is_deterministic(cheap_vn: None) -> None:
     assert all(w in (0, 1) for w in first)
 
 
+def test_fair_von_neumann_pairing_is_deterministic_and_named_validly(cheap_vn: None) -> None:
+    validate_agent_name("vonneumann_determinized")
+    games = _games(("random", "vonneumann_determinized"), 2)
+    play = league_010.make_play({}, Path("."))
+    first = play(games)
+    assert first == play(games)
+    assert all(w in (0, 1) for w in first)
+
+
 def test_von_neumann_is_built_per_pairing_with_no_disk_cache(cheap_vn: None) -> None:
     agents = league_010._triplet("vonneumann", (0, 2, 4), 7, {}, Path("."))
     assert [type(a).__name__ for a in agents] == ["VonNeumannAgent"] * 3
