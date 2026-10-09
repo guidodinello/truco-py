@@ -12,10 +12,10 @@ Usage:
     uv run scripts/benchmark.py --mode threshold_vs_threshold --n 1000
 
     # Von Neumann vs Random (should win >70%)
-    uv run scripts/benchmark.py --mode von_neumann_vs_random --n 200 --rollouts 20
+    uv run scripts/benchmark.py --mode von_neumann_omniscient_vs_random --n 200 --rollouts 20
 
     # Von Neumann vs Threshold
-    uv run scripts/benchmark.py --mode von_neumann_vs_threshold --n 100 --rollouts 20
+    uv run scripts/benchmark.py --mode von_neumann_omniscient_vs_threshold --n 100 --rollouts 20
 
     # Profile game speed
     uv run scripts/benchmark.py --mode random --n 10000 --profile
@@ -47,7 +47,7 @@ from agents.determinized_von_neumann_agent import DeterminizedVonNeumannAgent
 from agents.random_agent import RandomAgent
 from agents.rl_agent import RLAgent
 from agents.threshold_agent import ThresholdAgent
-from agents.von_neumann_agent import VonNeumannAgent
+from agents.von_neumann_agent import OmniscientVonNeumannAgent, VonNeumannBase
 from engine.game import TrucoGame
 from engine.match import TrucoMatch
 from engine.phases import Phase
@@ -58,6 +58,10 @@ from training.eval import MAX_ACTIONS_PER_HAND, place_agents, run_match  # noqa:
 sys.stdout.reconfigure(line_buffering=True)  # type: ignore[union-attr]
 
 logger = get_logger("benchmark")
+
+VN_OMNISCIENT = "von_neumann_omniscient"  # canonical role: the perfect-information agent
+# PERMANENT alias: resolves to the OMNISCIENT agent, never to the fair one (logs 009-011 cite it).
+VN_LEGACY = "von_neumann"
 
 
 @dataclass(frozen=True, slots=True)
@@ -73,21 +77,33 @@ MODES: dict[str, Mode] = {
     "random": Mode(("random_a", "random_b"), False),
     "threshold_vs_random": Mode(("threshold", "random"), False),
     "threshold_vs_threshold": Mode(("threshold_a", "threshold_b"), False),
-    "von_neumann_vs_random": Mode(("von_neumann", "random"), False),
-    "von_neumann_vs_threshold": Mode(("von_neumann", "threshold"), False),
-    "match_von_neumann_vs_random": Mode(("von_neumann", "random"), True),
-    "match_von_neumann_vs_threshold": Mode(("von_neumann", "threshold"), True),
+    # Omniscient (perfect-information) VonNeumann, canonical names.
+    "von_neumann_omniscient_vs_random": Mode((VN_OMNISCIENT, "random"), False),
+    "von_neumann_omniscient_vs_threshold": Mode((VN_OMNISCIENT, "threshold"), False),
+    "match_von_neumann_omniscient_vs_random": Mode((VN_OMNISCIENT, "random"), True),
+    "match_von_neumann_omniscient_vs_threshold": Mode((VN_OMNISCIENT, "threshold"), True),
+    "match_rl_vs_von_neumann_omniscient": Mode(("rl", VN_OMNISCIENT), True),
+    "match_von_neumann_determinized_vs_von_neumann_omniscient": Mode(
+        ("von_neumann_determinized", VN_OMNISCIENT), True
+    ),
+    # PERMANENT aliases (the next 6 modes and role "von_neumann"): they resolve to the OMNISCIENT
+    # agent and must never be repointed to the fair one, because logs 009-011 (and
+    # scripts/rebench_009.sh, which reads by_role["von_neumann"]) cite them.
+    "von_neumann_vs_random": Mode((VN_LEGACY, "random"), False),
+    "von_neumann_vs_threshold": Mode((VN_LEGACY, "threshold"), False),
+    "match_von_neumann_vs_random": Mode((VN_LEGACY, "random"), True),
+    "match_von_neumann_vs_threshold": Mode((VN_LEGACY, "threshold"), True),
     "match_threshold_vs_random": Mode(("threshold", "random"), True),
     "match_rl_vs_random": Mode(("rl", "random"), True),
     "match_rl_vs_threshold": Mode(("rl", "threshold"), True),
-    "match_rl_vs_vonneumann": Mode(("rl", "von_neumann"), True),
-    # Fair (determinized) VonNeumann; the modes above stay on the perfect-information one.
+    "match_rl_vs_vonneumann": Mode(("rl", VN_LEGACY), True),
+    # Fair (determinized) VonNeumann.
     "von_neumann_determinized_vs_threshold": Mode(("von_neumann_determinized", "threshold"), False),
     "match_von_neumann_determinized_vs_threshold": Mode(
         ("von_neumann_determinized", "threshold"), True
     ),
     "match_von_neumann_determinized_vs_von_neumann": Mode(
-        ("von_neumann_determinized", "von_neumann"), True
+        ("von_neumann_determinized", VN_LEGACY), True
     ),
     "match_rl_vs_von_neumann_determinized": Mode(("rl", "von_neumann_determinized"), True),
 }
@@ -137,8 +153,8 @@ def _build_agent(
         return RandomAgent(seed=seed)
     if role in ("threshold", "threshold_a", "threshold_b"):
         return ThresholdAgent(seed=seed)
-    if role == "von_neumann":
-        return VonNeumannAgent(n_rollouts=rollouts, seed=seed, cache_path=cache_path)
+    if role in (VN_OMNISCIENT, VN_LEGACY):
+        return OmniscientVonNeumannAgent(n_rollouts=rollouts, seed=seed, cache_path=cache_path)
     if role == "von_neumann_determinized":
         return DeterminizedVonNeumannAgent(
             n_rollouts=rollouts, seed=seed, cache_path=_determinized_cache_path(cache_path)
@@ -281,7 +297,7 @@ def benchmark(
 
     for agents in role_agents.values():
         for agent in agents:
-            if isinstance(agent, VonNeumannAgent):  # includes the determinized subclass
+            if isinstance(agent, VonNeumannBase):  # both variants
                 agent.save_cache()
 
     if out is not None:
@@ -327,12 +343,14 @@ def benchmark(
             logger.warning("ThresholdAgent win rate < 55%% vs random. Check engine or thresholds.")
         else:
             logger.info("OK: ThresholdAgent is performing better than random.")
-    elif mode == "von_neumann_vs_random":
+    elif mode in ("von_neumann_vs_random", "von_neumann_omniscient_vs_random"):
         win_rate_vn = wins_A / (wins_A + wins_B) if (wins_A + wins_B) > 0 else 0.5
         if win_rate_vn < 0.60:
-            logger.warning("VonNeumannAgent win rate < 60%% vs random. May need more rollouts.")
+            logger.warning(
+                "OmniscientVonNeumannAgent win rate < 60%% vs random. May need more rollouts."
+            )
         else:
-            logger.info("OK: VonNeumannAgent is performing better than random.")
+            logger.info("OK: OmniscientVonNeumannAgent is performing better than random.")
 
 
 def _labels(mode: str, rollouts: int, checkpoint: str | None) -> tuple[str, str]:
@@ -340,13 +358,19 @@ def _labels(mode: str, rollouts: int, checkpoint: str | None) -> tuple[str, str]
     than derived from role names) so display strings are exactly what they
     were before the mode-registry rewrite, including the ones parameterised
     by ``--rollouts``/``--checkpoint``."""
-    vn = f"VonNeumann(r={rollouts})"
+    vn = f"VonNeumann-Omniscient(r={rollouts})"
     vn_det = f"VNDet(r={rollouts})"
     rl_label = f"RL({Path(checkpoint).stem})" if checkpoint else "RL"
     return {
         "random": ("Random A", "Random B"),
         "threshold_vs_random": ("Threshold", "Random"),
         "threshold_vs_threshold": ("Threshold A", "Threshold B"),
+        "von_neumann_omniscient_vs_random": (vn, "Random"),
+        "von_neumann_omniscient_vs_threshold": (vn, "Threshold"),
+        "match_von_neumann_omniscient_vs_random": (vn, "Random"),
+        "match_von_neumann_omniscient_vs_threshold": (vn, "Threshold"),
+        "match_rl_vs_von_neumann_omniscient": (rl_label, vn),
+        "match_von_neumann_determinized_vs_von_neumann_omniscient": (vn_det, vn),
         "von_neumann_vs_random": (vn, "Random"),
         "von_neumann_vs_threshold": (vn, "Threshold"),
         "match_von_neumann_vs_random": (vn, "Random"),
@@ -369,10 +393,13 @@ def main():
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--profile", action="store_true")
     parser.add_argument(
-        "--rollouts", type=int, default=20, help="MC rollouts per action (VonNeumannAgent)"
+        "--rollouts", type=int, default=20, help="MC rollouts per action (VonNeumann agents)"
     )
     parser.add_argument(
-        "--cache_path", type=Path, default=None, help="Path to JSON EV cache file (VonNeumannAgent)"
+        "--cache_path",
+        type=Path,
+        default=None,
+        help="Path to JSON EV cache file (VonNeumann agents)",
     )
     parser.add_argument(
         "--checkpoint", type=str, default=None, help="Path to trained RL checkpoint (.zip)"

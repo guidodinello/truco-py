@@ -1,7 +1,7 @@
 """
 DeterminizedVonNeumannAgent: the fair (imperfect-information) VonNeumann.
 
-``VonNeumannAgent`` rolls out from a deep copy of the *true* state, so it sees every
+``OmniscientVonNeumannAgent`` rolls out from a deep copy of the *true* state, so it sees every
 seat's real hand. This variant instead **determinizes**: before each rollout it
 samples the hidden cards (the other seats' unseen hands; the undealt deck is whatever
 is left over) uniformly from the deals consistent with what the acting seat can
@@ -38,14 +38,14 @@ from engine.actions import Action
 from engine.game_state import Card, GameState
 from engine.truco import calcular_envido, calcular_flor, construir_mazo, tiene_flor
 
-from .von_neumann_agent import _AUTOSAVE_EVERY, VonNeumannAgent
+from .von_neumann_agent import _AUTOSAVE_EVERY, VonNeumannBase
 
 CACHE_FORMAT = "vn-determinized-v1"  # file header and key namespace; bump if the key changes
 _MAX_DEAL_TRIES = 200_000  # rejection-sampling guard; the true deal is always consistent
 _HIDDEN_PER_SEAT = ("manos", "cards_in_hand", "envido", "flor_score")  # other seats' secrets
 
 
-class DeterminizedVonNeumannAgent(VonNeumannAgent):
+class DeterminizedVonNeumannAgent(VonNeumannBase):
     """MC rollout agent that samples the hidden cards before every rollout."""
 
     name = "von_neumann_determinized"
@@ -78,7 +78,7 @@ class DeterminizedVonNeumannAgent(VonNeumannAgent):
             blob = json.load(f)
         if not isinstance(blob, dict) or blob.get("format") != CACHE_FORMAT:
             raise ValueError(
-                f"{path} is not a {CACHE_FORMAT} cache (a legacy VonNeumannAgent cache holds "
+                f"{path} is not a {CACHE_FORMAT} cache (an OmniscientVonNeumannAgent cache holds "
                 "perfect-information EVs and must not be reused here)"
             )
         ev: dict[str, float] = blob["ev"]

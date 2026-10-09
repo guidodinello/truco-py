@@ -18,7 +18,7 @@ from agents.determinized_von_neumann_agent import (
     determinize,
     draw_consistent_hands,
 )
-from agents.von_neumann_agent import VonNeumannAgent
+from agents.von_neumann_agent import OmniscientVonNeumannAgent
 from engine.game import TrucoGame, make_deal
 from engine.game_state import Card, GameState
 from engine.phases import Phase
@@ -86,7 +86,7 @@ def test_worlds_look_identical_to_seat_0(world_a: GameState, world_b: GameState)
     [
         DeterminizedVonNeumannAgent,
         pytest.param(
-            VonNeumannAgent,
+            OmniscientVonNeumannAgent,
             marks=pytest.mark.xfail(
                 strict=True,
                 reason="legacy agent rolls out from the true deal: perfect information (#50)",
@@ -241,7 +241,7 @@ def test_cache_round_trips_with_a_format_header(tmp_path: Path, world_a: GameSta
 
 def test_legacy_cache_files_are_refused(tmp_path: Path, world_a: GameState) -> None:
     path = tmp_path / "legacy.json"
-    legacy = VonNeumannAgent(seed=1, n_rollouts=2, cache_path=path)
+    legacy = OmniscientVonNeumannAgent(seed=1, n_rollouts=2, cache_path=path)
     legacy.choose_action(world_a, TrucoGame().legal_actions(world_a), 0)
     legacy.save_cache()
     assert path.exists()
@@ -259,8 +259,8 @@ def test_benchmark_registers_the_fair_variant_with_its_own_cache(tmp_path: Path)
     )
     legacy = benchmark._build_agent("von_neumann", 3, rollouts=2, cache_path=shared, rl_agent=None)
     assert isinstance(fair, DeterminizedVonNeumannAgent)
-    assert type(legacy) is VonNeumannAgent
-    assert isinstance(legacy, VonNeumannAgent)
+    assert type(legacy) is OmniscientVonNeumannAgent
+    assert isinstance(legacy, OmniscientVonNeumannAgent)
     assert fair._cfg.cache_path == tmp_path / "ev.determinized.json" != legacy._cfg.cache_path
     assert "von_neumann_determinized_vs_threshold" in benchmark.MODES
     assert benchmark.MODES["von_neumann_vs_threshold"].lineup == ("von_neumann", "threshold")
@@ -276,4 +276,4 @@ def test_league_registers_the_fair_variant_beside_the_legacy_one(
         assert isinstance(a, DeterminizedVonNeumannAgent)
         assert a._cfg.cache_path is None and a._cfg.n_rollouts == 1
     legacy = league_010._triplet("vonneumann", (0, 2, 4), 7, {}, Path("."))
-    assert [type(a) for a in legacy] == [VonNeumannAgent] * 3
+    assert [type(a) for a in legacy] == [OmniscientVonNeumannAgent] * 3
