@@ -1,6 +1,6 @@
 # Fair VonNeumann: how much of the omniscient agent's strength was seeing the hands?
 
-**Status:** PRE-REGISTERED 2026-10-09, before any registered run. Result and Verdict not yet filled.
+**Status:** PRE-REGISTERED 2026-10-09, before any registered run. RUN 2026-10-10 on the HP (one deviation, see below). Descriptive result filled in.
 **Date:** 2026-10-09
 **Issue:** [#50](https://github.com/guidodinello/truco-py/issues/50). Agents: `DeterminizedVonNeumannAgent` (#51, fair) and `OmniscientVonNeumannAgent` (renamed in #52; logs 009-011 cite it as "VonNeumann"). Log 012 is claimed by #49 (human baseline).
 
@@ -57,12 +57,35 @@ Extrapolated to n = 2000: about 3.3 h per arm, **about 6.5 h for both, run one a
 
 ## Run log
 
-Filled in when the run finishes.
+- **Launch (first batch).** HP `homelab-hp`, commit `2c5b0d7`, `bash scripts/run_013.sh` in tmux `truco-050`, one worker, nice 19. Arm A started 2026-10-09 22:46:45 UTC and crashed at 2026-10-10 00:48:53 UTC (rc=1, see Deviation 1); arm B ran next, 00:48:53 to 03:56:43 UTC, rc=0, `elapsed_s` 11264 (3 h 08 min).
+- **Fix and relaunch.** PR #54 merged (`1853f38`). The HP checkout went from `exp/013-prereg` to `main` at `1853f38` (fast-forward). Before launch: `tmux ls` showed only `catan-013`, `pgrep -af '[s]cripts/benchmark.py'` was empty, `results/013/fair_vs_omni.json` existed and `fair_vs_thr.json` did not. The crashed arm A log was renamed `logs/013/fair_vs_thr.crashed.log` (the launcher appends with `tee -a`). `bash scripts/run_013.sh` in tmux `truco-050` (batch log appended), arm A started 17:24:23 UTC; the script skipped arm B ("skip fair_vs_omni (done)").
+- **End.** `end fair_vs_thr rc=0` and `BATCH DONE` at 2026-10-10 20:24:13 UTC, `elapsed_s` 10784 (3 h 00 min), against the pilot extrapolation of about 3.3 h per arm. No ties, `voided_hands` 0 in both arms. No traceback in either final log.
+- **Slow step in the rerun.** Arm A matches 1210 to 1220 took about 9 min (19:20:22 to 19:29:39 UTC); the neighbouring 10-match steps took 25 to 60 s. The rerun therefore passed the old crash point (the crashed run died within about 2 min after its 1210 line, 00:46:41 to 00:48:53 UTC). The log has no warning or other message from the sampler and the fallback was not instrumented, so what the log shows is only this timing; it is consistent with the cap-exhausting rejection (about 200000 tries per decision) followed by the enumeration fallback running on that stretch, but it does not prove it.
+- **Two commits.** The result JSONs are stamped `2c5b0d7` (arm B) and `1853f38` (arm A). This is fine because #54 left every draw the old rejection loop accepted bit-identical (tested against a verbatim copy of the old loop: same hands, tries and RNG state) and changed behaviour only where the old code raised. Arm B completed without raising, so the fixed code would have produced the same arm B. The agents, benchmark, seeds and arguments are otherwise identical.
+- **Files.** `results/013/fair_vs_thr.json`, `results/013/fair_vs_omni.json`; logs `logs/013/` (`fair_vs_thr.log`, `fair_vs_omni.log`, the crashed `fair_vs_thr.crashed.log`, and the batch log `_batch.log`). Copied from the HP with scp.
 
 ## Result
 
-(not yet run)
+Win rates and Wilson 95 % CIs from `by_role` of the result JSONs, n = 2000 each, 1000 per seat, r = 20, seed 20261002. No ties.
+
+| arm | fair VN wins | fair win rate | Wilson 95 % CI | opponent win rate | z vs 50 % |
+|---|---|---|---|---|---|
+| A: fair vs Threshold | 619 / 2000 | 30.95 % | [28.96, 33.01] | Threshold 69.05 % [66.99, 71.04] | -24.1 |
+| B: fair vs omniscient | 686 / 2000 | 34.3 % | [32.3, 36.4] | omniscient 65.7 % [63.6, 67.7] | -19.9 |
+
+Seat check (both arms, by seat): arm A seat 0 49.75 %, seat 1 50.25 %; arm B seat 0 48.9 %, seat 1 51.1 %. No seat effect.
+
+**The gap (arm B).** 50 % minus the fair agent's win rate is 15.7 points (Wilson CI of the fair rate gives [13.6, 17.7]). The fair agent loses a seat-rotated match to the omniscient one about two times in three.
+
+**Direction check against the omniscient agent's Threshold results (preregistered item 3).** Threshold beat the omniscient agent 64.6 % [63.1, 66.1] (log 009, n = 4000) and 63.8 % (log 011, n = 10000), so the omniscient agent won 35.4 % and 36.2 %. The fair agent won 30.95 % [28.96, 33.01] against Threshold, below both, and its CI lies entirely below the 009 omniscient CI (35.4 %, [33.9, 36.9]). Removing the hidden-information advantage moved the agent's result against Threshold down by about 4.5 points (vs 009) and 5.3 points (vs 011).
+
+Ordering read off the three pairings (descriptive): Threshold beats omniscient (about 64 %), omniscient beats fair (65.7 %), Threshold beats fair (69.05 %).
 
 ## Verdict
 
-(not yet run)
+Descriptive only, as pre-registered (no test, no decision rule).
+
+- Fair is clearly below omniscient: 34.3 % [32.3, 36.4], a gap of 15.7 points, far outside the 4.5-point resolution of n = 2000. The expected direction (fair < omniscient) holds. About 15.7 points of the omniscient agent's match strength against another VonNeumann come from seeing the hands.
+- Fair against Threshold is 30.95 % [28.96, 33.01], below what the omniscient agent scored (about 36 %). The direction check says the hidden-information advantage was worth roughly 4.5 to 5.3 points against Threshold; it is smaller than the 15.7 points against the omniscient agent, as expected when the opponent also cheats.
+- Threshold beats both VonNeumann variants. The baseline any fair VonNeumann improvement (#42) must be read against is 30.95 % against Threshold and 34.3 % against the omniscient agent.
+- Caveats: one seed, r = 20 random rollouts, in-memory cache. The two arms ran at different commits (see Run log; bit-identical by #54). Logs 009 to 011 stay valid only as results against the perfect-information opponent.
