@@ -67,7 +67,7 @@ warn_unused_ignores = true
 testpaths = ["tests"]
 
 [tool.uv.sources]
-gamekit = { git = "https://github.com/guidodinello/gamekit", branch = "main" }
+gamekit = { git = "https://github.com/guidodinello/gamekit", tag = "v0.4.0" }
 torch = [
     { index = "pytorch-cpu", extra = "cpu" },
     { index = "pytorch-cu128", group = "cu128" },
