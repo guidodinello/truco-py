@@ -32,6 +32,7 @@ import copy
 import dataclasses
 import json
 import random
+from itertools import combinations
 from pathlib import Path
 
 from engine.actions import Action
@@ -42,6 +43,7 @@ from .von_neumann_agent import _AUTOSAVE_EVERY, VonNeumannBase
 
 CACHE_FORMAT = "vn-determinized-v1"  # file header and key namespace; bump if the key changes
 _MAX_DEAL_TRIES = 200_000  # rejection-sampling guard; the true deal is always consistent
+_MAX_ENUMERATION_TRIES = 100_000  # fallback draws; each fails only on a card collision
 _HIDDEN_PER_SEAT = ("manos", "cards_in_hand", "envido", "flor_score")  # other seats' secrets
 
 
@@ -112,6 +114,23 @@ def _played_by(state: GameState) -> dict[int, list[Card]]:
     return played
 
 
+def _is_consistent(
+    state: GameState, hands: dict[int, list[Card]], played: dict[int, list[Card]]
+) -> bool:
+    """Whether ``hands`` (other seats' remaining cards) reproduce the public flor flags.
+
+    The true deal always satisfies this: it is the engine's own ``tiene_flor`` on the same
+    3 cards (played + held) that set ``state.has_flor``. Seats outside ``state.seats`` are
+    not constrained.
+    """
+    pm, nm = state.muestra
+    return all(
+        tiene_flor(played[s] + hand, pm, nm) == state.has_flor[s]
+        for s, hand in hands.items()
+        if s in state.seats
+    )
+
+
 def draw_consistent_hands(
     state: GameState, player_idx: int, rng: random.Random
 ) -> tuple[dict[int, list[Card]], int]:
@@ -121,6 +140,13 @@ def draw_consistent_hands(
     as it still holds, and accept only if every seated seat's hand (played + dealt)
     has flor exactly when ``state.has_flor`` says it does. Accepted draws are uniform
     over the deals consistent with the public information.
+
+    When many seats hold flor the joint event is rare (about 3e-5 per try with five flor
+    holders, and smaller once played cards pin hands), so after ``_MAX_DEAL_TRIES`` failed
+    tries it falls back to ``_draw_by_enumeration``, which samples the same distribution
+    exactly and always terminates quickly. Every draw the rejection loop accepts within the
+    cap is unchanged (same shuffles, same RNG consumption); the fallback only runs where
+    this function used to raise.
     """
     played = _played_by(state)
     visible = {*state.cards_in_hand[player_idx], state.muestra}
@@ -129,7 +155,6 @@ def draw_consistent_hands(
     pool = [c for c in construir_mazo() if c not in visible]
     others = [s for s in range(len(state.cards_in_hand)) if s != player_idx]
     counts = {s: len(state.cards_in_hand[s]) for s in others}
-    pm, nm = state.muestra
 
     for tries in range(1, _MAX_DEAL_TRIES + 1):
         rng.shuffle(pool)
@@ -138,15 +163,46 @@ def draw_consistent_hands(
         for s in others:
             hands[s] = pool[i : i + counts[s]]
             i += counts[s]
-        if all(
-            tiene_flor(played[s] + hands[s], pm, nm) == state.has_flor[s]
-            for s in others
-            if s in state.seats
-        ):
+        if _is_consistent(state, hands, played):
             return hands, tries
+    return _draw_by_enumeration(state, rng, pool, counts, played, _MAX_DEAL_TRIES)
+
+
+def _draw_by_enumeration(
+    state: GameState,
+    rng: random.Random,
+    pool: list[Card],
+    counts: dict[int, int],
+    played: dict[int, list[Card]],
+    tries_before: int,
+) -> tuple[dict[int, list[Card]], int]:
+    """Exact sampler for the deals consistent with the public flor flags.
+
+    Enumerates, per other seat, every ``counts[s]``-subset of the unseen cards whose full
+    hand (played + held) has the right flor flag, draws one uniformly and independently per
+    seat, and accepts iff the hands are pairwise disjoint. Independent uniform draws
+    conditioned on disjointness are exactly uniform over the jointly consistent deals, the
+    same distribution the joint rejection loop targets. Acceptance is the chance that the
+    per-seat draws don't collide (a few tens of percent), so this terminates fast even when
+    the joint flor event has probability ~1e-5.
+    """
+    pm, nm = state.muestra
+    options: dict[int, list[tuple[Card, ...]]] = {}
+    for s, k in counts.items():
+        options[s] = [
+            c
+            for c in combinations(pool, k)
+            if s not in state.seats or tiene_flor(played[s] + list(c), pm, nm) == state.has_flor[s]
+        ]
+        if not options[s]:
+            raise RuntimeError(f"no hand for seat {s} matches has_flor={state.has_flor}")
+    for tries in range(1, _MAX_ENUMERATION_TRIES + 1):
+        chosen = {s: rng.choice(opts) for s, opts in options.items()}
+        if len({c for hand in chosen.values() for c in hand}) == sum(counts.values()):
+            return {s: list(hand) for s, hand in chosen.items()}, tries_before + tries
     raise RuntimeError(
-        f"no deal consistent with the public state after {_MAX_DEAL_TRIES} tries "
-        f"(player {player_idx}, has_flor={state.has_flor})"
+        f"no deal consistent with the public state after {_MAX_ENUMERATION_TRIES} enumeration "
+        f"draws (has_flor={state.has_flor})"
     )
 
 
