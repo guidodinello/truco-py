@@ -1,0 +1,592 @@
+2026-10-09T22:46:45+00:00 start fair_vs_thr
+2026-10-09 22:47:59,005 INFO     benchmark — 10/2000  A:10%  0.15 matches/s  ETA 13677s
+2026-10-09 22:48:33,247 INFO     benchmark — 20/2000  A:25%  0.19 matches/s  ETA 10194s
+2026-10-09 22:49:17,251 INFO     benchmark — 30/2000  A:27%  0.20 matches/s  ETA 9652s
+2026-10-09 22:50:03,314 INFO     benchmark — 40/2000  A:32%  0.21 matches/s  ETA 9459s
+2026-10-09 22:50:36,757 INFO     benchmark — 50/2000  A:30%  0.22 matches/s  ETA 8833s
+2026-10-09 22:51:25,574 INFO     benchmark — 60/2000  A:33%  0.22 matches/s  ETA 8901s
+2026-10-09 22:53:14,350 INFO     benchmark — 70/2000  A:31%  0.18 matches/s  ETA 10590s
+2026-10-09 22:53:49,479 INFO     benchmark — 80/2000  A:32%  0.19 matches/s  ETA 10061s
+2026-10-09 22:54:34,563 INFO     benchmark — 90/2000  A:32%  0.19 matches/s  ETA 9853s
+2026-10-09 22:56:13,602 INFO     benchmark — 100/2000  A:31%  0.18 matches/s  ETA 10703s
+2026-10-09 22:57:37,751 INFO     benchmark — 110/2000  A:29%  0.17 matches/s  ETA 11125s
+2026-10-09 22:59:08,089 INFO     benchmark — 120/2000  A:28%  0.16 matches/s  ETA 11559s
+2026-10-09 22:59:53,572 INFO     benchmark — 130/2000  A:28%  0.17 matches/s  ETA 11267s
+2026-10-09 23:00:51,706 INFO     benchmark — 140/2000  A:29%  0.17 matches/s  ETA 11179s
+2026-10-09 23:01:46,953 INFO     benchmark — 150/2000  A:31%  0.17 matches/s  ETA 11059s
+2026-10-09 23:02:48,676 INFO     benchmark — 160/2000  A:32%  0.17 matches/s  ETA 11022s
+2026-10-09 23:04:15,912 INFO     benchmark — 170/2000  A:32%  0.16 matches/s  ETA 11256s
+2026-10-09 23:05:00,462 INFO     benchmark — 180/2000  A:32%  0.17 matches/s  ETA 11023s
+2026-10-09 23:06:28,321 INFO     benchmark — 190/2000  A:32%  0.16 matches/s  ETA 11222s
+2026-10-09 23:07:07,842 INFO     benchmark — 200/2000  A:32%  0.16 matches/s  ETA 10958s
+2026-10-09 23:07:45,841 INFO     benchmark — 210/2000  A:32%  0.17 matches/s  ETA 10702s
+2026-10-09 23:08:34,780 INFO     benchmark — 220/2000  A:32%  0.17 matches/s  ETA 10555s
+2026-10-09 23:09:19,524 INFO     benchmark — 230/2000  A:32%  0.17 matches/s  ETA 10383s
+2026-10-09 23:09:55,594 INFO     benchmark — 240/2000  A:33%  0.17 matches/s  ETA 10159s
+2026-10-09 23:10:42,679 INFO     benchmark — 250/2000  A:32%  0.17 matches/s  ETA 10027s
+2026-10-09 23:12:10,596 INFO     benchmark — 260/2000  A:32%  0.17 matches/s  ETA 10174s
+2026-10-09 23:13:16,096 INFO     benchmark — 270/2000  A:31%  0.17 matches/s  ETA 10161s
+2026-10-09 23:14:08,257 INFO     benchmark — 280/2000  A:31%  0.17 matches/s  ETA 10062s
+2026-10-09 23:15:09,552 INFO     benchmark — 290/2000  A:31%  0.17 matches/s  ETA 10020s
+2026-10-09 23:15:51,680 INFO     benchmark — 300/2000  A:31%  0.17 matches/s  ETA 9868s
+2026-10-09 23:16:51,039 INFO     benchmark — 310/2000  A:31%  0.17 matches/s  ETA 9817s
+2026-10-09 23:17:25,182 INFO     benchmark — 320/2000  A:32%  0.17 matches/s  ETA 9633s
+2026-10-09 23:18:22,418 INFO     benchmark — 330/2000  A:32%  0.17 matches/s  ETA 9575s
+2026-10-09 23:19:37,279 INFO     benchmark — 340/2000  A:32%  0.17 matches/s  ETA 9604s
+2026-10-09 23:20:26,901 INFO     benchmark — 350/2000  A:32%  0.17 matches/s  ETA 9507s
+2026-10-09 23:21:07,701 INFO     benchmark — 360/2000  A:32%  0.17 matches/s  ETA 9373s
+2026-10-09 23:22:29,182 INFO     benchmark — 370/2000  A:32%  0.17 matches/s  ETA 9423s
+2026-10-09 23:23:34,076 INFO     benchmark — 380/2000  A:32%  0.17 matches/s  ETA 9395s
+2026-10-09 23:24:44,532 INFO     benchmark — 390/2000  A:32%  0.17 matches/s  ETA 9389s
+2026-10-09 23:25:53,238 INFO     benchmark — 400/2000  A:32%  0.17 matches/s  ETA 9372s
+2026-10-09 23:27:43,388 INFO     benchmark — 410/2000  A:32%  0.17 matches/s  ETA 9513s
+2026-10-09 23:28:14,024 INFO     benchmark — 420/2000  A:32%  0.17 matches/s  ETA 9344s
+2026-10-09 23:29:08,227 INFO     benchmark — 430/2000  A:32%  0.17 matches/s  ETA 9266s
+2026-10-09 23:29:55,509 INFO     benchmark — 440/2000  A:31%  0.17 matches/s  ETA 9166s
+2026-10-09 23:31:38,482 INFO     benchmark — 450/2000  A:31%  0.17 matches/s  ETA 9259s
+2026-10-09 23:32:28,035 INFO     benchmark — 460/2000  A:32%  0.17 matches/s  ETA 9166s
+2026-10-09 23:33:09,418 INFO     benchmark — 470/2000  A:31%  0.17 matches/s  ETA 9047s
+2026-10-09 23:34:03,261 INFO     benchmark — 480/2000  A:32%  0.17 matches/s  ETA 8971s
+2026-10-09 23:34:53,946 INFO     benchmark — 490/2000  A:32%  0.17 matches/s  ETA 8886s
+2026-10-09 23:35:50,543 INFO     benchmark — 500/2000  A:32%  0.17 matches/s  ETA 8821s
+2026-10-09 23:36:28,921 INFO     benchmark — 510/2000  A:32%  0.17 matches/s  ETA 8702s
+2026-10-09 23:37:32,935 INFO     benchmark — 520/2000  A:32%  0.17 matches/s  ETA 8660s
+2026-10-09 23:38:12,283 INFO     benchmark — 530/2000  A:32%  0.17 matches/s  ETA 8548s
+2026-10-09 23:39:18,559 INFO     benchmark — 540/2000  A:32%  0.17 matches/s  ETA 8512s
+2026-10-09 23:40:10,498 INFO     benchmark — 550/2000  A:32%  0.17 matches/s  ETA 8437s
+2026-10-09 23:40:36,254 INFO     benchmark — 560/2000  A:32%  0.17 matches/s  ETA 8295s
+2026-10-09 23:41:37,316 INFO     benchmark — 570/2000  A:32%  0.17 matches/s  ETA 8246s
+2026-10-09 23:42:34,670 INFO     benchmark — 580/2000  A:32%  0.17 matches/s  ETA 8188s
+2026-10-09 23:44:04,631 INFO     benchmark — 590/2000  A:32%  0.17 matches/s  ETA 8208s
+2026-10-09 23:44:57,969 INFO     benchmark — 600/2000  A:32%  0.17 matches/s  ETA 8138s
+2026-10-09 23:45:49,633 INFO     benchmark — 610/2000  A:32%  0.17 matches/s  ETA 8065s
+2026-10-09 23:46:38,233 INFO     benchmark — 620/2000  A:32%  0.17 matches/s  ETA 7986s
+2026-10-09 23:47:26,038 INFO     benchmark — 630/2000  A:32%  0.17 matches/s  ETA 7906s
+2026-10-09 23:48:12,529 INFO     benchmark — 640/2000  A:32%  0.17 matches/s  ETA 7825s
+2026-10-09 23:50:20,426 INFO     benchmark — 650/2000  A:31%  0.17 matches/s  ETA 7913s
+2026-10-09 23:51:24,619 INFO     benchmark — 660/2000  A:31%  0.17 matches/s  ETA 7866s
+2026-10-09 23:52:38,701 INFO     benchmark — 670/2000  A:31%  0.17 matches/s  ETA 7838s
+2026-10-09 23:53:32,918 INFO     benchmark — 680/2000  A:32%  0.17 matches/s  ETA 7770s
+2026-10-09 23:54:44,512 INFO     benchmark — 690/2000  A:32%  0.17 matches/s  ETA 7735s
+2026-10-09 23:55:32,093 INFO     benchmark — 700/2000  A:32%  0.17 matches/s  ETA 7655s
+2026-10-09 23:56:30,427 INFO     benchmark — 710/2000  A:32%  0.17 matches/s  ETA 7595s
+2026-10-09 23:57:11,475 INFO     benchmark — 720/2000  A:32%  0.17 matches/s  ETA 7504s
+2026-10-09 23:58:00,435 INFO     benchmark — 730/2000  A:32%  0.17 matches/s  ETA 7429s
+2026-10-09 23:58:53,614 INFO     benchmark — 740/2000  A:32%  0.17 matches/s  ETA 7361s
+2026-10-09 23:59:41,061 INFO     benchmark — 750/2000  A:32%  0.17 matches/s  ETA 7285s
+2026-10-10 00:01:13,177 INFO     benchmark — 760/2000  A:32%  0.17 matches/s  ETA 7282s
+2026-10-10 00:02:28,291 INFO     benchmark — 770/2000  A:32%  0.17 matches/s  ETA 7249s
+2026-10-10 00:03:00,902 INFO     benchmark — 780/2000  A:32%  0.17 matches/s  ETA 7149s
+2026-10-10 00:03:44,209 INFO     benchmark — 790/2000  A:32%  0.17 matches/s  ETA 7067s
+2026-10-10 00:04:44,062 INFO     benchmark — 800/2000  A:32%  0.17 matches/s  ETA 7011s
+2026-10-10 00:05:26,972 INFO     benchmark — 810/2000  A:32%  0.17 matches/s  ETA 6929s
+2026-10-10 00:06:05,710 INFO     benchmark — 820/2000  A:33%  0.17 matches/s  ETA 6843s
+2026-10-10 00:07:21,900 INFO     benchmark — 830/2000  A:33%  0.17 matches/s  ETA 6811s
+2026-10-10 00:08:19,696 INFO     benchmark — 840/2000  A:33%  0.17 matches/s  ETA 6752s
+2026-10-10 00:09:44,737 INFO     benchmark — 850/2000  A:33%  0.17 matches/s  ETA 6730s
+2026-10-10 00:10:36,803 INFO     benchmark — 860/2000  A:33%  0.17 matches/s  ETA 6663s
+2026-10-10 00:14:32,226 INFO     benchmark — 870/2000  A:33%  0.17 matches/s  ETA 6834s
+2026-10-10 00:15:34,281 INFO     benchmark — 880/2000  A:33%  0.17 matches/s  ETA 6776s
+2026-10-10 00:16:43,715 INFO     benchmark — 890/2000  A:33%  0.17 matches/s  ETA 6727s
+2026-10-10 00:17:32,915 INFO     benchmark — 900/2000  A:33%  0.17 matches/s  ETA 6652s
+2026-10-10 00:18:34,523 INFO     benchmark — 910/2000  A:32%  0.17 matches/s  ETA 6593s
+2026-10-10 00:19:18,334 INFO     benchmark — 920/2000  A:32%  0.17 matches/s  ETA 6513s
+2026-10-10 00:20:14,426 INFO     benchmark — 930/2000  A:33%  0.17 matches/s  ETA 6448s
+2026-10-10 00:20:46,999 INFO     benchmark — 940/2000  A:33%  0.17 matches/s  ETA 6356s
+2026-10-10 00:22:01,509 INFO     benchmark — 950/2000  A:33%  0.17 matches/s  ETA 6312s
+2026-10-10 00:23:07,456 INFO     benchmark — 960/2000  A:32%  0.17 matches/s  ETA 6259s
+2026-10-10 00:23:37,049 INFO     benchmark — 970/2000  A:32%  0.17 matches/s  ETA 6166s
+2026-10-10 00:24:29,103 INFO     benchmark — 980/2000  A:32%  0.17 matches/s  ETA 6098s
+2026-10-10 00:25:20,591 INFO     benchmark — 990/2000  A:32%  0.17 matches/s  ETA 6030s
+2026-10-10 00:26:23,183 INFO     benchmark — 1000/2000  A:32%  0.17 matches/s  ETA 5973s
+2026-10-10 00:27:12,392 INFO     benchmark — 1010/2000  A:32%  0.17 matches/s  ETA 5903s
+2026-10-10 00:28:05,118 INFO     benchmark — 1020/2000  A:32%  0.17 matches/s  ETA 5837s
+2026-10-10 00:28:33,304 INFO     benchmark — 1030/2000  A:32%  0.17 matches/s  ETA 5748s
+2026-10-10 00:29:41,702 INFO     benchmark — 1040/2000  A:32%  0.17 matches/s  ETA 5697s
+2026-10-10 00:30:20,772 INFO     benchmark — 1050/2000  A:32%  0.17 matches/s  ETA 5619s
+2026-10-10 00:31:51,357 INFO     benchmark — 1060/2000  A:32%  0.17 matches/s  ETA 5588s
+2026-10-10 00:33:39,379 INFO     benchmark — 1070/2000  A:32%  0.17 matches/s  ETA 5571s
+2026-10-10 00:34:24,800 INFO     benchmark — 1080/2000  A:32%  0.17 matches/s  ETA 5498s
+2026-10-10 00:35:28,593 INFO     benchmark — 1090/2000  A:32%  0.17 matches/s  ETA 5442s
+2026-10-10 00:36:54,250 INFO     benchmark — 1100/2000  A:32%  0.17 matches/s  ETA 5403s
+2026-10-10 00:37:42,326 INFO     benchmark — 1110/2000  A:32%  0.17 matches/s  ETA 5334s
+2026-10-10 00:38:41,750 INFO     benchmark — 1120/2000  A:32%  0.17 matches/s  ETA 5273s
+2026-10-10 00:39:30,983 INFO     benchmark — 1130/2000  A:32%  0.17 matches/s  ETA 5205s
+2026-10-10 00:40:12,389 INFO     benchmark — 1140/2000  A:32%  0.17 matches/s  ETA 5131s
+2026-10-10 00:40:59,037 INFO     benchmark — 1150/2000  A:32%  0.17 matches/s  ETA 5062s
+2026-10-10 00:42:11,309 INFO     benchmark — 1160/2000  A:32%  0.17 matches/s  ETA 5012s
+2026-10-10 00:42:44,027 INFO     benchmark — 1170/2000  A:32%  0.17 matches/s  ETA 4933s
+2026-10-10 00:44:01,959 INFO     benchmark — 1180/2000  A:32%  0.17 matches/s  ETA 4886s
+2026-10-10 00:44:37,889 INFO     benchmark — 1190/2000  A:32%  0.17 matches/s  ETA 4811s
+2026-10-10 00:45:23,262 INFO     benchmark — 1200/2000  A:31%  0.17 matches/s  ETA 4742s
+2026-10-10 00:46:41,768 INFO     benchmark — 1210/2000  A:31%  0.17 matches/s  ETA 4695s
+Traceback (most recent call last):
+  File "/home/guido/projects/truco-py/scripts/benchmark.py", line 425, in <module>
+    main()
+    ~~~~^^
+  File "/home/guido/projects/truco-py/scripts/benchmark.py", line 412, in main
+    benchmark(
+    ~~~~~~~~~^
+        args.mode,
+        ^^^^^^^^^^
+    ...<6 lines>...
+        out=args.out,
+        ^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/guido/projects/truco-py/scripts/benchmark.py", line 284, in benchmark
+    payload = run_arm(
+        lineup=mode_def.lineup,
+    ...<6 lines>...
+        rotation_offset=rotation_offset,
+    )
+  File "/home/guido/projects/truco-py/.venv/lib/python3.13/site-packages/gamekit/benchmark.py", line 151, in run_arm
+    results = play(pairs)
+  File "/home/guido/projects/truco-py/scripts/benchmark.py", line 262, in play
+    result = run_fn(agents, engine_seed)
+  File "/home/guido/projects/truco-py/scripts/benchmark.py", line 244, in run_fn
+    return run_match(match, agents, seed=seed)
+  File "/home/guido/projects/truco-py/training/eval.py", line 43, in run_match
+    action = agents[cp].choose_action(ms.hand, legal, cp)
+  File "/home/guido/projects/truco-py/agents/von_neumann_agent.py", line 81, in choose_action
+    ev = self._estimate_ev(state, action, player_idx)
+  File "/home/guido/projects/truco-py/agents/determinized_von_neumann_agent.py", line 94, in _estimate_ev
+    s = determinize(state, player_idx, self._det_rng)
+  File "/home/guido/projects/truco-py/agents/determinized_von_neumann_agent.py", line 160, in determinize
+    hands, _ = draw_consistent_hands(state, player_idx, rng)
+               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/guido/projects/truco-py/agents/determinized_von_neumann_agent.py", line 147, in draw_consistent_hands
+    raise RuntimeError(
+    ...<2 lines>...
+    )
+RuntimeError: no deal consistent with the public state after 200000 tries (player 3, has_flor=[True, True, True, False, True, True])
+2026-10-10T00:48:53+00:00 end   fair_vs_thr rc=1
+2026-10-10T00:48:53+00:00 start fair_vs_omni
+2026-10-10 00:49:59,166 INFO     benchmark — 10/2000  A:40%  0.16 matches/s  ETA 12133s
+2026-10-10 00:50:39,267 INFO     benchmark — 20/2000  A:35%  0.20 matches/s  ETA 10006s
+2026-10-10 00:51:11,279 INFO     benchmark — 30/2000  A:33%  0.23 matches/s  ETA 8739s
+2026-10-10 00:52:12,073 INFO     benchmark — 40/2000  A:35%  0.21 matches/s  ETA 9500s
+2026-10-10 00:52:48,711 INFO     benchmark — 50/2000  A:34%  0.22 matches/s  ETA 8990s
+2026-10-10 00:53:40,284 INFO     benchmark — 60/2000  A:40%  0.21 matches/s  ETA 9121s
+2026-10-10 00:54:12,624 INFO     benchmark — 70/2000  A:37%  0.22 matches/s  ETA 8669s
+2026-10-10 00:55:17,273 INFO     benchmark — 80/2000  A:38%  0.21 matches/s  ETA 9098s
+2026-10-10 00:56:12,439 INFO     benchmark — 90/2000  A:37%  0.21 matches/s  ETA 9216s
+2026-10-10 00:58:43,574 INFO     benchmark — 100/2000  A:37%  0.17 matches/s  ETA 11122s
+2026-10-10 00:59:28,150 INFO     benchmark — 110/2000  A:36%  0.17 matches/s  ETA 10824s
+2026-10-10 01:00:43,888 INFO     benchmark — 120/2000  A:36%  0.17 matches/s  ETA 11056s
+2026-10-10 01:01:32,205 INFO     benchmark — 130/2000  A:35%  0.17 matches/s  ETA 10846s
+2026-10-10 01:02:10,996 INFO     benchmark — 140/2000  A:36%  0.18 matches/s  ETA 10533s
+2026-10-10 01:03:28,942 INFO     benchmark — 150/2000  A:37%  0.17 matches/s  ETA 10739s
+2026-10-10 01:04:41,448 INFO     benchmark — 160/2000  A:35%  0.17 matches/s  ETA 10847s
+2026-10-10 01:05:58,029 INFO     benchmark — 170/2000  A:36%  0.17 matches/s  ETA 10978s
+2026-10-10 01:06:37,553 INFO     benchmark — 180/2000  A:37%  0.17 matches/s  ETA 10711s
+2026-10-10 01:07:27,803 INFO     benchmark — 190/2000  A:37%  0.17 matches/s  ETA 10570s
+2026-10-10 01:08:33,725 INFO     benchmark — 200/2000  A:38%  0.17 matches/s  ETA 10580s
+2026-10-10 01:09:14,039 INFO     benchmark — 210/2000  A:38%  0.17 matches/s  ETA 10364s
+2026-10-10 01:10:12,898 INFO     benchmark — 220/2000  A:37%  0.17 matches/s  ETA 10313s
+2026-10-10 01:11:24,447 INFO     benchmark — 230/2000  A:36%  0.17 matches/s  ETA 10360s
+2026-10-10 01:12:26,731 INFO     benchmark — 240/2000  A:36%  0.17 matches/s  ETA 10329s
+2026-10-10 01:13:10,463 INFO     benchmark — 250/2000  A:36%  0.17 matches/s  ETA 10166s
+2026-10-10 01:13:53,759 INFO     benchmark — 260/2000  A:36%  0.17 matches/s  ETA 10009s
+2026-10-10 01:14:33,193 INFO     benchmark — 270/2000  A:36%  0.18 matches/s  ETA 9835s
+2026-10-10 01:15:24,854 INFO     benchmark — 280/2000  A:35%  0.18 matches/s  ETA 9747s
+2026-10-10 01:15:55,275 INFO     benchmark — 290/2000  A:34%  0.18 matches/s  ETA 9535s
+2026-10-10 01:16:53,509 INFO     benchmark — 300/2000  A:34%  0.18 matches/s  ETA 9493s
+2026-10-10 01:18:17,223 INFO     benchmark — 310/2000  A:35%  0.18 matches/s  ETA 9590s
+2026-10-10 01:19:37,708 INFO     benchmark — 320/2000  A:34%  0.17 matches/s  ETA 9657s
+2026-10-10 01:20:20,412 INFO     benchmark — 330/2000  A:33%  0.18 matches/s  ETA 9525s
+2026-10-10 01:21:35,909 INFO     benchmark — 340/2000  A:34%  0.17 matches/s  ETA 9558s
+2026-10-10 01:22:07,362 INFO     benchmark — 350/2000  A:34%  0.18 matches/s  ETA 9377s
+2026-10-10 01:23:13,931 INFO     benchmark — 360/2000  A:34%  0.18 matches/s  ETA 9365s
+2026-10-10 01:24:10,282 INFO     benchmark — 370/2000  A:34%  0.18 matches/s  ETA 9305s
+2026-10-10 01:25:06,993 INFO     benchmark — 380/2000  A:34%  0.18 matches/s  ETA 9246s
+2026-10-10 01:26:28,758 INFO     benchmark — 390/2000  A:34%  0.17 matches/s  ETA 9291s
+2026-10-10 01:27:24,699 INFO     benchmark — 400/2000  A:35%  0.17 matches/s  ETA 9226s
+2026-10-10 01:28:42,685 INFO     benchmark — 410/2000  A:35%  0.17 matches/s  ETA 9247s
+2026-10-10 01:29:40,621 INFO     benchmark — 420/2000  A:35%  0.17 matches/s  ETA 9188s
+2026-10-10 01:30:13,986 INFO     benchmark — 430/2000  A:36%  0.17 matches/s  ETA 9040s
+2026-10-10 01:30:55,051 INFO     benchmark — 440/2000  A:35%  0.17 matches/s  ETA 8923s
+2026-10-10 01:32:13,754 INFO     benchmark — 450/2000  A:35%  0.17 matches/s  ETA 8940s
+2026-10-10 01:32:59,345 INFO     benchmark — 460/2000  A:36%  0.17 matches/s  ETA 8842s
+2026-10-10 01:33:37,272 INFO     benchmark — 470/2000  A:36%  0.18 matches/s  ETA 8721s
+2026-10-10 01:34:49,573 INFO     benchmark — 480/2000  A:36%  0.17 matches/s  ETA 8713s
+2026-10-10 01:35:21,754 INFO     benchmark — 490/2000  A:36%  0.18 matches/s  ETA 8578s
+2026-10-10 01:36:25,926 INFO     benchmark — 500/2000  A:35%  0.18 matches/s  ETA 8543s
+2026-10-10 01:37:12,986 INFO     benchmark — 510/2000  A:36%  0.18 matches/s  ETA 8457s
+2026-10-10 01:38:26,302 INFO     benchmark — 520/2000  A:36%  0.18 matches/s  ETA 8448s
+2026-10-10 01:39:21,389 INFO     benchmark — 530/2000  A:36%  0.18 matches/s  ETA 8385s
+2026-10-10 01:40:20,939 INFO     benchmark — 540/2000  A:36%  0.18 matches/s  ETA 8335s
+2026-10-10 01:41:14,506 INFO     benchmark — 550/2000  A:36%  0.18 matches/s  ETA 8268s
+2026-10-10 01:42:20,386 INFO     benchmark — 560/2000  A:36%  0.17 matches/s  ETA 8234s
+2026-10-10 01:43:24,002 INFO     benchmark — 570/2000  A:36%  0.17 matches/s  ETA 8193s
+2026-10-10 01:44:41,994 INFO     benchmark — 580/2000  A:36%  0.17 matches/s  ETA 8187s
+2026-10-10 01:45:21,890 INFO     benchmark — 590/2000  A:36%  0.17 matches/s  ETA 8086s
+2026-10-10 01:46:05,259 INFO     benchmark — 600/2000  A:36%  0.18 matches/s  ETA 7996s
+2026-10-10 01:46:56,695 INFO     benchmark — 610/2000  A:36%  0.18 matches/s  ETA 7926s
+2026-10-10 01:48:05,387 INFO     benchmark — 620/2000  A:36%  0.17 matches/s  ETA 7895s
+2026-10-10 01:48:49,906 INFO     benchmark — 630/2000  A:36%  0.18 matches/s  ETA 7811s
+2026-10-10 01:49:22,665 INFO     benchmark — 640/2000  A:35%  0.18 matches/s  ETA 7702s
+2026-10-10 01:50:26,416 INFO     benchmark — 650/2000  A:35%  0.18 matches/s  ETA 7660s
+2026-10-10 01:51:05,196 INFO     benchmark — 660/2000  A:35%  0.18 matches/s  ETA 7567s
+2026-10-10 01:52:14,780 INFO     benchmark — 670/2000  A:35%  0.18 matches/s  ETA 7536s
+2026-10-10 01:53:29,801 INFO     benchmark — 680/2000  A:36%  0.18 matches/s  ETA 7515s
+2026-10-10 01:55:08,065 INFO     benchmark — 690/2000  A:36%  0.17 matches/s  ETA 7537s
+2026-10-10 01:56:17,814 INFO     benchmark — 700/2000  A:36%  0.17 matches/s  ETA 7502s
+2026-10-10 01:57:15,985 INFO     benchmark — 710/2000  A:36%  0.17 matches/s  ETA 7445s
+2026-10-10 01:58:12,011 INFO     benchmark — 720/2000  A:36%  0.17 matches/s  ETA 7385s
+2026-10-10 01:58:54,655 INFO     benchmark — 730/2000  A:35%  0.17 matches/s  ETA 7301s
+2026-10-10 01:59:38,722 INFO     benchmark — 740/2000  A:36%  0.17 matches/s  ETA 7220s
+2026-10-10 02:00:41,063 INFO     benchmark — 750/2000  A:36%  0.17 matches/s  ETA 7171s
+2026-10-10 02:01:51,997 INFO     benchmark — 760/2000  A:36%  0.17 matches/s  ETA 7136s
+2026-10-10 02:03:06,245 INFO     benchmark — 770/2000  A:36%  0.17 matches/s  ETA 7105s
+2026-10-10 02:04:04,520 INFO     benchmark — 780/2000  A:36%  0.17 matches/s  ETA 7048s
+2026-10-10 02:05:08,717 INFO     benchmark — 790/2000  A:36%  0.17 matches/s  ETA 7000s
+2026-10-10 02:05:56,155 INFO     benchmark — 800/2000  A:36%  0.17 matches/s  ETA 6927s
+2026-10-10 02:06:41,075 INFO     benchmark — 810/2000  A:37%  0.17 matches/s  ETA 6850s
+2026-10-10 02:07:29,988 INFO     benchmark — 820/2000  A:36%  0.17 matches/s  ETA 6780s
+2026-10-10 02:08:40,052 INFO     benchmark — 830/2000  A:37%  0.17 matches/s  ETA 6741s
+2026-10-10 02:09:41,470 INFO     benchmark — 840/2000  A:37%  0.17 matches/s  ETA 6688s
+2026-10-10 02:10:41,779 INFO     benchmark — 850/2000  A:37%  0.17 matches/s  ETA 6634s
+2026-10-10 02:11:29,777 INFO     benchmark — 860/2000  A:37%  0.17 matches/s  ETA 6564s
+2026-10-10 02:12:20,340 INFO     benchmark — 870/2000  A:37%  0.17 matches/s  ETA 6497s
+2026-10-10 02:13:19,909 INFO     benchmark — 880/2000  A:37%  0.17 matches/s  ETA 6442s
+2026-10-10 02:14:16,458 INFO     benchmark — 890/2000  A:37%  0.17 matches/s  ETA 6383s
+2026-10-10 02:15:03,971 INFO     benchmark — 900/2000  A:37%  0.17 matches/s  ETA 6314s
+2026-10-10 02:16:15,212 INFO     benchmark — 910/2000  A:37%  0.17 matches/s  ETA 6273s
+2026-10-10 02:17:06,972 INFO     benchmark — 920/2000  A:36%  0.17 matches/s  ETA 6209s
+2026-10-10 02:17:46,917 INFO     benchmark — 930/2000  A:36%  0.17 matches/s  ETA 6131s
+2026-10-10 02:18:47,642 INFO     benchmark — 940/2000  A:36%  0.17 matches/s  ETA 6077s
+2026-10-10 02:20:05,097 INFO     benchmark — 950/2000  A:36%  0.17 matches/s  ETA 6042s
+2026-10-10 02:21:13,233 INFO     benchmark — 960/2000  A:36%  0.17 matches/s  ETA 5996s
+2026-10-10 02:21:51,112 INFO     benchmark — 970/2000  A:36%  0.17 matches/s  ETA 5918s
+2026-10-10 02:22:49,924 INFO     benchmark — 980/2000  A:36%  0.17 matches/s  ETA 5862s
+2026-10-10 02:24:33,837 INFO     benchmark — 990/2000  A:36%  0.17 matches/s  ETA 5852s
+2026-10-10 02:25:29,345 INFO     benchmark — 1000/2000  A:36%  0.17 matches/s  ETA 5791s
+2026-10-10 02:26:26,185 INFO     benchmark — 1010/2000  A:36%  0.17 matches/s  ETA 5732s
+2026-10-10 02:26:55,504 INFO     benchmark — 1020/2000  A:36%  0.17 matches/s  ETA 5647s
+2026-10-10 02:27:26,540 INFO     benchmark — 1030/2000  A:36%  0.17 matches/s  ETA 5564s
+2026-10-10 02:28:42,902 INFO     benchmark — 1040/2000  A:36%  0.17 matches/s  ETA 5524s
+2026-10-10 02:29:28,874 INFO     benchmark — 1050/2000  A:36%  0.17 matches/s  ETA 5456s
+2026-10-10 02:31:15,763 INFO     benchmark — 1060/2000  A:36%  0.17 matches/s  ETA 5443s
+2026-10-10 02:32:18,686 INFO     benchmark — 1070/2000  A:36%  0.17 matches/s  ETA 5389s
+2026-10-10 02:32:42,924 INFO     benchmark — 1080/2000  A:36%  0.17 matches/s  ETA 5303s
+2026-10-10 02:33:26,550 INFO     benchmark — 1090/2000  A:36%  0.17 matches/s  ETA 5233s
+2026-10-10 02:34:51,768 INFO     benchmark — 1100/2000  A:36%  0.17 matches/s  ETA 5198s
+2026-10-10 02:36:05,427 INFO     benchmark — 1110/2000  A:36%  0.17 matches/s  ETA 5153s
+2026-10-10 02:37:06,613 INFO     benchmark — 1120/2000  A:36%  0.17 matches/s  ETA 5098s
+2026-10-10 02:37:51,441 INFO     benchmark — 1130/2000  A:36%  0.17 matches/s  ETA 5030s
+2026-10-10 02:38:48,909 INFO     benchmark — 1140/2000  A:36%  0.17 matches/s  ETA 4972s
+2026-10-10 02:39:28,144 INFO     benchmark — 1150/2000  A:36%  0.17 matches/s  ETA 4900s
+2026-10-10 02:40:25,679 INFO     benchmark — 1160/2000  A:36%  0.17 matches/s  ETA 4843s
+2026-10-10 02:41:10,286 INFO     benchmark — 1170/2000  A:36%  0.17 matches/s  ETA 4776s
+2026-10-10 02:41:54,320 INFO     benchmark — 1180/2000  A:36%  0.17 matches/s  ETA 4709s
+2026-10-10 02:42:33,813 INFO     benchmark — 1190/2000  A:35%  0.17 matches/s  ETA 4639s
+2026-10-10 02:43:25,825 INFO     benchmark — 1200/2000  A:35%  0.17 matches/s  ETA 4578s
+2026-10-10 02:44:53,278 INFO     benchmark — 1210/2000  A:35%  0.17 matches/s  ETA 4541s
+2026-10-10 02:45:58,238 INFO     benchmark — 1220/2000  A:35%  0.17 matches/s  ETA 4488s
+2026-10-10 02:46:52,950 INFO     benchmark — 1230/2000  A:35%  0.17 matches/s  ETA 4429s
+2026-10-10 02:47:35,337 INFO     benchmark — 1240/2000  A:35%  0.17 matches/s  ETA 4362s
+2026-10-10 02:48:53,818 INFO     benchmark — 1250/2000  A:35%  0.17 matches/s  ETA 4317s
+2026-10-10 02:49:51,834 INFO     benchmark — 1260/2000  A:35%  0.17 matches/s  ETA 4260s
+2026-10-10 02:50:47,844 INFO     benchmark — 1270/2000  A:35%  0.17 matches/s  ETA 4202s
+2026-10-10 02:51:15,933 INFO     benchmark — 1280/2000  A:35%  0.17 matches/s  ETA 4127s
+2026-10-10 02:52:01,474 INFO     benchmark — 1290/2000  A:35%  0.17 matches/s  ETA 4064s
+2026-10-10 02:52:40,291 INFO     benchmark — 1300/2000  A:35%  0.18 matches/s  ETA 3997s
+2026-10-10 02:53:13,771 INFO     benchmark — 1310/2000  A:35%  0.18 matches/s  ETA 3927s
+2026-10-10 02:54:42,806 INFO     benchmark — 1320/2000  A:35%  0.17 matches/s  ETA 3887s
+2026-10-10 02:55:48,855 INFO     benchmark — 1330/2000  A:35%  0.17 matches/s  ETA 3834s
+2026-10-10 02:56:40,363 INFO     benchmark — 1340/2000  A:35%  0.17 matches/s  ETA 3774s
+2026-10-10 02:57:50,557 INFO     benchmark — 1350/2000  A:35%  0.17 matches/s  ETA 3723s
+2026-10-10 02:58:57,236 INFO     benchmark — 1360/2000  A:35%  0.17 matches/s  ETA 3670s
+2026-10-10 02:59:50,633 INFO     benchmark — 1370/2000  A:35%  0.17 matches/s  ETA 3611s
+2026-10-10 03:00:46,693 INFO     benchmark — 1380/2000  A:35%  0.17 matches/s  ETA 3553s
+2026-10-10 03:01:11,844 INFO     benchmark — 1390/2000  A:35%  0.18 matches/s  ETA 3482s
+2026-10-10 03:02:31,032 INFO     benchmark — 1400/2000  A:35%  0.17 matches/s  ETA 3434s
+2026-10-10 03:03:39,997 INFO     benchmark — 1410/2000  A:35%  0.17 matches/s  ETA 3382s
+2026-10-10 03:04:51,662 INFO     benchmark — 1420/2000  A:36%  0.17 matches/s  ETA 3330s
+2026-10-10 03:05:52,738 INFO     benchmark — 1430/2000  A:35%  0.17 matches/s  ETA 3274s
+2026-10-10 03:06:53,664 INFO     benchmark — 1440/2000  A:35%  0.17 matches/s  ETA 3218s
+2026-10-10 03:07:44,458 INFO     benchmark — 1450/2000  A:35%  0.17 matches/s  ETA 3158s
+2026-10-10 03:08:59,014 INFO     benchmark — 1460/2000  A:35%  0.17 matches/s  ETA 3107s
+2026-10-10 03:09:54,161 INFO     benchmark — 1470/2000  A:35%  0.17 matches/s  ETA 3049s
+2026-10-10 03:10:50,586 INFO     benchmark — 1480/2000  A:35%  0.17 matches/s  ETA 2991s
+2026-10-10 03:11:55,207 INFO     benchmark — 1490/2000  A:35%  0.17 matches/s  ETA 2936s
+2026-10-10 03:12:44,067 INFO     benchmark — 1500/2000  A:36%  0.17 matches/s  ETA 2875s
+2026-10-10 03:13:53,275 INFO     benchmark — 1510/2000  A:35%  0.17 matches/s  ETA 2822s
+2026-10-10 03:14:32,675 INFO     benchmark — 1520/2000  A:35%  0.17 matches/s  ETA 2758s
+2026-10-10 03:16:01,428 INFO     benchmark — 1530/2000  A:35%  0.17 matches/s  ETA 2710s
+2026-10-10 03:16:54,258 INFO     benchmark — 1540/2000  A:35%  0.17 matches/s  ETA 2651s
+2026-10-10 03:17:35,162 INFO     benchmark — 1550/2000  A:35%  0.17 matches/s  ETA 2589s
+2026-10-10 03:18:17,724 INFO     benchmark — 1560/2000  A:35%  0.17 matches/s  ETA 2527s
+2026-10-10 03:19:08,345 INFO     benchmark — 1570/2000  A:35%  0.17 matches/s  ETA 2468s
+2026-10-10 03:20:16,760 INFO     benchmark — 1580/2000  A:35%  0.17 matches/s  ETA 2413s
+2026-10-10 03:21:24,126 INFO     benchmark — 1590/2000  A:35%  0.17 matches/s  ETA 2358s
+2026-10-10 03:22:22,642 INFO     benchmark — 1600/2000  A:35%  0.17 matches/s  ETA 2301s
+2026-10-10 03:23:47,154 INFO     benchmark — 1610/2000  A:35%  0.17 matches/s  ETA 2250s
+2026-10-10 03:25:18,159 INFO     benchmark — 1620/2000  A:35%  0.17 matches/s  ETA 2200s
+2026-10-10 03:26:12,180 INFO     benchmark — 1630/2000  A:35%  0.17 matches/s  ETA 2141s
+2026-10-10 03:27:01,167 INFO     benchmark — 1640/2000  A:35%  0.17 matches/s  ETA 2082s
+2026-10-10 03:27:33,410 INFO     benchmark — 1650/2000  A:35%  0.17 matches/s  ETA 2018s
+2026-10-10 03:28:30,277 INFO     benchmark — 1660/2000  A:35%  0.17 matches/s  ETA 1961s
+2026-10-10 03:29:27,057 INFO     benchmark — 1670/2000  A:35%  0.17 matches/s  ETA 1903s
+2026-10-10 03:30:27,146 INFO     benchmark — 1680/2000  A:35%  0.17 matches/s  ETA 1846s
+2026-10-10 03:31:13,194 INFO     benchmark — 1690/2000  A:35%  0.17 matches/s  ETA 1786s
+2026-10-10 03:31:54,136 INFO     benchmark — 1700/2000  A:35%  0.17 matches/s  ETA 1725s
+2026-10-10 03:32:41,228 INFO     benchmark — 1710/2000  A:35%  0.17 matches/s  ETA 1666s
+2026-10-10 03:33:31,240 INFO     benchmark — 1720/2000  A:35%  0.17 matches/s  ETA 1607s
+2026-10-10 03:34:24,618 INFO     benchmark — 1730/2000  A:35%  0.17 matches/s  ETA 1549s
+2026-10-10 03:34:55,033 INFO     benchmark — 1740/2000  A:35%  0.17 matches/s  ETA 1488s
+2026-10-10 03:35:36,624 INFO     benchmark — 1750/2000  A:35%  0.18 matches/s  ETA 1428s
+2026-10-10 03:36:18,297 INFO     benchmark — 1760/2000  A:35%  0.18 matches/s  ETA 1369s
+2026-10-10 03:37:24,099 INFO     benchmark — 1770/2000  A:35%  0.18 matches/s  ETA 1313s
+2026-10-10 03:38:16,174 INFO     benchmark — 1780/2000  A:35%  0.18 matches/s  ETA 1255s
+2026-10-10 03:39:14,455 INFO     benchmark — 1790/2000  A:35%  0.18 matches/s  ETA 1199s
+2026-10-10 03:39:59,858 INFO     benchmark — 1800/2000  A:35%  0.18 matches/s  ETA 1140s
+2026-10-10 03:41:15,959 INFO     benchmark — 1810/2000  A:35%  0.18 matches/s  ETA 1085s
+2026-10-10 03:41:57,169 INFO     benchmark — 1820/2000  A:35%  0.18 matches/s  ETA 1026s
+2026-10-10 03:42:47,514 INFO     benchmark — 1830/2000  A:35%  0.18 matches/s  ETA 969s
+2026-10-10 03:43:25,042 INFO     benchmark — 1840/2000  A:35%  0.18 matches/s  ETA 910s
+2026-10-10 03:44:15,618 INFO     benchmark — 1850/2000  A:35%  0.18 matches/s  ETA 853s
+2026-10-10 03:44:48,011 INFO     benchmark — 1860/2000  A:35%  0.18 matches/s  ETA 794s
+2026-10-10 03:45:54,517 INFO     benchmark — 1870/2000  A:35%  0.18 matches/s  ETA 738s
+2026-10-10 03:46:41,704 INFO     benchmark — 1880/2000  A:35%  0.18 matches/s  ETA 681s
+2026-10-10 03:47:09,418 INFO     benchmark — 1890/2000  A:35%  0.18 matches/s  ETA 622s
+2026-10-10 03:47:31,541 INFO     benchmark — 1900/2000  A:35%  0.18 matches/s  ETA 564s
+2026-10-10 03:48:37,932 INFO     benchmark — 1910/2000  A:35%  0.18 matches/s  ETA 508s
+2026-10-10 03:49:49,365 INFO     benchmark — 1920/2000  A:35%  0.18 matches/s  ETA 452s
+2026-10-10 03:50:30,214 INFO     benchmark — 1930/2000  A:35%  0.18 matches/s  ETA 395s
+2026-10-10 03:51:16,173 INFO     benchmark — 1940/2000  A:35%  0.18 matches/s  ETA 338s
+2026-10-10 03:51:51,481 INFO     benchmark — 1950/2000  A:35%  0.18 matches/s  ETA 281s
+2026-10-10 03:52:21,604 INFO     benchmark — 1960/2000  A:34%  0.18 matches/s  ETA 225s
+2026-10-10 03:53:09,899 INFO     benchmark — 1970/2000  A:34%  0.18 matches/s  ETA 168s
+2026-10-10 03:54:31,313 INFO     benchmark — 1980/2000  A:34%  0.18 matches/s  ETA 112s
+2026-10-10 03:55:39,637 INFO     benchmark — 1990/2000  A:34%  0.18 matches/s  ETA 56s
+2026-10-10 03:56:42,321 INFO     benchmark — 2000/2000  A:34%  0.18 matches/s  ETA 0s
+2026-10-10 03:56:42,337 INFO     benchmark — wrote results/013/fair_vs_omni.json
+
+──────────────────────────────────────────────────
+Mode:        match_von_neumann_determinized_vs_von_neumann_omniscient
+Matches:      2,000
+──────────────────────────────────────────────────
+VNDet(r=20) wins:  686  (34.3%)
+VonNeumann-Omniscient(r=20) wins:  1,314  (65.7%)
+Ties:        0  (0.0%)
+──────────────────────────────────────────────────
+
+2026-10-10T03:56:43+00:00 end   fair_vs_omni rc=0
+2026-10-10T03:56:43+00:00 BATCH DONE
+2026-10-10T17:24:23+00:00 start fair_vs_thr
+2026-10-10 17:25:37,294 INFO     benchmark — 10/2000  A:10%  0.15 matches/s  ETA 13622s
+2026-10-10 17:26:11,233 INFO     benchmark — 20/2000  A:25%  0.20 matches/s  ETA 10137s
+2026-10-10 17:26:51,809 INFO     benchmark — 30/2000  A:27%  0.21 matches/s  ETA 9388s
+2026-10-10 17:27:38,616 INFO     benchmark — 40/2000  A:32%  0.21 matches/s  ETA 9299s
+2026-10-10 17:28:12,460 INFO     benchmark — 50/2000  A:30%  0.22 matches/s  ETA 8721s
+2026-10-10 17:29:02,214 INFO     benchmark — 60/2000  A:33%  0.22 matches/s  ETA 8839s
+2026-10-10 17:30:54,558 INFO     benchmark — 70/2000  A:31%  0.18 matches/s  ETA 10635s
+2026-10-10 17:31:30,303 INFO     benchmark — 80/2000  A:32%  0.19 matches/s  ETA 10115s
+2026-10-10 17:32:16,172 INFO     benchmark — 90/2000  A:32%  0.19 matches/s  ETA 9918s
+2026-10-10 17:33:57,901 INFO     benchmark — 100/2000  A:31%  0.18 matches/s  ETA 10812s
+2026-10-10 17:35:28,107 INFO     benchmark — 110/2000  A:29%  0.17 matches/s  ETA 11327s
+2026-10-10 17:37:02,014 INFO     benchmark — 120/2000  A:28%  0.16 matches/s  ETA 11800s
+2026-10-10 17:37:49,182 INFO     benchmark — 130/2000  A:28%  0.16 matches/s  ETA 11513s
+2026-10-10 17:38:49,450 INFO     benchmark — 140/2000  A:29%  0.16 matches/s  ETA 11434s
+2026-10-10 17:39:46,890 INFO     benchmark — 150/2000  A:31%  0.16 matches/s  ETA 11323s
+2026-10-10 17:40:51,382 INFO     benchmark — 160/2000  A:32%  0.16 matches/s  ETA 11299s
+2026-10-10 17:42:22,423 INFO     benchmark — 170/2000  A:32%  0.16 matches/s  ETA 11557s
+2026-10-10 17:43:08,809 INFO     benchmark — 180/2000  A:32%  0.16 matches/s  ETA 11324s
+2026-10-10 17:44:40,206 INFO     benchmark — 190/2000  A:32%  0.16 matches/s  ETA 11540s
+2026-10-10 17:45:21,442 INFO     benchmark — 200/2000  A:32%  0.16 matches/s  ETA 11273s
+2026-10-10 17:46:00,847 INFO     benchmark — 210/2000  A:32%  0.16 matches/s  ETA 11013s
+2026-10-10 17:46:51,848 INFO     benchmark — 220/2000  A:32%  0.16 matches/s  ETA 10866s
+2026-10-10 17:47:38,493 INFO     benchmark — 230/2000  A:32%  0.17 matches/s  ETA 10694s
+2026-10-10 17:48:16,198 INFO     benchmark — 240/2000  A:33%  0.17 matches/s  ETA 10467s
+2026-10-10 17:49:05,213 INFO     benchmark — 250/2000  A:32%  0.17 matches/s  ETA 10335s
+2026-10-10 17:50:37,181 INFO     benchmark — 260/2000  A:32%  0.17 matches/s  ETA 10496s
+2026-10-10 17:51:45,448 INFO     benchmark — 270/2000  A:31%  0.16 matches/s  ETA 10486s
+2026-10-10 17:52:39,943 INFO     benchmark — 280/2000  A:31%  0.17 matches/s  ETA 10388s
+2026-10-10 17:53:43,862 INFO     benchmark — 290/2000  A:31%  0.17 matches/s  ETA 10349s
+2026-10-10 17:54:27,662 INFO     benchmark — 300/2000  A:31%  0.17 matches/s  ETA 10193s
+2026-10-10 17:55:29,534 INFO     benchmark — 310/2000  A:31%  0.17 matches/s  ETA 10144s
+2026-10-10 17:56:04,970 INFO     benchmark — 320/2000  A:32%  0.17 matches/s  ETA 9955s
+2026-10-10 17:57:04,531 INFO     benchmark — 330/2000  A:32%  0.17 matches/s  ETA 9897s
+2026-10-10 17:58:22,597 INFO     benchmark — 340/2000  A:32%  0.17 matches/s  ETA 9930s
+2026-10-10 17:59:14,178 INFO     benchmark — 350/2000  A:32%  0.17 matches/s  ETA 9831s
+2026-10-10 17:59:56,494 INFO     benchmark — 360/2000  A:32%  0.17 matches/s  ETA 9693s
+2026-10-10 18:01:21,666 INFO     benchmark — 370/2000  A:32%  0.17 matches/s  ETA 9748s
+2026-10-10 18:02:29,217 INFO     benchmark — 380/2000  A:32%  0.17 matches/s  ETA 9722s
+2026-10-10 18:03:42,730 INFO     benchmark — 390/2000  A:32%  0.17 matches/s  ETA 9717s
+2026-10-10 18:04:54,203 INFO     benchmark — 400/2000  A:32%  0.16 matches/s  ETA 9701s
+2026-10-10 18:06:49,313 INFO     benchmark — 410/2000  A:32%  0.16 matches/s  ETA 9852s
+2026-10-10 18:07:21,189 INFO     benchmark — 420/2000  A:32%  0.16 matches/s  ETA 9677s
+2026-10-10 18:08:14,133 INFO     benchmark — 430/2000  A:32%  0.16 matches/s  ETA 9585s
+2026-10-10 18:08:58,687 INFO     benchmark — 440/2000  A:31%  0.16 matches/s  ETA 9466s
+2026-10-10 18:10:43,852 INFO     benchmark — 450/2000  A:31%  0.16 matches/s  ETA 9558s
+2026-10-10 18:11:34,293 INFO     benchmark — 460/2000  A:32%  0.16 matches/s  ETA 9459s
+2026-10-10 18:12:16,551 INFO     benchmark — 470/2000  A:31%  0.16 matches/s  ETA 9335s
+2026-10-10 18:13:11,651 INFO     benchmark — 480/2000  A:32%  0.16 matches/s  ETA 9256s
+2026-10-10 18:14:03,540 INFO     benchmark — 490/2000  A:32%  0.16 matches/s  ETA 9167s
+2026-10-10 18:15:01,454 INFO     benchmark — 500/2000  A:32%  0.16 matches/s  ETA 9098s
+2026-10-10 18:15:41,917 INFO     benchmark — 510/2000  A:32%  0.17 matches/s  ETA 8978s
+2026-10-10 18:16:48,009 INFO     benchmark — 520/2000  A:32%  0.17 matches/s  ETA 8935s
+2026-10-10 18:17:27,170 INFO     benchmark — 530/2000  A:32%  0.17 matches/s  ETA 8815s
+2026-10-10 18:18:33,623 INFO     benchmark — 540/2000  A:32%  0.17 matches/s  ETA 8773s
+2026-10-10 18:19:25,245 INFO     benchmark — 550/2000  A:32%  0.17 matches/s  ETA 8691s
+2026-10-10 18:19:51,015 INFO     benchmark — 560/2000  A:32%  0.17 matches/s  ETA 8543s
+2026-10-10 18:20:52,448 INFO     benchmark — 570/2000  A:32%  0.17 matches/s  ETA 8489s
+2026-10-10 18:21:49,697 INFO     benchmark — 580/2000  A:32%  0.17 matches/s  ETA 8424s
+2026-10-10 18:23:21,036 INFO     benchmark — 590/2000  A:32%  0.17 matches/s  ETA 8441s
+2026-10-10 18:24:14,306 INFO     benchmark — 600/2000  A:32%  0.17 matches/s  ETA 8366s
+2026-10-10 18:25:05,909 INFO     benchmark — 610/2000  A:32%  0.17 matches/s  ETA 8288s
+2026-10-10 18:25:54,594 INFO     benchmark — 620/2000  A:32%  0.17 matches/s  ETA 8204s
+2026-10-10 18:26:42,624 INFO     benchmark — 630/2000  A:32%  0.17 matches/s  ETA 8119s
+2026-10-10 18:27:29,206 INFO     benchmark — 640/2000  A:32%  0.17 matches/s  ETA 8033s
+2026-10-10 18:29:39,172 INFO     benchmark — 650/2000  A:31%  0.17 matches/s  ETA 8121s
+2026-10-10 18:30:43,585 INFO     benchmark — 660/2000  A:31%  0.17 matches/s  ETA 8070s
+2026-10-10 18:31:59,153 INFO     benchmark — 670/2000  A:31%  0.17 matches/s  ETA 8040s
+2026-10-10 18:32:53,916 INFO     benchmark — 680/2000  A:32%  0.17 matches/s  ETA 7969s
+2026-10-10 18:34:06,410 INFO     benchmark — 690/2000  A:32%  0.17 matches/s  ETA 7931s
+2026-10-10 18:34:54,209 INFO     benchmark — 700/2000  A:32%  0.17 matches/s  ETA 7847s
+2026-10-10 18:35:52,899 INFO     benchmark — 710/2000  A:32%  0.17 matches/s  ETA 7784s
+2026-10-10 18:36:34,030 INFO     benchmark — 720/2000  A:32%  0.17 matches/s  ETA 7689s
+2026-10-10 18:37:23,850 INFO     benchmark — 730/2000  A:32%  0.17 matches/s  ETA 7611s
+2026-10-10 18:38:17,225 INFO     benchmark — 740/2000  A:32%  0.17 matches/s  ETA 7540s
+2026-10-10 18:39:04,523 INFO     benchmark — 750/2000  A:32%  0.17 matches/s  ETA 7459s
+2026-10-10 18:40:36,758 INFO     benchmark — 760/2000  A:32%  0.17 matches/s  ETA 7453s
+2026-10-10 18:41:51,874 INFO     benchmark — 770/2000  A:32%  0.17 matches/s  ETA 7417s
+2026-10-10 18:42:24,460 INFO     benchmark — 780/2000  A:32%  0.17 matches/s  ETA 7313s
+2026-10-10 18:43:07,732 INFO     benchmark — 790/2000  A:32%  0.17 matches/s  ETA 7228s
+2026-10-10 18:44:07,435 INFO     benchmark — 800/2000  A:32%  0.17 matches/s  ETA 7168s
+2026-10-10 18:44:50,416 INFO     benchmark — 810/2000  A:32%  0.17 matches/s  ETA 7084s
+2026-10-10 18:45:29,024 INFO     benchmark — 820/2000  A:33%  0.17 matches/s  ETA 6994s
+2026-10-10 18:46:45,408 INFO     benchmark — 830/2000  A:33%  0.17 matches/s  ETA 6959s
+2026-10-10 18:47:43,342 INFO     benchmark — 840/2000  A:33%  0.17 matches/s  ETA 6897s
+2026-10-10 18:49:09,431 INFO     benchmark — 850/2000  A:33%  0.17 matches/s  ETA 6874s
+2026-10-10 18:50:01,450 INFO     benchmark — 860/2000  A:33%  0.17 matches/s  ETA 6804s
+2026-10-10 18:53:58,024 INFO     benchmark — 870/2000  A:33%  0.16 matches/s  ETA 6974s
+2026-10-10 18:54:57,040 INFO     benchmark — 880/2000  A:33%  0.16 matches/s  ETA 6909s
+2026-10-10 18:56:02,344 INFO     benchmark — 890/2000  A:33%  0.16 matches/s  ETA 6851s
+2026-10-10 18:56:48,973 INFO     benchmark — 900/2000  A:33%  0.16 matches/s  ETA 6771s
+2026-10-10 18:57:47,138 INFO     benchmark — 910/2000  A:32%  0.16 matches/s  ETA 6706s
+2026-10-10 18:58:28,485 INFO     benchmark — 920/2000  A:32%  0.16 matches/s  ETA 6620s
+2026-10-10 18:59:21,663 INFO     benchmark — 930/2000  A:33%  0.16 matches/s  ETA 6550s
+2026-10-10 18:59:52,212 INFO     benchmark — 940/2000  A:33%  0.16 matches/s  ETA 6454s
+2026-10-10 19:01:03,471 INFO     benchmark — 950/2000  A:33%  0.16 matches/s  ETA 6405s
+2026-10-10 19:02:06,478 INFO     benchmark — 960/2000  A:32%  0.16 matches/s  ETA 6346s
+2026-10-10 19:02:34,688 INFO     benchmark — 970/2000  A:32%  0.16 matches/s  ETA 6250s
+2026-10-10 19:03:23,970 INFO     benchmark — 980/2000  A:32%  0.17 matches/s  ETA 6177s
+2026-10-10 19:04:13,253 INFO     benchmark — 990/2000  A:32%  0.17 matches/s  ETA 6105s
+2026-10-10 19:05:12,902 INFO     benchmark — 1000/2000  A:32%  0.17 matches/s  ETA 6044s
+2026-10-10 19:05:59,254 INFO     benchmark — 1010/2000  A:32%  0.17 matches/s  ETA 5970s
+2026-10-10 19:06:49,181 INFO     benchmark — 1020/2000  A:32%  0.17 matches/s  ETA 5900s
+2026-10-10 19:07:12,084 INFO     benchmark — 1030/2000  A:32%  0.17 matches/s  ETA 5804s
+2026-10-10 19:08:02,160 INFO     benchmark — 1040/2000  A:32%  0.17 matches/s  ETA 5735s
+2026-10-10 19:08:30,233 INFO     benchmark — 1050/2000  A:32%  0.17 matches/s  ETA 5647s
+2026-10-10 19:09:37,447 INFO     benchmark — 1060/2000  A:32%  0.17 matches/s  ETA 5594s
+2026-10-10 19:10:56,505 INFO     benchmark — 1070/2000  A:32%  0.17 matches/s  ETA 5552s
+2026-10-10 19:11:29,129 INFO     benchmark — 1080/2000  A:32%  0.17 matches/s  ETA 5469s
+2026-10-10 19:12:15,067 INFO     benchmark — 1090/2000  A:32%  0.17 matches/s  ETA 5398s
+2026-10-10 19:13:17,213 INFO     benchmark — 1100/2000  A:32%  0.17 matches/s  ETA 5341s
+2026-10-10 19:13:52,040 INFO     benchmark — 1110/2000  A:32%  0.17 matches/s  ETA 5262s
+2026-10-10 19:14:34,855 INFO     benchmark — 1120/2000  A:32%  0.17 matches/s  ETA 5190s
+2026-10-10 19:15:10,340 INFO     benchmark — 1130/2000  A:32%  0.17 matches/s  ETA 5113s
+2026-10-10 19:15:40,161 INFO     benchmark — 1140/2000  A:32%  0.17 matches/s  ETA 5033s
+2026-10-10 19:16:16,501 INFO     benchmark — 1150/2000  A:32%  0.17 matches/s  ETA 4958s
+2026-10-10 19:17:08,569 INFO     benchmark — 1160/2000  A:32%  0.17 matches/s  ETA 4895s
+2026-10-10 19:17:32,004 INFO     benchmark — 1170/2000  A:32%  0.17 matches/s  ETA 4812s
+2026-10-10 19:18:27,857 INFO     benchmark — 1180/2000  A:32%  0.17 matches/s  ETA 4753s
+2026-10-10 19:18:53,515 INFO     benchmark — 1190/2000  A:32%  0.17 matches/s  ETA 4673s
+2026-10-10 19:19:26,123 INFO     benchmark — 1200/2000  A:31%  0.17 matches/s  ETA 4598s
+2026-10-10 19:20:22,516 INFO     benchmark — 1210/2000  A:31%  0.17 matches/s  ETA 4540s
+2026-10-10 19:29:39,786 INFO     benchmark — 1220/2000  A:31%  0.16 matches/s  ETA 4802s
+2026-10-10 19:30:11,993 INFO     benchmark — 1230/2000  A:31%  0.16 matches/s  ETA 4722s
+2026-10-10 19:30:43,055 INFO     benchmark — 1240/2000  A:31%  0.16 matches/s  ETA 4642s
+2026-10-10 19:31:17,869 INFO     benchmark — 1250/2000  A:31%  0.16 matches/s  ETA 4565s
+2026-10-10 19:31:51,242 INFO     benchmark — 1260/2000  A:31%  0.16 matches/s  ETA 4488s
+2026-10-10 19:32:23,456 INFO     benchmark — 1270/2000  A:32%  0.17 matches/s  ETA 4411s
+2026-10-10 19:32:53,656 INFO     benchmark — 1280/2000  A:31%  0.17 matches/s  ETA 4334s
+2026-10-10 19:33:30,396 INFO     benchmark — 1290/2000  A:31%  0.17 matches/s  ETA 4261s
+2026-10-10 19:34:15,516 INFO     benchmark — 1300/2000  A:31%  0.17 matches/s  ETA 4193s
+2026-10-10 19:34:57,471 INFO     benchmark — 1310/2000  A:31%  0.17 matches/s  ETA 4123s
+2026-10-10 19:35:31,268 INFO     benchmark — 1320/2000  A:31%  0.17 matches/s  ETA 4050s
+2026-10-10 19:37:08,435 INFO     benchmark — 1330/2000  A:31%  0.17 matches/s  ETA 4010s
+2026-10-10 19:37:45,033 INFO     benchmark — 1340/2000  A:31%  0.17 matches/s  ETA 3938s
+2026-10-10 19:38:18,113 INFO     benchmark — 1350/2000  A:31%  0.17 matches/s  ETA 3866s
+2026-10-10 19:39:09,557 INFO     benchmark — 1360/2000  A:31%  0.17 matches/s  ETA 3803s
+2026-10-10 19:39:48,374 INFO     benchmark — 1370/2000  A:31%  0.17 matches/s  ETA 3734s
+2026-10-10 19:40:17,522 INFO     benchmark — 1380/2000  A:31%  0.17 matches/s  ETA 3661s
+2026-10-10 19:40:40,194 INFO     benchmark — 1390/2000  A:31%  0.17 matches/s  ETA 3586s
+2026-10-10 19:41:27,060 INFO     benchmark — 1400/2000  A:31%  0.17 matches/s  ETA 3522s
+2026-10-10 19:42:00,066 INFO     benchmark — 1410/2000  A:31%  0.17 matches/s  ETA 3453s
+2026-10-10 19:42:42,887 INFO     benchmark — 1420/2000  A:31%  0.17 matches/s  ETA 3388s
+2026-10-10 19:43:18,421 INFO     benchmark — 1430/2000  A:31%  0.17 matches/s  ETA 3320s
+2026-10-10 19:43:49,937 INFO     benchmark — 1440/2000  A:31%  0.17 matches/s  ETA 3252s
+2026-10-10 19:44:27,895 INFO     benchmark — 1450/2000  A:31%  0.17 matches/s  ETA 3186s
+2026-10-10 19:45:18,863 INFO     benchmark — 1460/2000  A:31%  0.17 matches/s  ETA 3125s
+2026-10-10 19:46:21,230 INFO     benchmark — 1470/2000  A:31%  0.17 matches/s  ETA 3069s
+2026-10-10 19:46:55,770 INFO     benchmark — 1480/2000  A:31%  0.17 matches/s  ETA 3003s
+2026-10-10 19:47:33,497 INFO     benchmark — 1490/2000  A:31%  0.17 matches/s  ETA 2938s
+2026-10-10 19:49:38,604 INFO     benchmark — 1500/2000  A:32%  0.17 matches/s  ETA 2903s
+2026-10-10 19:50:18,950 INFO     benchmark — 1510/2000  A:31%  0.17 matches/s  ETA 2839s
+2026-10-10 19:50:57,810 INFO     benchmark — 1520/2000  A:31%  0.17 matches/s  ETA 2775s
+2026-10-10 19:53:06,149 INFO     benchmark — 1530/2000  A:32%  0.17 matches/s  ETA 2739s
+2026-10-10 19:53:35,678 INFO     benchmark — 1540/2000  A:31%  0.17 matches/s  ETA 2672s
+2026-10-10 19:54:12,407 INFO     benchmark — 1550/2000  A:31%  0.17 matches/s  ETA 2608s
+2026-10-10 19:54:40,488 INFO     benchmark — 1560/2000  A:31%  0.17 matches/s  ETA 2542s
+2026-10-10 19:55:11,276 INFO     benchmark — 1570/2000  A:31%  0.17 matches/s  ETA 2477s
+2026-10-10 19:55:40,421 INFO     benchmark — 1580/2000  A:31%  0.17 matches/s  ETA 2411s
+2026-10-10 19:56:10,311 INFO     benchmark — 1590/2000  A:31%  0.17 matches/s  ETA 2347s
+2026-10-10 19:56:46,615 INFO     benchmark — 1600/2000  A:31%  0.18 matches/s  ETA 2284s
+2026-10-10 19:57:26,531 INFO     benchmark — 1610/2000  A:31%  0.18 matches/s  ETA 2223s
+2026-10-10 19:58:02,004 INFO     benchmark — 1620/2000  A:32%  0.18 matches/s  ETA 2161s
+2026-10-10 19:58:39,581 INFO     benchmark — 1630/2000  A:31%  0.18 matches/s  ETA 2100s
+2026-10-10 19:59:18,233 INFO     benchmark — 1640/2000  A:32%  0.18 matches/s  ETA 2039s
+2026-10-10 19:59:35,959 INFO     benchmark — 1650/2000  A:32%  0.18 matches/s  ETA 1974s
+2026-10-10 20:00:15,767 INFO     benchmark — 1660/2000  A:32%  0.18 matches/s  ETA 1914s
+2026-10-10 20:00:47,764 INFO     benchmark — 1670/2000  A:31%  0.18 matches/s  ETA 1853s
+2026-10-10 20:01:22,509 INFO     benchmark — 1680/2000  A:31%  0.18 matches/s  ETA 1793s
+2026-10-10 20:01:47,864 INFO     benchmark — 1690/2000  A:31%  0.18 matches/s  ETA 1731s
+2026-10-10 20:02:20,576 INFO     benchmark — 1700/2000  A:31%  0.18 matches/s  ETA 1671s
+2026-10-10 20:02:42,276 INFO     benchmark — 1710/2000  A:31%  0.18 matches/s  ETA 1610s
+2026-10-10 20:03:05,742 INFO     benchmark — 1720/2000  A:31%  0.18 matches/s  ETA 1549s
+2026-10-10 20:03:47,167 INFO     benchmark — 1730/2000  A:31%  0.18 matches/s  ETA 1492s
+2026-10-10 20:04:33,803 INFO     benchmark — 1740/2000  A:31%  0.18 matches/s  ETA 1435s
+2026-10-10 20:05:08,097 INFO     benchmark — 1750/2000  A:31%  0.18 matches/s  ETA 1377s
+2026-10-10 20:05:37,617 INFO     benchmark — 1760/2000  A:31%  0.18 matches/s  ETA 1318s
+2026-10-10 20:06:32,440 INFO     benchmark — 1770/2000  A:31%  0.18 matches/s  ETA 1264s
+2026-10-10 20:07:15,797 INFO     benchmark — 1780/2000  A:31%  0.18 matches/s  ETA 1207s
+2026-10-10 20:08:16,721 INFO     benchmark — 1790/2000  A:31%  0.18 matches/s  ETA 1153s
+2026-10-10 20:08:48,209 INFO     benchmark — 1800/2000  A:31%  0.18 matches/s  ETA 1095s
+2026-10-10 20:09:56,366 INFO     benchmark — 1810/2000  A:31%  0.18 matches/s  ETA 1042s
+2026-10-10 20:10:44,408 INFO     benchmark — 1820/2000  A:31%  0.18 matches/s  ETA 987s
+2026-10-10 20:11:25,751 INFO     benchmark — 1830/2000  A:31%  0.18 matches/s  ETA 931s
+2026-10-10 20:13:09,610 INFO     benchmark — 1840/2000  A:31%  0.18 matches/s  ETA 880s
+2026-10-10 20:13:54,160 INFO     benchmark — 1850/2000  A:31%  0.18 matches/s  ETA 824s
+2026-10-10 20:14:18,895 INFO     benchmark — 1860/2000  A:31%  0.18 matches/s  ETA 767s
+2026-10-10 20:14:55,583 INFO     benchmark — 1870/2000  A:31%  0.18 matches/s  ETA 711s
+2026-10-10 20:15:54,050 INFO     benchmark — 1880/2000  A:31%  0.18 matches/s  ETA 657s
+2026-10-10 20:16:24,936 INFO     benchmark — 1890/2000  A:31%  0.18 matches/s  ETA 600s
+2026-10-10 20:16:45,816 INFO     benchmark — 1900/2000  A:31%  0.18 matches/s  ETA 544s
+2026-10-10 20:18:12,263 INFO     benchmark — 1910/2000  A:31%  0.18 matches/s  ETA 491s
+2026-10-10 20:18:35,696 INFO     benchmark — 1920/2000  A:31%  0.18 matches/s  ETA 435s
+2026-10-10 20:19:19,741 INFO     benchmark — 1930/2000  A:31%  0.18 matches/s  ETA 380s
+2026-10-10 20:19:55,083 INFO     benchmark — 1940/2000  A:31%  0.18 matches/s  ETA 326s
+2026-10-10 20:20:30,734 INFO     benchmark — 1950/2000  A:31%  0.18 matches/s  ETA 271s
+2026-10-10 20:21:13,882 INFO     benchmark — 1960/2000  A:31%  0.18 matches/s  ETA 216s
+2026-10-10 20:21:57,406 INFO     benchmark — 1970/2000  A:31%  0.19 matches/s  ETA 162s
+2026-10-10 20:22:53,577 INFO     benchmark — 1980/2000  A:31%  0.18 matches/s  ETA 108s
+2026-10-10 20:23:33,882 INFO     benchmark — 1990/2000  A:31%  0.19 matches/s  ETA 54s
+2026-10-10 20:24:13,011 INFO     benchmark — 2000/2000  A:31%  0.19 matches/s  ETA 0s
+2026-10-10 20:24:13,024 INFO     benchmark — wrote results/013/fair_vs_thr.json
+
+──────────────────────────────────────────────────
+Mode:        match_von_neumann_determinized_vs_threshold
+Matches:      2,000
+──────────────────────────────────────────────────
+VNDet(r=20) wins:  619  (30.9%)
+Threshold wins:  1,381  (69.0%)
+Ties:        0  (0.0%)
+──────────────────────────────────────────────────
+
+2026-10-10T20:24:13+00:00 end   fair_vs_thr rc=0
+skip fair_vs_omni (done)
+2026-10-10T20:24:13+00:00 BATCH DONE
