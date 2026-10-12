@@ -51,6 +51,7 @@ class DeterminizedVonNeumannAgent(VonNeumannBase):
     """MC rollout agent that samples the hidden cards before every rollout."""
 
     name = "von_neumann_determinized"
+    cache_format = CACHE_FORMAT  # subclasses with a different rollout policy override this
 
     def __init__(
         self,
@@ -69,7 +70,7 @@ class DeterminizedVonNeumannAgent(VonNeumannBase):
             return
         path.parent.mkdir(parents=True, exist_ok=True)
         with open(path, "w") as f:
-            json.dump({"format": CACHE_FORMAT, "ev": self._cache}, f)
+            json.dump({"format": self.cache_format, "ev": self._cache}, f)
         self._new_entries = 0
 
     def _load_cache(self) -> dict[str, float]:
@@ -78,16 +79,16 @@ class DeterminizedVonNeumannAgent(VonNeumannBase):
             return {}
         with open(path) as f:
             blob = json.load(f)
-        if not isinstance(blob, dict) or blob.get("format") != CACHE_FORMAT:
+        if not isinstance(blob, dict) or blob.get("format") != self.cache_format:
             raise ValueError(
-                f"{path} is not a {CACHE_FORMAT} cache (an OmniscientVonNeumannAgent cache holds "
-                "perfect-information EVs and must not be reused here)"
+                f"{path} is not a {self.cache_format} cache (EVs from another agent or rollout "
+                "policy must not be reused here)"
             )
         ev: dict[str, float] = blob["ev"]
         return ev
 
     def _estimate_ev(self, state: GameState, action: Action, player_idx: int) -> float:
-        key = _fair_state_key(state, player_idx, action)
+        key = _fair_state_key(state, player_idx, action, self.cache_format)
         if key in self._cache:
             return self._cache[key]
 
@@ -226,7 +227,9 @@ def determinize(state: GameState, player_idx: int, rng: random.Random) -> GameSt
     return s
 
 
-def _fair_state_key(state: GameState, player_idx: int, action: Action) -> str:
+def _fair_state_key(
+    state: GameState, player_idx: int, action: Action, namespace: str = CACHE_FORMAT
+) -> str:
     """Cache key over the *whole* public state, as seen from ``player_idx``.
 
     Every ``GameState`` field is included (so muestra, hand_pts, who-played-which card,
@@ -240,7 +243,7 @@ def _fair_state_key(state: GameState, player_idx: int, action: Action) -> str:
         parts[f.name] = value[player_idx] if f.name in _HIDDEN_PER_SEAT else value
     parts["cards_in_hand"] = sorted(state.cards_in_hand[player_idx])
     return json.dumps(
-        [CACHE_FORMAT, player_idx, int(action), parts],
+        [namespace, player_idx, int(action), parts],
         separators=(",", ":"),
         sort_keys=True,
     )

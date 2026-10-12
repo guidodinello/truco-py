@@ -47,6 +47,7 @@ from agents.determinized_von_neumann_agent import DeterminizedVonNeumannAgent
 from agents.random_agent import RandomAgent
 from agents.rl_agent import RLAgent
 from agents.threshold_agent import ThresholdAgent
+from agents.threshold_rollout_von_neumann_agent import ThresholdRolloutVonNeumannAgent
 from agents.von_neumann_agent import OmniscientVonNeumannAgent, VonNeumannBase
 from engine.game import TrucoGame
 from engine.match import TrucoMatch
@@ -62,6 +63,7 @@ logger = get_logger("benchmark")
 VN_OMNISCIENT = "von_neumann_omniscient"  # canonical role: the perfect-information agent
 # PERMANENT alias: resolves to the OMNISCIENT agent, never to the fair one (logs 009-011 cite it).
 VN_LEGACY = "von_neumann"
+VN_THRESHOLD_ROLLOUT = "von_neumann_threshold_rollout"
 
 
 @dataclass(frozen=True, slots=True)
@@ -106,6 +108,16 @@ MODES: dict[str, Mode] = {
         ("von_neumann_determinized", VN_LEGACY), True
     ),
     "match_rl_vs_von_neumann_determinized": Mode(("rl", "von_neumann_determinized"), True),
+    # Fair VonNeumann with Threshold rollouts (#42, log 014).
+    "match_von_neumann_threshold_rollout_vs_threshold": Mode(
+        (VN_THRESHOLD_ROLLOUT, "threshold"), True
+    ),
+    "match_von_neumann_threshold_rollout_vs_von_neumann_omniscient": Mode(
+        (VN_THRESHOLD_ROLLOUT, VN_OMNISCIENT), True
+    ),
+    "match_von_neumann_threshold_rollout_vs_von_neumann_determinized": Mode(
+        (VN_THRESHOLD_ROLLOUT, "von_neumann_determinized"), True
+    ),
 }
 
 
@@ -133,12 +145,12 @@ def run_game(game: TrucoGame, agents: list, seed: int | None = None) -> int:
     return -1
 
 
-def _determinized_cache_path(cache_path: Path | None) -> Path | None:
-    """The fair agent's own cache file next to ``cache_path``: its EVs must never mix with
-    the perfect-information agent's, so one ``--cache_path`` can serve both variants."""
+def _variant_cache_path(cache_path: Path | None, variant: str) -> Path | None:
+    """A variant's own cache file next to ``cache_path``: EVs from different agents or rollout
+    policies must never mix, so one ``--cache_path`` can serve every variant."""
     if cache_path is None:
         return None
-    return cache_path.with_name(f"{cache_path.stem}.determinized{cache_path.suffix}")
+    return cache_path.with_name(f"{cache_path.stem}.{variant}{cache_path.suffix}")
 
 
 def _build_agent(
@@ -157,7 +169,15 @@ def _build_agent(
         return OmniscientVonNeumannAgent(n_rollouts=rollouts, seed=seed, cache_path=cache_path)
     if role == "von_neumann_determinized":
         return DeterminizedVonNeumannAgent(
-            n_rollouts=rollouts, seed=seed, cache_path=_determinized_cache_path(cache_path)
+            n_rollouts=rollouts,
+            seed=seed,
+            cache_path=_variant_cache_path(cache_path, "determinized"),
+        )
+    if role == VN_THRESHOLD_ROLLOUT:
+        return ThresholdRolloutVonNeumannAgent(
+            n_rollouts=rollouts,
+            seed=seed,
+            cache_path=_variant_cache_path(cache_path, "determinized_threshold"),
         )
     if role == "rl":
         assert rl_agent is not None
@@ -360,6 +380,7 @@ def _labels(mode: str, rollouts: int, checkpoint: str | None) -> tuple[str, str]
     by ``--rollouts``/``--checkpoint``."""
     vn = f"VonNeumann-Omniscient(r={rollouts})"
     vn_det = f"VNDet(r={rollouts})"
+    vn_tr = f"VNDetThr(r={rollouts})"
     rl_label = f"RL({Path(checkpoint).stem})" if checkpoint else "RL"
     return {
         "random": ("Random A", "Random B"),
@@ -383,6 +404,9 @@ def _labels(mode: str, rollouts: int, checkpoint: str | None) -> tuple[str, str]
         "match_von_neumann_determinized_vs_threshold": (vn_det, "Threshold"),
         "match_von_neumann_determinized_vs_von_neumann": (vn_det, vn),
         "match_rl_vs_von_neumann_determinized": (rl_label, vn_det),
+        "match_von_neumann_threshold_rollout_vs_threshold": (vn_tr, "Threshold"),
+        "match_von_neumann_threshold_rollout_vs_von_neumann_omniscient": (vn_tr, vn),
+        "match_von_neumann_threshold_rollout_vs_von_neumann_determinized": (vn_tr, vn_det),
     }[mode]
 
 
