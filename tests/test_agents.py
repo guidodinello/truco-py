@@ -6,6 +6,7 @@ from agents.base import Agent
 from agents.determinized_von_neumann_agent import DeterminizedVonNeumannAgent
 from agents.random_agent import RandomAgent
 from agents.threshold_agent import ThresholdAgent
+from agents.threshold_rollout_von_neumann_agent import ThresholdRolloutVonNeumannAgent
 from agents.von_neumann_agent import OmniscientVonNeumannAgent
 from engine.game import TrucoGame
 from engine.match import TrucoMatch
@@ -25,6 +26,7 @@ def game() -> TrucoGame:
         (ThresholdAgent, {"seed": 0}),
         (OmniscientVonNeumannAgent, {"seed": 0, "n_rollouts": 2}),
         (DeterminizedVonNeumannAgent, {"seed": 0, "n_rollouts": 2}),
+        (ThresholdRolloutVonNeumannAgent, {"seed": 0, "n_rollouts": 2}),
     ],
 )
 def test_agent_satisfies_protocol(agent_cls, kwargs):
@@ -39,6 +41,7 @@ def test_agent_satisfies_protocol(agent_cls, kwargs):
         (ThresholdAgent, {"seed": 1}),
         (OmniscientVonNeumannAgent, {"seed": 1, "n_rollouts": 2}),
         (DeterminizedVonNeumannAgent, {"seed": 1, "n_rollouts": 2}),
+        (ThresholdRolloutVonNeumannAgent, {"seed": 1, "n_rollouts": 2}),
     ],
 )
 def test_agent_always_returns_legal_action(agent_cls, kwargs, game: TrucoGame):
@@ -65,6 +68,7 @@ def test_agent_always_returns_legal_action(agent_cls, kwargs, game: TrucoGame):
         (ThresholdAgent, {"seed": 2}),
         (OmniscientVonNeumannAgent, {"seed": 2, "n_rollouts": 2}),
         (DeterminizedVonNeumannAgent, {"seed": 2, "n_rollouts": 2}),
+        (ThresholdRolloutVonNeumannAgent, {"seed": 2, "n_rollouts": 2}),
     ],
 )
 def test_agent_reset_does_not_raise(agent_cls, kwargs):
