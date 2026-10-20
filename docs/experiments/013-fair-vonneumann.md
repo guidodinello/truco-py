@@ -66,12 +66,12 @@ Extrapolated to n = 2000: about 3.3 h per arm, **about 6.5 h for both, run one a
 
 ## Result
 
-Win rates and Wilson 95 % CIs from `by_role` of the result JSONs, n = 2000 each, 1000 per seat, r = 20, seed 20261002. No ties.
+Win rates and Wilson 95 % CIs from `by_role` of the result JSONs, n = 2000 each, 1000 per seat, r = 20, seed 20261002. No ties. The z column is the one-sample z = (p - 0.5) / sqrt(0.25 / n), descriptive only (log 013 has no gate; the registered intervals are Wilson). It is not the JSON `comparisons` z, which is a two-proportion z between the two agents; an earlier version of this table showed that value (-24.1, -19.9) under the same label.
 
-| arm | fair VN wins | fair win rate | Wilson 95 % CI | opponent win rate | z vs 50 % |
+| arm | fair VN wins | fair win rate | Wilson 95 % CI | opponent win rate | z vs 50 % (one-sample) |
 |---|---|---|---|---|---|
-| A: fair vs Threshold | 619 / 2000 | 30.95 % | [28.96, 33.01] | Threshold 69.05 % [66.99, 71.04] | -24.1 |
-| B: fair vs omniscient | 686 / 2000 | 34.3 % | [32.3, 36.4] | omniscient 65.7 % [63.6, 67.7] | -19.9 |
+| A: fair vs Threshold | 619 / 2000 | 30.95 % | [28.96, 33.01] | Threshold 69.05 % [66.99, 71.04] | -17.04 |
+| B: fair vs omniscient | 686 / 2000 | 34.3 % | [32.3, 36.4] | omniscient 65.7 % [63.6, 67.7] | -14.04 |
 
 Seat check (both arms, by seat): arm A seat 0 49.75 %, seat 1 50.25 %; arm B seat 0 48.9 %, seat 1 51.1 %. No seat effect.
 
