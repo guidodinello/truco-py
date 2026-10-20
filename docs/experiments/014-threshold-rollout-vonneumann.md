@@ -1,6 +1,6 @@
 # Threshold-rollout VonNeumann: does calibrating the rollouts to rule-based play make the fair agent stronger?
 
-**Status:** PRE-REGISTERED 2026-10-11, before any registered run. Not yet run.
+**Status:** PRE-REGISTERED 2026-10-11, before any registered run. RUN 2026-10-12 on the HP (no deviations). Result and verdict filled in: arm C **PASS**.
 **Date:** 2026-10-11
 **Issue:** [#42](https://github.com/guidodinello/truco-py/issues/42) (roadmap Option 1, part of #46). Agent: `ThresholdRolloutVonNeumannAgent` (new). Technique note: [gamekit note 021](https://github.com/guidodinello/gamekit/blob/main/docs/research/021-decision-time-search.md). Baselines: [log 013](013-fair-vonneumann.md).
 
@@ -62,16 +62,41 @@ Arms run concurrently, so the budget is the slowest arm: **about 5.4 h** (the ca
 
 ## Deviations
 
-None yet.
+None. Three arms, modes, `n`, `r`, seed base, commit and launcher are as registered. One labelling change after the run, requested by the owner: the Newcombe cross-run differences for arms A and B (listed under the secondary items) are reported below as **exploratory**, not part of the verdict.
 
 ## Run log
 
-Filled at launch and at the end.
+- **Launch.** HP `homelab-hp`, commit `fe2ddc3` (the merge of the pre-registration, #57), `bash scripts/run_014.sh <arm>` in tmux `truco-042`, one window per arm (C `tr_vs_fair`, A `tr_vs_thr`, B `tr_vs_omni`), nice 19, one worker each. All three started 2026-10-12 00:40:39 UTC.
+- **End.** All three arms `rc=0`: B at 04:07:55 UTC (`elapsed_s` 12431, 3.45 h), C at 04:52:41 (15117, 4.20 h), A at 05:55:49 (18905, 5.25 h). Pilot extrapolation was about 2.7 h, 3.6 h and 5.4 h. Budget was the slowest arm, 5.25 h against 5.4 h.
+- **Integrity.** Every JSON is stamped `git_commit` `fe2ddc3`, `seed` and both seed bases 20261002, `n_games` 2000 (1000 per seat), `rollouts` 20, the registered `mode`. `voided_hands` 0 in all arms, no ties, no traceback or warning in any log. Wilson intervals recomputed from the win counts agree with the JSON values.
+- **Environment.** HP venv gamekit 0.3.0 @ `76c364b`, as registered.
+- **Files.** `results/014/{tr_vs_fair,tr_vs_thr,tr_vs_omni}.json`; logs `logs/014/` (`tr_vs_fair.log`, `tr_vs_thr.log`, `tr_vs_omni.log`, `_batch.log`). Copied from the HP with scp.
 
 ## Result
 
-Not run yet.
+Win rates and Wilson 95 % CIs of the Threshold-rollout agent from `by_role` of the result JSONs, n = 2000 each, 1000 per seat, r = 20, seed 20261002. No ties.
+
+| arm | TR wins | TR win rate | Wilson 95 % CI | opponent win rate | z vs 50 % |
+|---|---|---|---|---|---|
+| **C (primary): vs fair random-rollout** | 1115 / 2000 | 55.75 % | [53.56, 57.91] | 44.25 % [42.09, 46.44] | 7.27 |
+| A: vs Threshold | 1117 / 2000 | 55.85 % | [53.66, 58.01] | Threshold 44.15 % [41.99, 46.34] | 7.40 |
+| B: vs omniscient | 1036 / 2000 | 51.80 % | [49.61, 53.98] | omniscient 48.20 % [46.02, 50.39] | 2.28 |
+
+Seat check (seat 0 win rate over both roles): C 50.75 %, A 47.85 %, B 50.6 %. No seat effect in C and B; A is 2.15 points under 50 % in seat 0, descriptive only.
+
+**Cross-run differences (EXPLORATORY, not part of the verdict).** Against the fair agent's log 013 results, with the Newcombe 95 % interval for two independent proportions. Different commit, same seed base and engine, unpaired random streams, so the interval is the honest uncertainty. No decision rule is attached to these.
+
+| arm | TR | log 013 fair | difference | Newcombe 95 % CI |
+|---|---|---|---|---|
+| A: vs Threshold | 55.85 % | 619 / 2000 = 30.95 % | +24.90 pp | [+21.90, +27.84] |
+| B: vs omniscient | 51.80 % | 686 / 2000 = 34.3 % | +17.50 pp | [+14.46, +20.49] |
 
 ## Verdict
 
-Not run yet. Gate as above: PASS / FAIL / INCONCLUSIVE on arm C only.
+**H1 (arm C): PASS.** The Threshold-rollout agent won 1115 of 2000 seat-rotated matches against the fair random-rollout agent, 55.75 %, Wilson 95 % [53.56, 57.91]. The lower bound is above 50 %, so the gate registered before any result is met. n = 2000, one seed, r = 20, in-memory cache.
+
+Arms A and B are descriptive only and do not enter the verdict. They satisfy #42's "Done when" (benchmarked seat-rotated against Threshold and the frozen omniscient VonNeumann, with Wilson intervals).
+
+- Caveat carried from the pre-registration: in arm A the rollout model is the actual opponent, the best case for opponent modelling, so A is the most favourable of the three arms.
+- The agent models Threshold by construction. It is not independent of Threshold or of agents distilled from it (C's teacher) and cannot replace the omniscient agent as the held-out opponent of logs 009-011.
+- Exploratory reading, not a finding: the B interval [49.61, 53.98] contains 50 %, so against the omniscient agent the data do not separate the Threshold-rollout agent from even. Not registered and not tested.
