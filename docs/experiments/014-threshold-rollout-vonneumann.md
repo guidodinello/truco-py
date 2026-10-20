@@ -74,13 +74,13 @@ None. Three arms, modes, `n`, `r`, seed base, commit and launcher are as registe
 
 ## Result
 
-Win rates and Wilson 95 % CIs of the Threshold-rollout agent from `by_role` of the result JSONs, n = 2000 each, 1000 per seat, r = 20, seed 20261002. No ties.
+Win rates and Wilson 95 % CIs of the Threshold-rollout agent from `by_role` of the result JSONs (the gate uses the Wilson interval; the z column is the one-sample z = (p - 0.5) / sqrt(0.25 / n), descriptive only, not the JSON `comparisons` z, which is a two-proportion z between the two agents), n = 2000 each, 1000 per seat, r = 20, seed 20261002. No ties.
 
-| arm | TR wins | TR win rate | Wilson 95 % CI | opponent win rate | z vs 50 % |
+| arm | TR wins | TR win rate | Wilson 95 % CI | opponent win rate | z vs 50 % (one-sample) |
 |---|---|---|---|---|---|
-| **C (primary): vs fair random-rollout** | 1115 / 2000 | 55.75 % | [53.56, 57.91] | 44.25 % [42.09, 46.44] | 7.27 |
-| A: vs Threshold | 1117 / 2000 | 55.85 % | [53.66, 58.01] | Threshold 44.15 % [41.99, 46.34] | 7.40 |
-| B: vs omniscient | 1036 / 2000 | 51.80 % | [49.61, 53.98] | omniscient 48.20 % [46.02, 50.39] | 2.28 |
+| **C (primary): vs fair random-rollout** | 1115 / 2000 | 55.75 % | [53.56, 57.91] | 44.25 % [42.09, 46.44] | 5.14 |
+| A: vs Threshold | 1117 / 2000 | 55.85 % | [53.66, 58.01] | Threshold 44.15 % [41.99, 46.34] | 5.23 |
+| B: vs omniscient | 1036 / 2000 | 51.80 % | [49.61, 53.98] | omniscient 48.20 % [46.02, 50.39] | 1.61 |
 
 Seat check (seat 0 win rate over both roles): C 50.75 %, A 47.85 %, B 50.6 %. No seat effect in C and B; A is 2.15 points under 50 % in seat 0, descriptive only.
 
