@@ -11,8 +11,10 @@
 # Lint doesn't need torch (--only-dev). Every run step is `uv run --no-sync`: a syncing
 # `uv run` would re-sync the default set and swap the CPU wheel for the CUDA one.
 #
-# Required status checks (no matrix, so contexts are the bare job names):
-#   Lint Python, Typecheck Python, Tests (Python)
+# Required status check: only the aggregate `CI` job below, pinned to the GitHub
+# Actions app in the branch ruleset ({"context": "CI", "integration_id": 15368}).
+# It fails if any job it needs failed or was cancelled, so a new job only needs
+# adding to its `needs:` list.
 name: CI
 
 on:
@@ -83,3 +85,24 @@ jobs:
 
       - name: Run tests
         run: uv run --no-sync pytest
+
+  ci:
+    name: CI
+    needs:
+      - lint-python
+      - typecheck-python
+      - test-python
+    if: always()
+    runs-on: ${{ fromJSON(vars.CI_RUNNERS || '["ubuntu-latest"]') }}
+    steps:
+      - name: Check results
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          read -ra results <<< "$RESULTS"
+          for r in "${results[@]}"; do
+            if [[ "$r" == "failure" || "$r" == "cancelled" ]]; then
+              echo "A required job finished as: $r"
+              exit 1
+            fi
+          done
