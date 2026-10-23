@@ -67,6 +67,8 @@ def test_pairing_then_summarize_anchors_threshold_at_zero(baseline_only: Path) -
     assert league_010.play_pairing(("random", "threshold", cfg)) == "random__vs__threshold"
     [pairing] = load_pairings(baseline_only / "t")
     assert pairing["league_config"]["n_games"] == 4
+    # run_pairing writes only the pairing file; summarize is league.json's sole writer.
+    assert not (baseline_only / "t" / "league.json").exists()
     summary = league_010.summarize(baseline_only, "t")
     assert summary["ratings"]["threshold"]["elo"] == 0.0
     assert (baseline_only / "t" / "league.json").exists()

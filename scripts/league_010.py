@@ -10,10 +10,10 @@ each filled with 3 copies of one agent -- exactly the ``scripts/benchmark.py`` a
 full matches. ``gamekit.league`` hands ``play`` an already-rotated lineup, so ``play`` must NOT
 rotate again.
 
-Parallelism: ``run_league`` plays pairings one after another, but a pairing's seeds and config
-hash depend only on ``(seed, a, b, num_seats, n)``. So one ``run_league(agents=[a, b])`` per
-pairing, in a process pool, writes the same files as a full-roster run. Every call also rewrites
-``league.json`` (a race, ignored); ``summarize`` is the authoritative writer.
+Parallelism: a pairing's seeds and config hash depend only on ``(seed, a, b, num_seats, n)``, so
+one ``gamekit.league.run_pairing`` per pairing, in a process pool, writes the same files as a
+full-roster ``run_league``. ``run_pairing`` writes only the pairing file; ``summarize`` is the
+only writer of ``league.json``.
 
 Reproducibility: Random/Threshold agents are rebuilt inside ``play`` for every pairing, seeded
 from that pairing's driver seed, so a resumed or re-run pairing never depends on run order.
@@ -30,7 +30,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from gamekit.league import ScheduledGame, load_pairings, run_league, summarize_league
+from gamekit.league import ScheduledGame, load_pairings, run_pairing, summarize_league
 from gamekit.results import write_result
 
 from agents.base import TrucoAgent
@@ -141,7 +141,7 @@ def winners_sha256(winners: Sequence[int | None]) -> str:
 
 
 def make_play(manifest: dict[str, dict[str, Any]], ckpt_root: Path):
-    """The ``play`` callable for ``run_league``: one pairing's games -> winning team slot."""
+    """The ``play`` callable for ``run_pairing``: one pairing's games -> winning team slot."""
 
     def play(games: Sequence[ScheduledGame]) -> Sequence[int | None]:
         a, b = sorted(set(games[0].lineup))
@@ -189,8 +189,9 @@ def _worker_init() -> None:
 def play_pairing(task: tuple[str, str, LeagueConfig]) -> str:
     a, b, cfg = task
     manifest = load_manifest(cfg.manifest)
-    run_league(
-        agents=[a, b],
+    run_pairing(
+        a,
+        b,
         num_seats=NUM_SEATS,
         n_per_pairing=cfg.n,
         seed=cfg.seed,
@@ -198,8 +199,6 @@ def play_pairing(task: tuple[str, str, LeagueConfig]) -> str:
         winning_seat=lambda r: r,
         results_dir=cfg.results_dir,
         name=cfg.name,
-        anchor=a,  # run_league insists the anchor is in the roster; not part of the config hash
-        n_bootstrap=10,
     )
     return f"{a}__vs__{b}"
 
