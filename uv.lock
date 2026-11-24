@@ -2226,6 +2226,15 @@ wheels = [
 ]
 
 [[package]]
+name = "pytruco"
+version = "0.1.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/a0/5b/6362288af521a14233a9035514721c7f91e11056f32e3fd02a22a019348e/pytruco-0.1.3.tar.gz", hash = "sha256:d501ff2eb2cc5130fc0e74716b8e671e87567836046cb9c0259fd003fe91f3e0", size = 55584, upload-time = "2026-09-26T23:55:25.392Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/43/21/968fa9e7b8bf1933516dc4ec992a400715452b8ca8dd0971f4bab61a067a/pytruco-0.1.3-py3-none-any.whl", hash = "sha256:f00d51014d030e8e8024c5796fe34cdf4cd558366f4926f18836af60bf8c0e10", size = 49071, upload-time = "2026-09-26T23:55:24.235Z" },
+]
+
+[[package]]
 name = "pywinpty"
 version = "3.0.3"
 source = { registry = "https://pypi.org/simple" }
@@ -2900,6 +2909,7 @@ dev = [
     { name = "mypy" },
     { name = "pre-commit" },
     { name = "pytest" },
+    { name = "pytruco" },
     { name = "ruff" },
 ]
 
@@ -2923,6 +2933,7 @@ dev = [
     { name = "mypy", specifier = ">=1.13" },
     { name = "pre-commit", specifier = ">=4.0" },
     { name = "pytest", specifier = ">=8.0" },
+    { name = "pytruco", specifier = "==0.1.3" },
     { name = "ruff", specifier = ">=0.9" },
 ]
 
