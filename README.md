@@ -56,6 +56,8 @@ experimentos/
   experimento_envido_1v1.py        # Umbral óptimo para tocar envido (escenario 1v1)
 convergencia.ipynb                # Notebook: convergencia de la estimación con n
 decision_flor.ipynb               # Notebook: análisis de decisión de flor (1v2)
+scripts/cheatsheet.py             # Probabilidades 3v3 (piezas, envido, pico a pico) para la guía
+docs/become-a-master.md           # Guía de entrenamiento para leer las cartas en la mesa
 results/                          # Resultados guardados automáticamente
 plots/                            # Gráficos generados por los notebooks
 ```
