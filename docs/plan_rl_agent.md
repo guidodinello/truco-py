@@ -2,7 +2,7 @@
 
 ## Session
 
-claude --resume "truco-rl-agent-plan"  
+claude --resume "truco-rl-agent-plan"
 
 ## Context
 
