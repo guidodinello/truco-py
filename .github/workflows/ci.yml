@@ -40,7 +40,10 @@ jobs:
 
       - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
         with:
-          enable-cache: true
+          # Persistent homelab runners (named homelab-*) keep ~/.cache/uv on disk, so uploading
+          # it is slow and pointless there; keyed on the runner name, not runner.environment,
+          # because ephemeral self-hosted services (Ubicloud) need the cache (fitted Issue 361).
+          enable-cache: ${{ !contains(runner.name, 'homelab') }}
           cache-dependency-glob: "uv.lock"
 
       - name: Install dependencies
@@ -62,7 +65,10 @@ jobs:
 
       - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
         with:
-          enable-cache: true
+          # Persistent homelab runners (named homelab-*) keep ~/.cache/uv on disk, so uploading
+          # it is slow and pointless there; keyed on the runner name, not runner.environment,
+          # because ephemeral self-hosted services (Ubicloud) need the cache (fitted Issue 361).
+          enable-cache: ${{ !contains(runner.name, 'homelab') }}
           cache-dependency-glob: "uv.lock"
 
       # Full dependency set on purpose: without gamekit / stable_baselines3 installed,
@@ -83,7 +89,10 @@ jobs:
 
       - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
         with:
-          enable-cache: true
+          # Persistent homelab runners (named homelab-*) keep ~/.cache/uv on disk, so uploading
+          # it is slow and pointless there; keyed on the runner name, not runner.environment,
+          # because ephemeral self-hosted services (Ubicloud) need the cache (fitted Issue 361).
+          enable-cache: ${{ !contains(runner.name, 'homelab') }}
           cache-dependency-glob: "uv.lock"
 
       - name: Install dependencies
