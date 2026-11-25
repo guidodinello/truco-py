@@ -129,28 +129,6 @@ KNOWN_DIFFS += [
         ),
     ),
     KnownDiff(
-        id="D-07",
-        layer="reject",
-        matches=lambda m: (
-            m["event"] in _ENVITE_EVENTS and m["pre_phase"] == "PLAY" and m["pre_truco_level"] > 1
-        ),
-        summary=(
-            "envido called after a truco was accepted, by a player who has not spoken (S2 Art 22): "
-            "we allow it, pytruco forbids any envite once the truco is accepted"
-        ),
-    ),
-    KnownDiff(
-        id="D-08",
-        layer="reject",
-        matches=lambda m: (
-            m["event"] in _ENVITE_EVENTS and m["pre_phase"] == "TRUCO" and m["pre_truco_level"] >= 2
-        ),
-        summary=(
-            "«el envido va primero» over a pending retruco / vale cuatro: we allow it (S2 Art 60), "
-            "pytruco only over a pending truco"
-        ),
-    ),
-    KnownDiff(
         id="V-05",
         layer="reject",
         matches=lambda m: (
