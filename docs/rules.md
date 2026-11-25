@@ -34,6 +34,8 @@ audit states which variant each finding is measured against.
 | S6 | pagat.com, *Uruguayan Truco* (J. McLeod, after A. Taylor) | con muestra; 2/3/4 players; differences from Argentine truco only | <https://www.pagat.com/put/truco_ur.html> (200) |
 | S7 | servicioti.com.uy blog post, *Truco Uruguayo Reglamento* (2026-04-04) | con muestra; 2/4/6 | <https://www.servicioti.com.uy/2026/04/truco-uruguayo-reglamento.html> (200). **Not independent**: its tables mirror S3. Cited only as corroboration. |
 
+**Fetching S1 and S2:** they live only on web.archive.org, which Claude Code's fetch tool refuses; `curl -sL` works. In the S2 page the articles are headed `ARTICULO n` (use the `…/truco_uruguayo.htm` spelling).
+
 **Looked for and not usable** (so nobody repeats the search):
 
 - *Dichos Del Truco Reglamento* (Wikipedia ref. 5), archived
