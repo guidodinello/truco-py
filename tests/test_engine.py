@@ -276,6 +276,36 @@ def test_player_who_said_truco_cannot_envido(game: TrucoGame):
     assert Action.ENVIDO not in game.legal_actions(state)
 
 
+def test_teammate_of_who_said_truco_cannot_envido(game: TrucoGame):
+    """S2 Art 22 d: «que ningún integrante del equipo haya hecho lo mismo» (oracle D-07)."""
+    state = game.reset(deal=_deal({}))
+    game.apply_action(state, Action.TRUCO)  # seat 0 (team A) says truco
+    game.apply_action(state, Action.QUIERO)  # seat 1 (team B) says quiero
+    _play_card(game, state)  # seat 0
+    _play_card(game, state)  # seat 1
+    assert state.current_player == 2  # seat 2 is seat 0's teammate and has not spoken
+    assert not any(a in ENVIDO_CALLS for a in game.legal_actions(state))
+
+
+def test_retruco_answerer_cannot_envido_va_primero(game: TrucoGame):
+    """S2 Art 22 c-d, Art 66 (oracle D-08): a retruco counts as accepting the truco, and the
+    side that said truco may not envidar, so «el envido va primero» is not open to it."""
+    state = game.reset(deal=_deal({}))
+    game.apply_action(state, Action.TRUCO)  # seat 0 (team A)
+    game.apply_action(state, Action.RETRUCO)  # seat 1 (team B) accepts and raises
+    assert state.phase == Phase.TRUCO and team_of(state.current_player) == 0
+    assert not any(a in ENVIDO_CALLS for a in game.legal_actions(state))
+
+
+def test_raising_an_envido_is_barred_to_the_side_that_said_truco(game: TrucoGame):
+    """S2 Art 35 → Art 22 c-d: a reenvite meets the conditions of a first call."""
+    state = game.reset(deal=_deal({}))
+    game.apply_action(state, Action.TRUCO)  # seat 0 (team A)
+    game.apply_action(state, Action.ENVIDO)  # seat 1 (team B): envido va primero
+    assert state.phase == Phase.ENVIDO and team_of(state.current_player) == 0
+    assert game.legal_actions(state) == [Action.QUIERO, Action.FOLD]
+
+
 def test_envido_va_primero(game: TrucoGame):
     """S2 Art 60: the side answering a truco may first call envido."""
     state = game.reset(deal=_deal({}))
@@ -581,4 +611,6 @@ def test_ley_omitting_the_envite_bars_the_challenger(ley_game: TrucoGame):
     _play_card(ley_game, state)
     _play_card(ley_game, state)
     assert state.current_player == 3
-    assert Action.ENVIDO in ley_game.legal_actions(state)  # seat 3, team B
+    # seat 3's teammate (seat 1) said «quiero»: the whole side is barred (Art 22 d; Art 77 sends
+    # the challenged side's envites to the common regime)
+    assert Action.ENVIDO not in ley_game.legal_actions(state)  # seat 3, team B

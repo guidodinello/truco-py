@@ -93,7 +93,9 @@ class GameState:
     truco_team: int  # team that made the pending call (-1 = none)
     truco_raise_team: int  # side entitled to the next raise (-1 = either may say truco)
     truco_responder: int  # seat answering the pending truco call
-    spoke_truco: list[bool]  # per seat: said truco/retruco/vale cuatro or «quiero» to one
+    # per seat: said truco/retruco/vale cuatro or «quiero» to one. An envite is barred to the
+    # whole side if any member did (S2 Art 22 c-d), see TrucoGame._team_spoke_truco.
+    spoke_truco: list[bool]
     resume_player: int  # seat whose PLAY turn continues after a call is answered
 
     # ------------------------------------------------------------------

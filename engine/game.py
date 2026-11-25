@@ -8,10 +8,11 @@ truco are called **inside a player's turn** in the tricks, as in the real game:
   - Truco may be called by any player in their turn (S3 L89; S2 Art 49–50).
     The side that accepted a call may raise it later, in any turn of any of its
     players (S3 L91; S2 Art 63–64). Vale cuatro only answers a retruco.
-  - Envido may be called by a player who still holds three cards and has not
-    said truco or «quiero» to one (S2 Art 22), and also in answer to a truco
-    («el envido va primero», S2 Art 60). Raises must be at least the call they
-    answer (S2 Art 35); totals are capped at the falta (S2 Art 36).
+  - Envido may be called by a player who still holds three cards and where
+    neither the player nor any teammate has said truco or «quiero» to one
+    (S2 Art 22 c-d), and also in answer to a truco («el envido va primero»; S2
+    Art 55, 60). Raises must be at least the call they answer and meet the same
+    conditions (S2 Art 35); totals are capped at the falta (S2 Art 36).
   - Flor voids envido (S2 Art 27). Both sides' flor holders contest with the
     same envite ladder «con flor» plus contra flor al resto (S2 Art 31–37).
   - Ties in envido / flor follow the declaration procedure (S2 Art 39–40).
@@ -264,6 +265,12 @@ class TrucoGame:
     def _target_reached(self, state: GameState) -> bool:
         return any(state.scores[t] + state.hand_pts[t] >= state.target for t in (0, 1))
 
+    def _team_spoke_truco(self, state: GameState, p: int) -> bool:
+        """Has p or a teammate said truco / «quiero» to one? Bars envites (S2 Art 22 c-d)."""
+        return any(
+            state.spoke_truco[s] for s in range(len(state.spoke_truco)) if team_of(s) == team_of(p)
+        )
+
     def _flors(self, state: GameState, team: int) -> int:
         return sum(1 for s in state.flor_holders if team_of(s) == team)
 
@@ -392,7 +399,7 @@ class TrucoGame:
     def _flor_opening(self, state: GameState, p: int) -> list[Action]:
         """A flor holder speaks: envite «con flor», or leave it to the comparison."""
         actions = [Action.FLOR_PASS]
-        if team_of(p) != state.envite_banned_team and not state.spoke_truco[p]:
+        if team_of(p) != state.envite_banned_team and not self._team_spoke_truco(state, p):
             actions += self._envite_calls(state, p, first=True)
         return actions
 
@@ -412,7 +419,7 @@ class TrucoGame:
             and not state.flor_holders
             and state.trick_num == 0
             and len(state.cards_in_hand[p]) == 3
-            and not state.spoke_truco[p]
+            and not self._team_spoke_truco(state, p)
             and team_of(p) != state.envite_banned_team
         )
 
@@ -439,7 +446,7 @@ class TrucoGame:
 
     def _can_raise(self, state: GameState, p: int) -> bool:
         """Raising needs the same conditions as calling (S2 Art 35 → Art 22, 28)."""
-        if team_of(p) == state.envite_banned_team or state.spoke_truco[p]:
+        if team_of(p) == state.envite_banned_team or self._team_spoke_truco(state, p):
             return False
         if state.envite_kind == ENVITE_ENVIDO:
             return len(state.cards_in_hand[p]) == 3
