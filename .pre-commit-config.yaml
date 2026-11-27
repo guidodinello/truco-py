@@ -26,7 +26,7 @@ repos:
         args: [--py313-plus]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.10  # keep in step with the ruff pinned in uv.lock (CI runs that one)
+    rev: v0.17.6  # keep in step with the ruff pinned in uv.lock (CI runs that one)
     hooks:
       - id: ruff
         args: [--fix]
