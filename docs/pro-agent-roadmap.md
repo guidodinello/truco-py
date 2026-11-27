@@ -27,9 +27,8 @@ self._rollout_agents = [
 
 # After
 from agents.threshold_agent import ThresholdAgent as _Threshold
-self._rollout_agents = [
-    _Threshold(seed=(seed + i) if seed is not None else None) for i in range(6)
-]
+
+self._rollout_agents = [_Threshold(seed=(seed + i) if seed is not None else None) for i in range(6)]
 ```
 
 `ThresholdAgent` is deterministic-ish and fast enough for rollouts. EV estimates will be

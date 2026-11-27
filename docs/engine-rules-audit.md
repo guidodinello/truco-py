@@ -350,16 +350,19 @@ from engine.game import TrucoGame
 from engine.game_state import TEAM_A, TEAM_B, team_of
 from engine.phases import Phase
 
-def first_seed(pred, **kw):               # deterministic: fresh game per seed
+
+def first_seed(pred, **kw):  # deterministic: fresh game per seed
     return next(s for s in range(200_000) if pred(TrucoGame().reset(seed=s, **kw)))
+
 
 # A-03: VALE_CUATRO over TRUCO
 s = first_seed(lambda st: st.phase == Phase.ENVIDO, scores=[38, 30])
-g = TrucoGame(); st = g.reset(seed=s)
+g = TrucoGame()
+st = g.reset(seed=s)
 while st.phase == Phase.ENVIDO:
     g.apply_action(st, Action.ENVIDO_PASS)
 g.apply_action(st, Action.TRUCO)
-print([a.name for a in g.legal_actions(st)])   # includes VALE_CUATRO
+print([a.name for a in g.legal_actions(st)])  # includes VALE_CUATRO
 ```
 
 Spec check (hierarchy, envido/flor points, hand winner): an independent implementation of S1 Art

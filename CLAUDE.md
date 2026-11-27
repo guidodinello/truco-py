@@ -90,6 +90,7 @@ from agents.threshold_agent import ThresholdAgent
 
 # Bad
 import sys, os
+
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from truco import construir_mazo
 ```
@@ -135,11 +136,13 @@ Use `@dataclass(frozen=True, slots=True)` for data that is set once and never mu
 ```python
 from dataclasses import dataclass
 
+
 # Immutable deal snapshot — set once at deal time
 @dataclass(frozen=True, slots=True)
 class Deal:
     manos: tuple[tuple[tuple[int, int], ...], ...]
     muestra: tuple[int, int]
+
 
 # Mutable game state — mutated throughout the hand
 @dataclass(slots=True)
@@ -171,9 +174,12 @@ Concrete classes do **not** inherit from the Protocol — they satisfy it struct
 ```python
 from typing import Protocol, runtime_checkable
 
+
 @runtime_checkable
 class Agent(Protocol):
-    def choose_action(self, state: GameState, legal_actions: list[Action], player_idx: int) -> Action: ...
+    def choose_action(
+        self, state: GameState, legal_actions: list[Action], player_idx: int
+    ) -> Action: ...
     def reset(self) -> None: ...
 ```
 
@@ -185,6 +191,7 @@ class RandomAgent:
 
     def reset(self) -> None:
         pass
+
 
 # isinstance still works at runtime
 assert isinstance(RandomAgent(), Agent)  # True
@@ -201,9 +208,9 @@ level near the code that uses them.
 
 ```python
 # Good — in engine/game.py
-FLOR_CHICO_PTS = 3    # flor chico (first bid) is worth 3 pts
-REAL_ENVIDO_PTS = 3   # real envido adds 3 pts to the stake
-RETRUCO_PTS = 3       # retruco stake value
+FLOR_CHICO_PTS = 3  # flor chico (first bid) is worth 3 pts
+REAL_ENVIDO_PTS = 3  # real envido adds 3 pts to the stake
+RETRUCO_PTS = 3  # retruco stake value
 
 state.flor_stake = FLOR_CHICO_PTS
 
@@ -225,6 +232,7 @@ dataclass config object instead of passing them individually.
 # Good — config is inspectable, loggable, and easy to extend
 from dataclasses import dataclass
 
+
 @dataclass(slots=True)
 class TrainConfig:
     opponent_mode: str
@@ -235,13 +243,16 @@ class TrainConfig:
     checkpoint_freq: int
     load_checkpoint: str | None = None
 
+
 def train(cfg: TrainConfig) -> None:
     logger.info("opponent=%s steps=%d envs=%d", cfg.opponent_mode, cfg.total_steps, cfg.n_envs)
     ...
 
+
 # Bad — long argument lists are hard to pass around and log
-def train(opponent_mode, total_steps, n_envs, shaped_reward, seed, checkpoint_freq, load_checkpoint):
-    ...
+def train(
+    opponent_mode, total_steps, n_envs, shaped_reward, seed, checkpoint_freq, load_checkpoint
+): ...
 ```
 
 Argparse stays at the CLI boundary and populates the config object:
@@ -292,6 +303,7 @@ Annotate all public functions with parameter types and return types.
 def card_strength(palo: int, numero: int, palo_muestra: int, numero_muestra: int) -> int: ...
 def obs_to_vector(state: GameState, player_idx: int) -> np.ndarray: ...
 
+
 # Bad
 def card_strength(palo, numero, palo_muestra, numero_muestra): ...
 ```
@@ -333,14 +345,18 @@ Never write manual dicts for memoisation when `@cache` or `@lru_cache` works:
 ```python
 # Bad — manual cache
 _strength_cache: dict[tuple, int] = {}
+
+
 def card_strength(palo, numero, palo_muestra, numero_muestra):
     key = (palo, numero, palo_muestra, numero_muestra)
     if key not in _strength_cache:
         _strength_cache[key] = _compute(...)
     return _strength_cache[key]
 
+
 # Good
 from functools import cache
+
 
 @cache
 def card_strength(palo: int, numero: int, palo_muestra: int, numero_muestra: int) -> int:
@@ -378,11 +394,13 @@ resource patterns:
 from contextlib import contextmanager
 import time
 
+
 @contextmanager
 def timed(label: str):
     t0 = time.perf_counter()
     yield
     logger.info("%s took %.3fs", label, time.perf_counter() - t0)
+
 
 with timed("game simulation"):
     results = simulate(n=100_000)

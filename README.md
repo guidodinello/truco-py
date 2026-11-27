@@ -227,8 +227,8 @@ enlazados a las hipótesis correspondientes en `gamekit/docs/research/`.
 ```python
 EXPERIMENTO = {
     "description": "descripción del experimento",
-    "simulate": lambda n, seed: ...,   # retorna un dict con al menos "n" y "seed"
-    "report_fn": ...,                  # función que imprime el resultado
+    "simulate": lambda n, seed: ...,  # retorna un dict con al menos "n" y "seed"
+    "report_fn": ...,  # función que imprime el resultado
     # "ejemplo_fn": ...,               # opcional, para --ejemplo
 }
 ```
