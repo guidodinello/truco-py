@@ -68,8 +68,11 @@ All scoring logic is directly importable — do not reimplement:
 MC thresholds become constants in `threshold_agent.py`:
 ```python
 MC_THRESHOLDS = {
-    "envido_1v1": 28, "envido_team": 33,
-    "flor_1v1": 35, "flor_1v2_aggressive": 37, "flor_1v2_passive": 38,
+    "envido_1v1": 28,
+    "envido_team": 33,
+    "flor_1v1": 35,
+    "flor_1v2_aggressive": 37,
+    "flor_1v2_passive": 38,
 }
 ```
 

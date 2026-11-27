@@ -19,7 +19,10 @@ with no way to tell them apart.
 from datetime import datetime
 from logging.handlers import RotatingFileHandler
 
-def get_logger(name: str, log_file: Path | None = None, max_bytes: int = 5_000_000, backup_count: int = 5) -> logging.Logger:
+
+def get_logger(
+    name: str, log_file: Path | None = None, max_bytes: int = 5_000_000, backup_count: int = 5
+) -> logging.Logger:
     ...
     if log_file is not None:
         # e.g. logs/train_2026-04-12T14-30.log
